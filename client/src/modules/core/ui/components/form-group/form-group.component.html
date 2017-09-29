@@ -1,0 +1,6 @@
+<div class="form-group">
+  <label class="form-control-label" *ngIf="label" (click)=pushOutside()>
+    {{ label }} <span class="form-group--help" *ngIf="help">- {{ help }}</span>
+  </label>
+  <ng-content select="[formControlName]"></ng-content>
+</div>

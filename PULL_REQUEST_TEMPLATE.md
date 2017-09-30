@@ -1,18 +1,20 @@
-<!-For Feature or user story ->
+<!-- For Feature or user story -->
 
-##Summary
+## Summary
 
-##Technical Description
+## Technical Description
 
-##Attachments (screenshots, diagrams, results, etc)
+## Attachments (screenshots, diagrams, results, etc)
 
 
-<!-For bugs ->
+<!-- For bugs
 
-##Observation
+## Observation
 
-##Reproduction Steps
+## Reproduction Steps
 
-##Resolution Description
+## Resolution Description
 
-##Resolution Validation
+## Resolution Validation
+
+ -->

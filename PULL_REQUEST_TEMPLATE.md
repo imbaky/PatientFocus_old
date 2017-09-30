@@ -7,7 +7,7 @@
 ## Attachments (screenshots, diagrams, results, etc)
 
 
-<!-- For bugs -->
+<!-- For bugs
 
 ## Observation
 
@@ -16,3 +16,5 @@
 ## Resolution Description
 
 ## Resolution Validation
+
+ -->

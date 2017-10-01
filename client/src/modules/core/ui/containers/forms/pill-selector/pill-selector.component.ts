@@ -24,8 +24,8 @@ export class PillSelectorComponent implements ControlValueAccessor {
   @Input()
   options: Array<PillSelectorOption>;
 
-  private onTouch: Function;
-  private onModelChanges: Function;
+  onTouch: Function;
+  onModelChanges: Function;
 
   value: string;
 

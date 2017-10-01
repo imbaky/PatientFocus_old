@@ -19,8 +19,8 @@ export class CheckboxComponent implements ControlValueAccessor {
   @ViewChild('input')
   input: ElementRef;
 
-  private onTouch: Function;
-  private onModelChanges: Function;
+  onTouch: Function;
+  onModelChanges: Function;
 
   registerOnChange(fn) {
     this.onModelChanges = fn;

@@ -28,8 +28,8 @@ export class ShortStringComponent implements ControlValueAccessor, OnInit {
   @ViewChild('input')
   input: ElementRef;
 
-  private onTouch: Function;
-  private onModelChanges: Function;
+  onTouch: Function;
+  onModelChanges: Function;
 
   ngOnInit() {
     this.type = this.type || 'text';

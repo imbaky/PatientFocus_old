@@ -25,3 +25,34 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## Docker
+
+1. Install docker for your distro
+
+Note: The following examples will assume systemd
+
+2. add your user to docker group /etc/group
+   ```
+   sudo vi /etc/group
+   find the line and modify
+   docker:x:###: to docker:x:###:<username>
+   ```
+
+3. start docker
+   ```
+   sudo systemctl start docker
+   ```
+
+4. docker ps <- should return with no errors
+
+5. go to PatientFocus/client directory
+   ```
+   docker build .
+   ```
+   wait for it to finish
+
+
+6. docker run --name frontend -p 80:80 -d frontend
+
+7. open browser http://localhost

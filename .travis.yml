@@ -22,3 +22,22 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 
 script: cd $TEST_CLIENT_DIR && npm install && npm run ci
+
+language: go
+
+go:
+  - 1.x
+  - 1.7
+  - 1.8
+  - 1.9
+
+cache:
+  directories:
+    - $GOPATH/src
+    - $GOPATH/pkg
+
+install:
+- go get -t ./...
+
+script:
+- go test -v ./..

@@ -13,8 +13,4 @@ export class FormGroupComponent {
   @Input()
   help: string;
 
-  doSomething(data: string) {
-    console.log(data); // "DATA"
-  }
-
 }

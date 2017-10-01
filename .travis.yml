@@ -1,43 +1,48 @@
-language: node_js
-sudo: required
-dist: trusty
+matrix:
+  include:
+    - language: node_js
+      sudo: required
+      dist: trusty
 
-node_js:
-  - 6
-  - 7
+      node_js:
+        - 6
+        - 7
 
-env:
-  - TEST_CLIENT_DIR=client
+      env:
+        - TEST_CLIENT_DIR=client
 
-addons:
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+      addons:
+        apt:
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-stable
 
-before_install:
-  - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.ta
-  - sh -e /etc/init.d/xvfb start
+      before_install:
+        - export CHROME_BIN=chromium-browser
+        - export DISPLAY=:99.ta
+        - sh -e /etc/init.d/xvfb start
 
-script: cd $TEST_CLIENT_DIR && npm install && npm run ci
+      script: cd $TEST_CLIENT_DIR && npm install && npm run ci
+  
 
-language: go
 
-go:
-  - 1.x
-  - 1.7
-  - 1.8
-  - 1.9
 
-cache:
-  directories:
-    - $GOPATH/src
-    - $GOPATH/pkg
+    - language: go
 
-install:
-- go get -t ./...
+      go:
+        - 1.x
+        - 1.7
+        - 1.8
+        - 1.9
 
-script:
-- go test -v ./..
+      cache:
+        directories:
+          - $GOPATH/src
+          - $GOPATH/pkg
+
+      install:
+        - go get -t ./...
+
+      script:
+        - go test -v ./..

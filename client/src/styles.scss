@@ -1,4 +1,10 @@
+$border-radius: 0;
+$blue: #004AD6;
+/**
+  *  Bootstrap overrides
+ */
 @import '~bootstrap/scss/bootstrap';
+
 
 body {
   font-family: 'Lato', $font-family-sans-serif;

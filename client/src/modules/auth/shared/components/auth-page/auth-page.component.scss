@@ -35,6 +35,10 @@ $auth-page--header-glass__negative_position: -20px;
   };
 }
 
+.auth-page--logo-img {
+  max-width: 225px;
+}
+
 .auth-page--header-glass {
   position: absolute;
   top: $auth-page--header-glass__negative_position;

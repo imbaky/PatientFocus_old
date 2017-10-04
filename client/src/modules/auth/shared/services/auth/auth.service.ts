@@ -45,7 +45,7 @@ export class AuthService {
   /**
    * Authenticates user with their credentials.
    * @param credentials {Credentials}
-   * @returns {Observable}
+   * @returns {Observable<R|T>}
    */
   loginUser(credentials: Credentials): Observable<string> {
     return this.http.post('x', credentials)
@@ -61,7 +61,8 @@ export class AuthService {
   }
 
   /**
-   * 
+   * Retrieves information of the current authenticated user.
+   * @returns {Observable<R|T>}
    */
   getCurrentUser(): Observable<User>{
     this.user$ = this.http.get('y')
@@ -72,7 +73,7 @@ export class AuthService {
       })
       .catch((err) => Observable.throw(err));
     
-      return this.user$;
+    return this.user$;
   }
 
   /**

@@ -13,6 +13,9 @@ import { AuthPageComponent } from './components/auth-page/auth-page.component';
 // interceptors
 import { AuthInterceptor } from './interceptors/auth/auth.interceptor';
 
+// local storage
+import { LocalStorageModule, LocalStorageService } from 'angular-2-local-storage';
+
 const ROUTES: Routes = [ ];
 
 @NgModule({
@@ -22,7 +25,11 @@ const ROUTES: Routes = [ ];
   imports: [
     CommonModule,
     RouterModule.forChild(ROUTES),
-    HttpModule
+    HttpModule,
+    LocalStorageModule.withConfig({
+      prefix: 'app',
+      storageType: 'localStorage'
+    })
   ],
   exports: [
     AuthPageComponent
@@ -39,7 +46,8 @@ export class SharedModule {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,
           multi: true,
-        }
+        },
+        LocalStorageService
       ]
     };
   }

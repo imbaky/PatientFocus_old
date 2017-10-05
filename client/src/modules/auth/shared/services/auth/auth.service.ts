@@ -7,6 +7,8 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
 import 'rxjs/observable/throw';
 
+import { LocalStorageService, ILocalStorageServiceConfig } from 'angular-2-local-storage';
+
 import { Store } from '../../../../../app/store';
 
 export type Role = 'patient' | 'doctor';
@@ -39,37 +41,38 @@ export class AuthService {
 
   constructor(
     private http: Http,
-    private store: Store
+    private store: Store,
+    private localStorage: LocalStorageService
   ) { }
 
   /**
-   * Authenticates user with their credentials.
+   * Authenticates user credentials with JWT 
    * @param credentials {Credentials}
    * @returns {Observable<R|T>}
    */
   loginUser(credentials: Credentials): Observable<string> {
-    return this.http.post('x', credentials)
+    return this.http.post('somehow', credentials)
       .map((res) => res.json())
       .do((res) => {
         if (res.token) {
-          // Store the token somewhere (e.g. cookie)
-          // Create Cookie Service?
+          this.localStorage.set("jwt", res.token);
         }
       })
       .catch((err) => Observable.throw(err));
   }
 
   /**
-   * Retrieves information of the current authenticated user.
-   * @returns {Observable<R|T>}
+   * Retrieves current authenticated user
+   * and registers it to the store.
+   * @returns {void}
    */
   fetchCurrentUser(): void {
-    this.user$ = this.http.get('y')
+    this.user$ = this.http.get('something')
       .map((res) => res.json())
-      .pluck('user')
-      .do((user: User) => {
-
-        //this.store.set('user', user);
+      .do((res) => {
+        if(res.user){
+          this.store.set('user', res.user);
+        }
       })
       .catch((err) => Observable.throw(err));
   }

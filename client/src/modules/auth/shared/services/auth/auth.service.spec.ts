@@ -1,9 +1,11 @@
-import { AuthService, RegistrationUser, Credentials } from './auth.service';
+import { AuthService, RegistrationUser, Credentials, User, Role } from './auth.service';
 import { TestBed } from '@angular/core/testing';
 import { Http, ResponseOptions, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+
+import { LocalStorageService, LocalStorageModule } from 'angular-2-local-storage';
 
 import { Store } from '../../../../../app/store';
 
@@ -17,22 +19,35 @@ export class MockHttp {
   post() {
     return createResponse({});
   }
+
+  get(){
+    return createResponse({});
+  }
 }
 
 describe('Auth Service', () => {
   let service: AuthService;
   let http: Http;
+  let store: Store;
 
   beforeEach(() => {
     const bed = TestBed.configureTestingModule({
       providers: [
         AuthService,
         { provide: Http, useClass: MockHttp },
-        Store
+        Store,
+        LocalStorageService
+      ],
+      imports: [
+        LocalStorageModule.withConfig({
+          prefix: 'app',
+          storageType: 'localStorage'
+        })
       ]
     });
     http = bed.get(Http);
     service = bed.get(AuthService);
+    store = bed.get(Store);
   });
 
   it('should get a status of true when registering a user', () => {
@@ -54,7 +69,7 @@ describe('Auth Service', () => {
       });
   });
 
-  it('should get a status of true when signing in a user', () => {
+  it('should get a token when signing in a user', () => {
     const successToken = 'p4ti3nt';
 
     spyOn(http, 'post').and.returnValue(createResponse(successToken));
@@ -68,6 +83,24 @@ describe('Auth Service', () => {
       .subscribe((result: any) => {
         expect(result).toBe('p4ti3nt');
       });
-  })
+  });
+
+  it('should get a status of true when fetching current user', () => {
+    const currentUser: User = {
+      first_name: 'Bob',
+      last_name: 'Marley',
+      email: '',
+      roles: ['patient']
+    };
+    const success = { user: currentUser };
+
+    spyOn(http, 'get').and.returnValue(createResponse({ ...success }));
+
+    service.fetchCurrentUser();
+    store.select('user')
+      .subscribe((result: any) => {
+        expect(currentUser).toBe(currentUser);
+    });
+  });
 
 });

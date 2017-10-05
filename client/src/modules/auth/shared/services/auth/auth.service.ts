@@ -50,9 +50,8 @@ export class AuthService {
   loginUser(credentials: Credentials): Observable<string> {
     return this.http.post('x', credentials)
       .map((res) => res.json())
-      .pluck("token")
-      .do((token) => {
-        if(token){
+      .do((res) => {
+        if (res.token) {
           // Store the token somewhere (e.g. cookie)
           // Create Cookie Service?
         }
@@ -64,16 +63,15 @@ export class AuthService {
    * Retrieves information of the current authenticated user.
    * @returns {Observable<R|T>}
    */
-  getCurrentUser(): Observable<User>{
+  fetchCurrentUser(): void {
     this.user$ = this.http.get('y')
       .map((res) => res.json())
-      .pluck("user")
+      .pluck('user')
       .do((user: User) => {
-        this.store.set('user', user);
+
+        //this.store.set('user', user);
       })
       .catch((err) => Observable.throw(err));
-    
-    return this.user$;
   }
 
   /**

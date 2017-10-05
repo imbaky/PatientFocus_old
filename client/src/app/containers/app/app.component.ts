@@ -8,14 +8,13 @@ import { AuthService } from '../../../modules/auth/shared/services/auth/auth.ser
   styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent implements OnInit{
-  
+export class AppComponent implements OnInit {
   constructor(
     private authService: AuthService,
   ) { }
 
-  ngOnInit(){
-    const user = this.authService.getCurrentUser;
-    //TODO
+  ngOnInit() {
+    const user = this.authService.fetchCurrentUser;
+    // TODO
   }
 }

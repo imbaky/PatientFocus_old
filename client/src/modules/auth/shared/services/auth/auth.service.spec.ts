@@ -29,6 +29,7 @@ describe('Auth Service', () => {
   let service: AuthService;
   let http: Http;
   let store: Store;
+  let localStorage: LocalStorageService;
 
   beforeEach(() => {
     const bed = TestBed.configureTestingModule({
@@ -48,12 +49,12 @@ describe('Auth Service', () => {
     http = bed.get(Http);
     service = bed.get(AuthService);
     store = bed.get(Store);
+    localStorage = bed.get(LocalStorageService);
   });
 
   it('should get a status of true when registering a user', () => {
     const successMessage = { status: true };
     spyOn(http, 'post').and.returnValue(createResponse({ ...successMessage }));
-
     const user: RegistrationUser = {
       role: 'patient',
       first_name: 'Bob',
@@ -70,9 +71,10 @@ describe('Auth Service', () => {
   });
 
   it('should get a token when signing in a user', () => {
-    const successToken = 'p4ti3nt';
+    const successToken = { token: 'p4ti3nt' };
 
     spyOn(http, 'post').and.returnValue(createResponse(successToken));
+    spyOn(localStorage, 'set');
 
     const credentials: Credentials = {
       email: 'ericsnowden@nsa.com',
@@ -81,11 +83,12 @@ describe('Auth Service', () => {
 
     service.loginUser(credentials)
       .subscribe((result: any) => {
-        expect(result).toBe('p4ti3nt');
+        expect(result).toEqual(successToken);
+        expect(localStorage.set).toHaveBeenCalled();
       });
   });
 
-  it('should get a status of true when fetching current user', () => {
+  it('should save user\'s information when fetching current user', () => {
     const currentUser: User = {
       first_name: 'Bob',
       last_name: 'Marley',
@@ -94,13 +97,14 @@ describe('Auth Service', () => {
     };
     const success = { user: currentUser };
 
-    spyOn(http, 'get').and.returnValue(createResponse({ ...success }));
+    spyOn(http, 'get').and.returnValue(createResponse(success));
+    spyOn(store, 'set');
 
-    service.fetchCurrentUser();
-    store.select('user')
+    service.fetchCurrentUser()
       .subscribe((result: any) => {
-        expect(currentUser).toBe(currentUser);
-    });
+        expect(result).toEqual(success);
+        expect(store.set).toHaveBeenCalled();
+      });
   });
 
 });

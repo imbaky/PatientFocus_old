@@ -55,7 +55,7 @@ export class AuthService {
       .map((res) => res.json())
       .do((res) => {
         if (res.token) {
-          this.localStorage.set("jwt", res.token);
+          this.localStorage.set('jwt', res.token);
         }
       })
       .catch((err) => Observable.throw(err));
@@ -66,8 +66,8 @@ export class AuthService {
    * and registers it to the store.
    * @returns {void}
    */
-  fetchCurrentUser(): void {
-    this.user$ = this.http.get('something')
+  fetchCurrentUser(): Observable<Response> {
+    return this.http.get('something')
       .map((res) => res.json())
       .do((res) => {
         if(res.user){

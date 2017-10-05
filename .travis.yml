@@ -40,7 +40,7 @@ matrix:
 
       before_install:
         - cd $SERVER_DIR
-        - go get -t
+        - go get -d
 
       script:
         - go test -v

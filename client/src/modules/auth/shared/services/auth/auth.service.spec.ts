@@ -1,6 +1,6 @@
-import { AuthService, RegistrationUser, Credentials, User, Role } from './auth.service';
+import { AuthService, RegistrationUser, UserCredentials, User, Role } from './auth.service';
 import { TestBed } from '@angular/core/testing';
-import { Http, ResponseOptions, Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -11,7 +11,7 @@ import { Store } from '../../../../../app/store';
 
 export function createResponse(body) {
   return Observable.of(
-    new Response(new ResponseOptions({ body: JSON.stringify(body) }))
+    new HttpResponse({ body: JSON.stringify(body) })
   );
 }
 
@@ -20,14 +20,26 @@ export class MockHttp {
     return createResponse({});
   }
 
-  get(){
+  get() {
     return createResponse({});
   }
 }
 
+const credentials: UserCredentials = {
+  email: 'ericsnowden@nsa.com',
+  password: 'allyourbasearebelongtous'
+};
+
+const currentUser: User = {
+  first_name: 'Eric',
+  last_name: 'Snowden',
+  email: '',
+  roles: ['patient']
+};
+
 describe('Auth Service', () => {
   let service: AuthService;
-  let http: Http;
+  let http: HttpClient;
   let store: Store;
   let localStorage: LocalStorageService;
 
@@ -35,7 +47,7 @@ describe('Auth Service', () => {
     const bed = TestBed.configureTestingModule({
       providers: [
         AuthService,
-        { provide: Http, useClass: MockHttp },
+        { provide: HttpClient, useClass: MockHttp },
         Store,
         LocalStorageService
       ],
@@ -46,15 +58,14 @@ describe('Auth Service', () => {
         })
       ]
     });
-    http = bed.get(Http);
+    http = bed.get(HttpClient);
     service = bed.get(AuthService);
     store = bed.get(Store);
     localStorage = bed.get(LocalStorageService);
   });
 
   it('should get a status of true when registering a user', () => {
-    const successMessage = { status: true };
-    spyOn(http, 'post').and.returnValue(createResponse({ ...successMessage }));
+    // Setup
     const user: RegistrationUser = {
       role: 'patient',
       first_name: 'Bob',
@@ -63,48 +74,43 @@ describe('Auth Service', () => {
       password: '',
       accepted_terms: true
     };
-
+    // Act & Assert
     service.registerUser(user)
       .subscribe((result: any) => {
-        expect(result.status).toBe(true);
+        expect(result.status).toBe(200);
       });
   });
 
   it('should get a token when signing in a user', () => {
+    // Setup
     const successToken = { token: 'p4ti3nt' };
-
     spyOn(http, 'post').and.returnValue(createResponse(successToken));
     spyOn(localStorage, 'set');
-
-    const credentials: Credentials = {
-      email: 'ericsnowden@nsa.com',
-      password: 'allyourbasearebelongtous'
-    };
-
-    service.loginUser(credentials)
-      .subscribe((result: any) => {
-        expect(result).toEqual(successToken);
-        expect(localStorage.set).toHaveBeenCalled();
-      });
+    // Act
+    let responseData;
+    service.loginUser(credentials).subscribe((res) => {
+      responseData = JSON.parse(res['body']);
+    });
+    // Assert
+    expect(responseData).toEqual(successToken);
+    expect(localStorage.set).toHaveBeenCalled();
   });
 
   it('should save user\'s information when fetching current user', () => {
-    const currentUser: User = {
-      first_name: 'Bob',
-      last_name: 'Marley',
-      email: '',
-      roles: ['patient']
-    };
-    const success = { user: currentUser };
-
-    spyOn(http, 'get').and.returnValue(createResponse(success));
+    // Setup
+    const successCurrentUser = { user: currentUser };
+    const successToken = { token: 'test' };
+    spyOn(http, 'get').and.returnValue(createResponse(successCurrentUser));
+    spyOn(http, 'post').and.returnValue(createResponse(successToken));
     spyOn(store, 'set');
-
-    service.fetchCurrentUser()
-      .subscribe((result: any) => {
-        expect(result).toEqual(success);
-        expect(store.set).toHaveBeenCalled();
-      });
+    // Act
+    let responseData;
+    service.loginUser(credentials).subscribe((res) => {
+      responseData = JSON.parse(res['body']);
+    });
+    service.fetchCurrentUser();
+    // Assert
+    expect(store.set).toHaveBeenCalledWith('user', currentUser);
   });
 
 });

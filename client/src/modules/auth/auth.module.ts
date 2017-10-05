@@ -20,7 +20,6 @@ const ROUTES: Routes = [
     SharedModule.forRoot()
   ]
 })
-
 export class AuthModule {
 
 }

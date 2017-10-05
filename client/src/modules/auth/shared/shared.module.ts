@@ -1,8 +1,7 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpModule } from '@angular/http';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // services
 import { AuthService } from './services/auth/auth.service';
@@ -25,7 +24,7 @@ const ROUTES: Routes = [ ];
   imports: [
     CommonModule,
     RouterModule.forChild(ROUTES),
-    HttpModule,
+    HttpClientModule,
     LocalStorageModule.withConfig({
       prefix: 'app',
       storageType: 'localStorage'
@@ -35,7 +34,6 @@ const ROUTES: Routes = [ ];
     AuthPageComponent
   ]
 })
-
 export class SharedModule {
   static forRoot (): ModuleWithProviders {
     return {
@@ -46,8 +44,7 @@ export class SharedModule {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,
           multi: true,
-        },
-        LocalStorageService
+        }
       ]
     };
   }

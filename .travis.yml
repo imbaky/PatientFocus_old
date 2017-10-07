@@ -44,3 +44,4 @@ matrix:
 
       script:
         - go test -v
+

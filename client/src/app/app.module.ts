@@ -4,7 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 // components
 import { AppComponent } from './containers/app/app.component';
+
+// modules
 import { AuthModule } from '../modules/auth/auth.module';
+import { PatientModule } from '../modules/patient/patient.module';
 
 // services
 import { Store } from './store';
@@ -19,6 +22,7 @@ const ROUTES: Routes = [ ];
   imports: [
     BrowserModule,
     AuthModule,
+    PatientModule,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [

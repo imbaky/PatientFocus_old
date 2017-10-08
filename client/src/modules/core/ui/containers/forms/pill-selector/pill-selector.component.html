@@ -1,0 +1,6 @@
+<div class="btn-group pill-selector--group">
+  <button class="btn btn-outline-primary pill-selector--btn"
+    *ngFor="let option of options"
+    (click)="selected(option.value)"
+    [ngClass]="{ 'active': value === option.value }">{{ option.label }}</button>
+</div>

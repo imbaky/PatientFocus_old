@@ -1,0 +1,33 @@
+<div class="login">
+  <div class="login--header">
+    <h3 class="login--header-title">Login</h3>
+    <p class="login--header-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a porta diam. Nullam pretium sapien.</p>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="onLogin()">
+    <px-form-group
+      label="Email">
+      <px-short-string
+        type="email"
+        formControlName="email">
+      </px-short-string>
+    </px-form-group>
+    <px-form-group
+      label="Password" [link]="forgotPassword">
+      <px-short-string
+        type="password"
+        formControlName="password">
+      </px-short-string>
+    </px-form-group>
+    <px-form-group>
+      <px-checkbox formControlName="remain_signed_in">
+        Keep me signed in
+      </px-checkbox>
+    </px-form-group>
+    <button class="btn btn-primary btn-block">
+      LOG IN
+    </button>
+  </form>
+  <div class="login--redirect">
+    <a href="">Don't have an account? Register now</a>
+  </div>
+</div>

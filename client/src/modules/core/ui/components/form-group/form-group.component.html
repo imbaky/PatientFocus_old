@@ -1,6 +1,8 @@
 <div class="form-group">
   <label class="form-control-label" *ngIf="label">
-    {{ label }} <span class="form-group--help" *ngIf="help">- {{ help }}</span>
+    {{ label }}
+    <span class="form-group--help" *ngIf="link"><a href="/">- {{ link.message }} </a></span>
+    <span class="form-group--help" *ngIf="help">- {{ help }}</span>
   </label>
   <ng-content select="[formControlName]"></ng-content>
 </div>

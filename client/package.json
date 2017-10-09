@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "hmr": "ng serve --hmr --env=hmr",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "test:once": "ng test --watch=false",
     "lint": "ng lint",

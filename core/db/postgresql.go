@@ -1,8 +1,11 @@
 package db
 
 import (
-    "database/sql"
+    "os"
+    "errors"
+    "fmt"
     "log"
+    "database/sql"
 
     _ "github.com/lib/pq"
 )
@@ -12,7 +15,16 @@ type Config struct {
 }
 
 func InitDb() (*pgDb, error) {
-    db, err := sql.Open("postgres", "postgres://pf:patientfocus@db/user?sslmode=disable")
+    // grab username and password from environment
+    username := os.Getenv("POSTGRES_USER")
+    password := os.Getenv("POSTGRES_PASSWORD")
+    if username == "" || password == "" {
+        err := errors.New("Missing username or password")
+        log.Fatal(err)
+        return nil, err
+    }
+    connection_info := fmt.Sprintf("postgres://%s:%s@db/user?sslmode=disable", username, password)
+    db, err := sql.Open("postgres", connection_info)
     if err != nil {
         log.Fatal(err)
         return nil, err

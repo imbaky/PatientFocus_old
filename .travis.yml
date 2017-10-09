@@ -1,3 +1,7 @@
+env:
+  global:
+    - CLIENT_DIR=client
+    - SERVER_DIR=core
 matrix:
   include:
     - language: node_js
@@ -5,11 +9,7 @@ matrix:
       dist: trusty
 
       node_js:
-        - 6
         - 7
-
-      env:
-        - TEST_CLIENT_DIR=client
 
       addons:
         apt:
@@ -20,13 +20,10 @@ matrix:
 
       before_install:
         - export CHROME_BIN=chromium-browser
-        - export DISPLAY=:99.ta
+        - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
 
-      script: cd $TEST_CLIENT_DIR && npm install && npm run ci
-  
-
-
+      script: cd $CLIENT_DIR && npm install && npm run ci
 
     - language: go
 
@@ -41,8 +38,9 @@ matrix:
           - $GOPATH/src
           - $GOPATH/pkg
 
-      install:
-        - go get -t ./...
+      before_install:
+        - cd $SERVER_DIR
+        - go get -d
 
       script:
-        - go test -v ./..
+        - go test -v

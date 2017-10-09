@@ -1,56 +1,130 @@
 import { TestBed } from '@angular/core/testing';
-import { Http, ResponseOptions, Response } from '@angular/http';
+import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
+import { Http } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
 
-// service
-import { DocumentService, Document } from './document.service';
-import { HttpClient } from '@angular/common/http';
+import { DocumentService, UploadFile, UploadStatus } from './document.service';
 
-export function createResponse(body) {
-  return Observable.of(body);
-}
-
-export class MockHttpClient {
-  post() {
-    return createResponse({});
+class MockHttpClient {
+  request() {
+    return jasmine.createSpy('request');
   }
 }
 
-const successMessage = { status: true };
-
 describe('Document Service', () => {
+
   let service: DocumentService;
   let http: Http;
 
   beforeEach(() => {
     const bed = TestBed.configureTestingModule({
       providers: [
-        DocumentService,
-        { provide: HttpClient, useClass: MockHttpClient }
+        { provide:  HttpClient, useClass: MockHttpClient },
+        DocumentService
       ]
     });
-    http = bed.get(HttpClient);
+
     service = bed.get(DocumentService);
+    http = bed.get(HttpClient);
   });
 
-  it('GIVEN an array of files it should call the http client post method', () => {
+  it('GIVEN files THEN it should call uploadFile', () => {
+    spyOn(service, 'uploadFile')
+      .and.callThrough()
+      .and.callFake(() => null);
+
     const files = [
-      new File(['awesome'], 'anhkhoi.jpg'),
-      new File(['fantastic'], 'laurendy.jpg')
+      new File(['cheese'], 'file1.txt'),
+      new File(['crust'], 'file2.txt'),
+      new File(['tomato'], 'file3.txt'),
     ];
-    const response: Array<Document> = [
-      { name: 'anhkhoi.jpg', url: 'anhkhoi.jpg', created_at: 343546 },
-      { name: 'laurendy.jpg', url: 'laurendy.jpg', created_at: 343547 }
-    ];
+    service.uploadFiles(files);
 
-    spyOn(http, 'post').and.returnValue(createResponse([...response]));
-
-    service.uploadDocuments(files)
-      .subscribe((documents: Array<Document>) => {
-        expect(documents.length).toBe(2);
-      });
+    expect(service.uploadFile).toHaveBeenCalledTimes(3);
   });
+
+  it('GIVEN a file THEN queue a request and trigger an upload', () => {
+    spyOn(service, 'triggerUpload')
+      .and.callThrough();
+
+    spyOn(http, 'request').and.callFake(function () {
+      return new Observable((observe) => {
+
+        observe.next({
+          type: HttpEventType.UploadProgress,
+          loaded: 10,
+          total: 100
+        });
+
+        observe.next(new HttpResponse<string>({
+          body: 'kfc',
+          status: 200
+        }));
+
+        expect(service.triggerUpload).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    const file = new File(['cheese'], 'file1.txt');
+    service.uploadFile(file);
+  });
+
+  it('GIVEN a file THEN queue a request and trigger an upload', () => {
+    spyOn(service, 'triggerUpload')
+      .and.callThrough();
+
+    spyOn(http, 'request').and.callFake(function () {
+      return new Observable((observe) => {
+
+        observe.next({
+          type: HttpEventType.UploadProgress,
+          loaded: 10,
+          total: 100
+        });
+
+        observe.next(new HttpResponse<string>({
+          body: 'kfc',
+          status: 500
+        }));
+
+        expect<number>(service.uploadState.completed.length).toBe(1);
+        expect(service.triggerUpload).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    const file = new File(['cheese'], 'file1.txt');
+    service.uploadFile(file);
+  });
+
+  it('GIVEN a queued UploadFile THEN it should upload the file and trigger the next upload', () => {
+    spyOn(service, 'triggerUpload')
+      .and.callThrough();
+
+    const uploadFile: UploadFile = {
+      file: new File(['cheese'], 'file1.txt'),
+      status: UploadStatus.QUEUING,
+      request: new Observable((observe) => {
+
+        expect(service.uploadState.queued.length).toBe(0);
+        observe.next({ progress: 10, current: 10, total: 100 });
+
+        expect(service.uploadState.current.item.status).toBe(UploadStatus.UPLOADING);
+        observe.next(UploadStatus.DONE);
+
+        expect(service.uploadState.completed.length).toBe(1);
+        expect(service.uploadState.completed[0].status).toBe(UploadStatus.DONE);
+
+        expect(service.triggerUpload).toHaveBeenCalledTimes(2);
+        observe.complete();
+      })
+    };
+
+    service.uploadState.queued.push(uploadFile);
+    expect(service.uploadState.queued.length).toBe(1);
+
+    service.triggerUpload();
+  });
+
 
 });

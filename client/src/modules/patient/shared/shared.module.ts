@@ -13,11 +13,11 @@ import { DocumentService } from './services/document/document.service';
 })
 export class SharedModule {
 
-  static forRoot() :ModuleWithProviders {
+  static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
       providers: [ DocumentService ]
-    }
+    };
   }
 
 }

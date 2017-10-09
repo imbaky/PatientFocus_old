@@ -1,0 +1,19 @@
+<div>
+  <h3>Upload a file</h3>
+  <input type="file" multiple (change)="upload($event)">
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" [style.width]="progress.current.state?.current + '%'"></div>
+  </div>
+  <ol>
+    <li *ngFor="let completed of progress.completed">
+      completed - {{ completed.file.name }}
+    </li>
+    <li *ngIf="progress.current.item">
+      <span>{{ progress.current.state?.progress }}</span> - {{ progress.current.item.file.name}}
+    </li>
+    <li *ngFor="let queuing of progress.queued">
+      queued - {{ queuing.file.name }}
+    </li>
+  </ol>
+</div>
+

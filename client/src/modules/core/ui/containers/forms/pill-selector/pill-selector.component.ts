@@ -52,7 +52,9 @@ export class PillSelectorComponent implements ControlValueAccessor {
 
   selected(value) {
     this.value = value;
+
     this.onModelChanges(value);
+    this.onTouch()
   }
 
 }

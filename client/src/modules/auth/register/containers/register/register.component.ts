@@ -29,6 +29,8 @@ export class RegisterComponent {
     'accepted_terms': [false, FormsValidators.isTrue() ]
   });
 
+  errors: any;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,

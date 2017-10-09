@@ -9,6 +9,7 @@ import { FormGroupComponent } from '../../../../core/ui/components/form-group/fo
 import { ShortStringComponent } from '../../../../core/ui/containers/forms/short-string/short-string.component';
 import { PillSelectorComponent } from '../../../../core/ui/containers/forms/pill-selector/pill-selector.component';
 import { CheckboxComponent } from '../../../../core/ui/containers/forms/checkbox/checkbox.component';
+import { ValidationMessageComponent } from "../../../../core/ui/components/validation-message/validation-message.component";
 
 // services
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -46,7 +47,8 @@ describe('Register Component', () => {
         RegisterComponent,
         ShortStringComponent,
         PillSelectorComponent,
-        CheckboxComponent
+        CheckboxComponent,
+        ValidationMessageComponent
       ],
       providers: [
         { provide: AuthService, useClass: MockAuthService },

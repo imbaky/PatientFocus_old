@@ -1,6 +1,7 @@
 <input #input
-   class="form-control"
-   [attr.type]="type"
-   [attr.placeholder]="placeholder"
-   (keyup)="onModelChanges(input.value)"
-   (keydown)="onModelChanges(input.value)">
+  class="form-control"
+  [attr.type]="type"
+  [attr.placeholder]="placeholder"
+  (keyup)="onModelChanges(input.value)"
+  (keydown)="onModelChanges(input.value)"
+  (blur)="onTouch()">

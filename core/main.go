@@ -16,6 +16,7 @@ func main() {
 	fmt.Println("PatientFocus router is running")
 	router := mux.NewRouter()
 	router.HandleFunc("/User", handlers.RegisterUser).Methods("POST")
+	router.HandleFunc("/health", handlers.Health).Methods("GET")
 	http.Handle("/", router)
 
 	log.Fatal(http.ListenAndServe(":9000", nil))

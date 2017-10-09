@@ -27,7 +27,8 @@ export class MockHttp {
 
 const credentials: UserCredentials = {
   email: 'ericsnowden@nsa.com',
-  password: 'allyourbasearebelongtous'
+  password: 'allyourbasearebelongtous',
+  remain_signed_in: true,
 };
 
 const currentUser: User = {

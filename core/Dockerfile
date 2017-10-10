@@ -6,6 +6,9 @@ COPY . .
 RUN go-wrapper download   # "go get -d -v ./..."
 RUN go-wrapper install    # "go install -v ./..."
 
+ENV POSTGRES_USER pf
+ENV POSTGRES_PASSWORD patientfocus
+
 EXPOSE 9000
 
 CMD ["core"]

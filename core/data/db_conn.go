@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
+	"io/ioutil"
 
 	_ "github.com/lib/pq"
 )
@@ -14,7 +14,7 @@ var (
 	username       = os.Getenv("POSTGRES_USER")
 	password       = os.Getenv("POSTGRES_PASSWORD")
 	driverName     = "postgres"
-	dataSourceName = fmt.Sprintf("postgres://%s:%s@data/user?sslmode=disable", username, password)
+	dataSourceName = fmt.Sprintf("postgres://%s:%s@db/patientfocus?sslmode=disable", username, password)
 )
 
 // InitDb initializes the database if it not yet initialized
@@ -39,12 +39,16 @@ func InitDb() error {
 
 //createTablesInNotExist creates the tables in the database running the sql script INIT_TABLES.sql
 func createTablesIfNotExist(db *sql.DB) error {
-	path, err := exec.LookPath("pg_ctl.exe")
+	dat, err := ioutil.ReadFile("data/INIT_TABLES.sql")
 	if err != nil {
 		return err
 	}
-	cmd := exec.Command(path, "-d", "data/user", "-a", "-f", "INIT_TABLES.sql")
-	return cmd.Run()
+	if rows, err := db.Query(string(dat)); err != nil {
+		return err
+	} else {
+		rows.Close()
+	}
+	return nil
 }
 
 //GetConnection returns a connection to the database

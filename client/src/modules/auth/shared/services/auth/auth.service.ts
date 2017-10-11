@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/pluck';
 import 'rxjs/observable/throw';
 
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -57,8 +57,8 @@ export class AuthService {
   loginUser(credentials: UserCredentials): Observable<string> {
     return this.http.post('login', credentials)
       .do((res: any) => {
-        if (res.body) {
-          const token = JSON.parse(res.body).token;
+        if (res.token) {
+          const token = res.token;
           this.localStorage.set('token', token);
         }
       })
@@ -72,13 +72,11 @@ export class AuthService {
    */
   fetchCurrentUser(): void {
     if (this.token) {
-      this.http.get('fetchCurrentUser')
-      .subscribe((res: any) => {
-        if (res.body) {
-          const user = JSON.parse(res.body).user;
-          this.store.set('user', user);
-        }
-      });
+        this.http.get('fetchCurrentUser')
+          .pluck('user')
+          .subscribe((user: User) => {
+            this.store.set('user', user);
+          }, (err) => { });
     }
   }
 

@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { FormGroupDirective, AbstractControl } from "@angular/forms";
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroupDirective, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'px-validation-message',

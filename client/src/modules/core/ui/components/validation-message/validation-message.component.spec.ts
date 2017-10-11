@@ -1,7 +1,7 @@
-import { TestBed, ComponentFixture } from "@angular/core/testing";
-import { ValidationMessageComponent } from "./validation-message.component";
-import { DebugElement } from "@angular/core";
-import { FormGroupDirective, FormControl, FormGroup, Validators } from "@angular/forms";
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { ValidationMessageComponent } from './validation-message.component';
+import { DebugElement } from '@angular/core';
+import { FormGroupDirective, FormControl, FormGroup, Validators } from '@angular/forms';
 
 class MockFormGroupDirective {
   get form () {

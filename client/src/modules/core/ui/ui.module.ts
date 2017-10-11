@@ -9,7 +9,7 @@ import { CheckboxComponent } from './containers/forms/checkbox/checkbox.componen
 
 // components
 import { FormGroupComponent } from './components/form-group/form-group.component';
-import { ValidationMessageComponent } from "./components/validation-message/validation-message.component";
+import { ValidationMessageComponent } from './components/validation-message/validation-message.component';
 
 @NgModule({
   declarations: [

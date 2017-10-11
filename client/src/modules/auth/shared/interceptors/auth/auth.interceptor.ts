@@ -9,31 +9,29 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  private authService: AuthService;
-
   constructor(
     private injector: Injector,
     private router: Router
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Use special injector to avoid cyclic dependency issue with HttpInterceptor
-    this.authService = this.injector.get(AuthService);
 
-    req = req.clone({
-      setHeaders: {
-        Authorization: `${this.authService.token}`
+    // Use special injector to avoid cyclic dependency issue with HttpInterceptor
+    const token = this.injector.get(AuthService).token;
+
+    if (token) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
+
+    return next.handle(req).do((event) => { }, (err) => {
+      if (err instanceof HttpErrorResponse && err.status === 401) {
+        this.router.navigate(['/login']);
       }
     });
 
-    return next.handle(req)
-      .do(
-        event => { },
-        err => {
-          if (err instanceof HttpErrorResponse && err.status === 401) {
-            this.router.navigateByUrl('/login');
-          }
-        }
-      );
   }
 }

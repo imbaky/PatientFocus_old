@@ -3,4 +3,5 @@
     {{ label }} <span class="form-group--help" *ngIf="help">- {{ help }}</span>
   </label>
   <ng-content select="[formControlName]"></ng-content>
+  <ng-content select="px-validation-message"></ng-content>
 </div>

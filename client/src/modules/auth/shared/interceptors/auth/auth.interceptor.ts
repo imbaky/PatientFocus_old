@@ -9,8 +9,6 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  private authService: AuthService;
-
   constructor(
     private injector: Injector,
     private router: Router

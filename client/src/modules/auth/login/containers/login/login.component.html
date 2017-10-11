@@ -10,6 +10,12 @@
         type="email"
         formControlName="email">
       </px-short-string>
+      <px-validation-message
+      controlName="email"
+      [responseErrors]="errors"
+      onError="required">
+      An email address is required.
+      </px-validation-message>
     </px-form-group>
     <px-form-group
       label="Password" [link]="forgotPassword">
@@ -17,6 +23,12 @@
         type="password"
         formControlName="password">
       </px-short-string>
+      <px-validation-message
+        controlName="password"
+        [responseErrors]="errors"
+        onError="required">
+        A password is required.
+      </px-validation-message>
     </px-form-group>
     <px-form-group>
       <px-checkbox formControlName="remain_signed_in">
@@ -28,6 +40,6 @@
     </button>
   </form>
   <div class="login--redirect">
-    <a href="">Don't have an account? Register now</a>
+    <a href="/auth/register">Don't have an account? Register now</a>
   </div>
 </div>

@@ -8,6 +8,7 @@ import { LoginComponent } from './login.component';
 import { FormGroupComponent } from '../../../../core/ui/components/form-group/form-group.component';
 import { ShortStringComponent } from '../../../../core/ui/containers/forms/short-string/short-string.component';
 import { CheckboxComponent } from '../../../../core/ui/containers/forms/checkbox/checkbox.component';
+import { ValidationMessageComponent } from '../../../../core/ui/components/validation-message/validation-message.component';
 
 // services
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -44,7 +45,8 @@ describe('Login Component', () => {
         FormGroupComponent,
         LoginComponent,
         ShortStringComponent,
-        CheckboxComponent
+        CheckboxComponent,
+        ValidationMessageComponent
       ],
       providers: [
         { provide: AuthService, useClass: MockAuthService },

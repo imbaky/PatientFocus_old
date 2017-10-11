@@ -8,12 +8,20 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/handler"
 )
 
 //Initialize router and the endpoint as well as the database schema
 func main() {
 	fmt.Println("PatientFocus router is running")
+
+	// Setup database
+	err := data.InitDb()
+	if err != nil {
+		log.Printf("Error initializing database: %v\n", err)
+		return
+	}
 	router := mux.NewRouter()
 	router.HandleFunc("/User", handlers.RegisterUser).Methods("POST")
 	http.Handle("/", router)

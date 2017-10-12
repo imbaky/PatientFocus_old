@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/of';
 
 /**
  * A wrapper to contain the file to be uploaded, the request promise and status.
@@ -46,6 +48,10 @@ export enum UploadStatus {
    */
   QUEUING,
   /**
+   * is pending to upload
+   */
+  PENDING,
+  /**
    * is uploading
    */
   UPLOADING,
@@ -85,32 +91,45 @@ export class DocumentService {
    * @param document - the document file
    */
   uploadFile(document: File) {
-    const setup = new HttpRequest('POST', '/upload/file', document,
-      { reportProgress: true });
 
-    const request$ = new Observable<UploadProgress | UploadStatus>((observe) => {
-      this.http.request(setup).subscribe((event: any) => {
+    const form = (new FormData()).append('file', document);
 
-        if (event.type === HttpEventType.UploadProgress) {
+    const setup = new HttpRequest('POST', '/upload/file', form, {
+      reportProgress: true
+    });
 
-          observe.next({
+    const request$ = this.http.request(setup)
+      // Filter through the response and return only simple types such as
+      // the upload status or an upload progress object
+      .map((event: any) => {
+
+        // If the event is of upload progress then return the progress
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          return {
             progress: Math.round(100 * (event.loaded / event.total)),
             current: event.loaded,
             total: event.total
-          });
-
-        } else if (event instanceof HttpResponse) {
-
-          if (event.status === 200) {
-            observe.next(UploadStatus.DONE);
-          } else {
-            observe.next(UploadStatus.ERROR);
-          }
-          observe.complete();
+          };
         }
-      });
-    });
 
+        // If and only if the upload is complete with a 200 code then respond
+        // with am upload status code done.
+        if (event instanceof HttpResponse && event.status === 200) {
+          return UploadStatus.DONE;
+        }
+
+        // Catch any other type of responses
+        if (event instanceof HttpResponse) {
+          return UploadStatus.ERROR;
+        }
+
+        // If there are other types of status codes then return ERROR
+        return UploadStatus.PENDING;
+      })
+      // Catch any other types of the exceptions and return them into the good stream
+      .catch((err) => Observable.of(UploadStatus.ERROR));
+
+    // Push for queue
     this.uploadState.queued
       .push({ request: request$, file: document, status: UploadStatus.QUEUING });
 
@@ -121,30 +140,69 @@ export class DocumentService {
    * Trigger the queue to upload files.
    */
   triggerUpload() {
-    if (this.uploadState.queued.length === 0 || this.uploadState.current.item !== null) {
+    const current = this.uploadState.current;
+
+    // if there are no queued upload files or there is a current item being processed, get out.
+    if (this.uploadState.queued.length === 0 || current.item !== null) {
       return;
     }
 
-    this.uploadState.current.item = this.uploadState.queued.shift();
-    this.uploadState.current.item.request.subscribe((progress) => {
+    // Shift the first item in the array to be processed
+    current.item = this.uploadState.queued.shift();
 
+    // Subscribe to the request and try to upload
+    current.item.request.subscribe((progress) => {
+
+      // There is a possibility that the subscription may stream many times and in case the progress
+      // is completed and this code is executed again we can avoid the undefined error.
+      if (!current.item) {
+        return;
+      }
+
+      // Depending on future decisions, should we always continue to upload files
+      // if files fail to upload?
       if (progress === UploadStatus.DONE || progress === UploadStatus.ERROR) {
 
-        this.uploadState.current.item.status = progress;
-        this.uploadState.completed.push(this.uploadState.current.item);
+        current.item.status = progress;
+        this.uploadState.completed.push(current.item);
 
-        this.uploadState.current.item = null;
-        this.uploadState.current.state = null;
+        // Reset the current state
+        current.item = null;
+        current.state = null;
 
+        // Continue upload for the items in the queue
         this.triggerUpload();
 
-      } else {
+      } else if (typeof progress === 'object') {
 
-        this.uploadState.current.item.status = UploadStatus.UPLOADING;
-        this.uploadState.current.state = progress;
-
+        // Continue upload
+        current.item.status = UploadStatus.UPLOADING;
+        current.state = progress;
       }
     });
+  }
+
+  /**
+   * A failed upload can be retried.
+   * @param file
+   */
+  retryUploadFile(file: UploadFile) {
+    // if the upload is not of state ERROR, do not process the request
+    if (file.status !== UploadStatus.ERROR) {
+      return;
+    }
+
+    const completed = this.uploadState.completed;
+
+    for (let i = completed.length; i--; ) {
+      // Find the node that equals to the file variable and put it back into the queue
+      if (completed[i] === file) {
+        this.uploadState.queued.unshift(completed.splice(i, 1)[0]);
+        break;
+      }
+    }
+
+    this.triggerUpload();
   }
 
 }

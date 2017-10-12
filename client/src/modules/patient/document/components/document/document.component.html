@@ -1,12 +1,13 @@
 <div>
   <h3>Upload a file</h3>
-  <input type="file" multiple (change)="upload($event)">
+  <input type="file" multiple (change)="onUpload($event)">
   <div class="progress">
     <div class="progress-bar" role="progressbar" [style.width]="progress.current.state?.current + '%'"></div>
   </div>
   <ol>
     <li *ngFor="let completed of progress.completed">
-      completed - {{ completed.file.name }}
+      completed - {{ completed.file.name }} {{ (completed.status === UploadStatus.ERROR)? 'FAILED': 'COMPLETE' }}
+      <button (click)="onRetryUpload(completed)">Retry</button>
     </li>
     <li *ngIf="progress.current.item">
       <span>{{ progress.current.state?.progress }}</span> - {{ progress.current.item.file.name}}

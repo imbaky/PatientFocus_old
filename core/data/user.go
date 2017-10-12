@@ -5,6 +5,29 @@ import(
 	"github.com/imbaky/PatientFocus/core/domain/model"
 )
 
+// Get a user from the database and return a model
+func GetUser(userid string) (user model.User) {
+
+	db := GetConnection()
+	if db == nil {
+		return user
+	}
+
+	// should only return one
+	var fname string
+	var lname string
+	err := db.QueryRow(`SELECT fname, lname FROM pfuser WHERE id = $1`, userid).Scan(&fname, &lname)
+	if err != nil {
+		return user
+	}
+
+
+	user.FirstName = fname
+	user.LastName = lname
+
+	return user
+}
+
 //Save registers the user
 func SaveUser(user *model.User) error {
 	db := GetConnection()

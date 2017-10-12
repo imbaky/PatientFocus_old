@@ -1,12 +1,13 @@
 package data
 
-import(
-	"fmt"
-	"encoding/gob"
+import (
 	"bytes"
+	"encoding/gob"
 	"errors"
-	"github.com/syndtr/goleveldb/leveldb"
+	"fmt"
+
 	"github.com/imbaky/PatientFocus/core/domain/model"
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
 //Save registers the user
@@ -20,9 +21,14 @@ func SaveUser(user *model.User) error {
 	enc := gob.NewEncoder(&data)
 	enc.Encode(*user)
 
-	err = db.Put([]byte(user.Email), data.Bytes(),nil)
+	err = db.Put([]byte(user.Email), data.Bytes(), nil)
 	if err != nil {
-		return errors.New(fmt.Sprintf("could not save user: %v",err))
+		return errors.New(fmt.Sprintf("could not save user: %v", err))
 	}
+	return nil
+}
+
+// SavePatient saves the patient basic health info into the database and link its to the user
+func SavePatient(patient *model.Patient) error { // TODO implement the database call
 	return nil
 }

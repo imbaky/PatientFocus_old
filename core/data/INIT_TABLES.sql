@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS patient {
        smoke BOOLEAN NOT NULL,
        problem_list TEXT[],
        meds_list TEXT[],
-       alergy_list TEXT[],
+       allergy_list TEXT[],
        date_created DATE NOT NULL default CURRENT_DATE,
        date_modified clock_timestamp()
 }

@@ -54,10 +54,10 @@ func createTablesIfNotExist(db *sql.DB) error {
 //GetConnection returns a connection to the database
 func GetConnection() *sql.DB {
 	db, err := sql.Open(driverName, dataSourceName)
-	if err == nil {
-		return db
+	if err != nil {
+		return nil
 	}
-	return nil
+	return db
 }
 
 //CloseConnection closes the connection to the database that is passed

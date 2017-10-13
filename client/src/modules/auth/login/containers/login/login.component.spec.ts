@@ -20,6 +20,9 @@ class MockAuthService {
   loginUser(user) {
     return Observable.of({ success: true });
   }
+  fetchCurrentUser() {
+    return Observable.of({ success: true });
+  }
 }
 
 describe('Login Component', () => {
@@ -63,6 +66,7 @@ describe('Login Component', () => {
 
   it('GIVEN valid form values THEN it should login the user AND navigate to the home page.', () => {
     spyOn(service, 'loginUser').and.callThrough();
+    spyOn(service, 'fetchCurrentUser').and.callThrough();
 
     component.form.patchValue({
       email: 'snowden@nsa.com',

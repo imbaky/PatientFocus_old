@@ -1,6 +1,7 @@
 <div class="form-group">
   <label class="form-control-label" *ngIf="label">
-    {{ label }} <span class="form-group--help" *ngIf="help">- {{ help }}</span>
+    {{ label }} <span class="form-group--help" *ngIf="help">- {{ help }} </span>
+    <ng-content select="span.form-group--help"></ng-content>
   </label>
   <ng-content select="[formControlName]"></ng-content>
   <ng-content select="px-validation-message"></ng-content>

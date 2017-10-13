@@ -14,7 +14,8 @@ const okResponse = { status: 200, statusText: 'OK' };
 
 const credentials: UserCredentials = {
   email: 'ericsnowden@nsa.com',
-  password: 'allyourbasearebelongtous'
+  password: 'allyourbasearebelongtous',
+  remain_signed_in: true,
 };
 
 const currentUser: User = {

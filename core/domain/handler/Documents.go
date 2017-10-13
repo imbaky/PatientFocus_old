@@ -14,7 +14,7 @@ import (
 
 func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 
-	var Buf bytes.Buffer
+	var buf bytes.Buffer
 	file, header, err := req.FormFile("file") //the key must be "file" and the value is the actual file.
 	defer file.Close()
 	if err != nil {
@@ -26,19 +26,18 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	}
 	name := strings.Split(header.Filename, ".")
 	fmt.Printf("File name %s\n", name[0])
-	io.Copy(&Buf, file)
+	io.Copy(&buf, file)
 	directory := configuration.DirectoryForUploadedDocs + header.Filename
 	var osFile, osErr = os.Create(directory)
 	defer osFile.Close()
 	if osErr != nil {
 		fmt.Printf("There was a problem writing the file to " + directory + "\n")
-		log.Fatal(err)
 		panic(err)
 		sendBoolResponse(rw,err)
 		return
 	}
-	osFile.Write(Buf.Bytes())
-	Buf.Reset()
+	osFile.Write(buf.Bytes())
+	buf.Reset()
 	sendBoolResponse(rw,err)
 }
 

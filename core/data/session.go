@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -12,8 +13,9 @@ import (
 func GetSession(user *model.User) (string, error) {
 	mySigningKey := []byte("alrkkjfdvouihregtlkjhiuwer")
 	token := jwt.New(jwt.SigningMethodHS256)
+	id := strconv.Itoa(user.ID)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["id"] = user.ID
+	claims["id"] = id
 	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
 	tokenString, err := token.SignedString(mySigningKey)
 	return tokenString, err
@@ -33,8 +35,8 @@ func CheckSession(tokenString string) error {
 	}
 
 	_, ok := token.Claims.(jwt.MapClaims)
-	if !ok || token.Valid {
-		return fmt.Errorf("session token not ok or not valid")
+	if !ok || !token.Valid {
+		return fmt.Errorf("session token not ok or invalid")
 	}
 	return nil
 }

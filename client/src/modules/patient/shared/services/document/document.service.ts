@@ -92,8 +92,8 @@ export class DocumentService {
    */
   uploadFile(document: File) {
 
-    const form = (new FormData()).append('file', document);
-
+    const form = new FormData();
+    form.append('file', document);
     const setup = new HttpRequest('POST', '/upload/file', form, {
       reportProgress: true
     });

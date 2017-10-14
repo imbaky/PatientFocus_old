@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/handler"
+	"github.com/imbaky/PatientFocus/core/configuration"
 )
 
 //Initialize router and the endpoint as well as the database schema
@@ -23,9 +24,9 @@ func main() {
 		return
 	}
 	router := mux.NewRouter()
+	router.HandleFunc("/Document", handlers.ReceiveDocument).Methods("POST");
 	router.HandleFunc("/user/{uid}", handlers.GetUser).Methods("GET")
 	router.HandleFunc("/user", handlers.RegisterUser).Methods("POST")
 	http.Handle("/", router)
-
-	log.Fatal(http.ListenAndServe(":9000", nil))
+	log.Fatal(http.ListenAndServeTLS(":9000", configuration.DirectoryForCertificate ,configuration.DirectoryForKey , nil))
 }

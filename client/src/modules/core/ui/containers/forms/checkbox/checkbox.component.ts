@@ -16,6 +16,9 @@ const SELECTOR_CONTROL_ACCESSOR: ExistingProvider = {
 })
 export class CheckboxComponent implements ControlValueAccessor {
 
+  @Input()
+  hasError: boolean;
+
   @ViewChild('input')
   input: ElementRef;
 

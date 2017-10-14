@@ -3,7 +3,6 @@ package data
 import(
 	"fmt"
 	"github.com/imbaky/PatientFocus/core/domain/model"
-	"github.com/syndtr/goleveldb/leveldb"
 )
 
 // Get a user from the database and return a model

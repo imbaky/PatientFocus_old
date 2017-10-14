@@ -36,7 +36,7 @@ export class ShortStringComponent implements ControlValueAccessor, OnInit {
 
   ngOnInit() {
     this.type = this.type || 'text';
-    this.hasError=this.hasError||false;
+    this.hasError = this.hasError || false;
   }
 
   registerOnChange(fn) {

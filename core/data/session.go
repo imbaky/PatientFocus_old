@@ -13,7 +13,7 @@ import (
 func GetSession(user *model.User) (string, error) {
 	mySigningKey := []byte("alrkkjfdvouihregtlkjhiuwer")
 	token := jwt.New(jwt.SigningMethodHS256)
-	id := strconv.Itoa(user.ID)
+	id := strconv.Itoa(user.Id)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = id
 	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()

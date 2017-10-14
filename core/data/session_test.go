@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/imbaky/PatientFocus/core/domain/model"
@@ -39,7 +38,6 @@ func TestGetSession(t *testing.T) {
 				t.Errorf("GetSession() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			fmt.Printf("got :%s\n", got)
 			checks[i].token = got
 			i++
 		})

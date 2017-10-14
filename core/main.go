@@ -24,6 +24,7 @@ func main() {
 	}
 	router := mux.NewRouter()
 	router.HandleFunc("/User", handlers.RegisterUser).Methods("POST")
+	router.HandleFunc("/patient", handlers.RegisterPatient).Methods("POST")
 	http.Handle("/", router)
 
 	log.Fatal(http.ListenAndServe(":9000", nil))

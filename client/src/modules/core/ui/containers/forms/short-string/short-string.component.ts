@@ -25,6 +25,9 @@ export class ShortStringComponent implements ControlValueAccessor, OnInit {
   @Input()
   type: string;
 
+  @Input()
+  hasError: boolean;
+
   @ViewChild('input')
   input: ElementRef;
 
@@ -33,6 +36,7 @@ export class ShortStringComponent implements ControlValueAccessor, OnInit {
 
   ngOnInit() {
     this.type = this.type || 'text';
+    this.hasError=this.hasError||false;
   }
 
   registerOnChange(fn) {

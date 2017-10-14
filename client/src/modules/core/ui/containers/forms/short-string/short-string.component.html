@@ -2,6 +2,7 @@
   class="form-control"
   [attr.type]="type"
   [attr.placeholder]="placeholder"
+  [class.is-invalid]="hasError"
   (keyup)="onModelChanges(input.value)"
   (keydown)="onModelChanges(input.value)"
   (blur)="onTouch()">

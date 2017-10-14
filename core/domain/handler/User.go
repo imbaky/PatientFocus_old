@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/imbaky/PatientFocus/core/data"
+	"github.com/gorilla/mux"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/domain/security"
 )
@@ -15,6 +16,23 @@ Success or fail json enabled response
 */
 type boolResponse struct {
 	Success bool `json:"success"`
+}
+
+func GetUser(rw http.ResponseWriter, req *http.Request) {
+	var user model.User
+	params := mux.Vars(req)
+	userId := params["uid"]
+
+	user = data.GetUser(userId)
+	if (model.User{}) == user {
+		// send 404
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte("User id not found!"))
+		return
+	}
+
+	json.NewEncoder(rw).Encode(user)
+
 }
 
 func RegisterUser(rw http.ResponseWriter, req *http.Request) {

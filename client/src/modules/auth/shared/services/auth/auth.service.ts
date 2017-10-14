@@ -32,6 +32,7 @@ export interface RegistrationUser {
 export interface UserCredentials {
   email: string;
   password: string;
+  remain_signed_in: boolean;
 }
 
 @Injectable()

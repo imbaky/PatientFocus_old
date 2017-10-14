@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 
-import { DocumentService } from '../../../shared/services/document/document.service';
+import {
+  DocumentService, UploadFile, UploadState,
+  UploadStatus
+} from '../../../shared/services/document/document.service';
 
 @Component({
   'selector': 'document',
@@ -9,15 +12,21 @@ import { DocumentService } from '../../../shared/services/document/document.serv
 })
 export class DocumentComponent {
 
+  UploadStatus = UploadStatus;
+
   constructor(
     private documentService: DocumentService
   ) { }
 
-  get progress() {
+  get progress(): UploadState {
     return this.documentService.uploadState;
   }
 
-  upload($event) {
+  onRetryUpload(file: UploadFile) {
+    this.documentService.retryUploadFile(file);
+  }
+
+  onUpload($event) {
     const files = $event.target.files as FileList;
 
     const upload = [];

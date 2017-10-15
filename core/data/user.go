@@ -51,3 +51,7 @@ func SaveUser(user *model.User) error {
 
 	return err
 }
+
+func CreatePatient(patient *model.Patient) error {
+	return nil
+}

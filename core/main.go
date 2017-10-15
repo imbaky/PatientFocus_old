@@ -24,9 +24,11 @@ func main() {
 		return
 	}
 	router := mux.NewRouter()
+	router.HandleFunc("/patient", handlers.RegisterPatient).Methods("POST")
 	router.HandleFunc("/Document", handlers.ReceiveDocument).Methods("POST");
 	router.HandleFunc("/user/{uid}", handlers.GetUser).Methods("GET")
 	router.HandleFunc("/user", handlers.RegisterUser).Methods("POST")
+
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServeTLS(":9000", configuration.DirectoryForCertificate ,configuration.DirectoryForKey , nil))
 }

@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
+	"net/http"
 
+	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/gorilla/mux"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/domain/security"
-	"github.com/imbaky/PatientFocus/core/data"
 )
 
 /*
@@ -40,12 +40,25 @@ func RegisterUser(rw http.ResponseWriter, req *http.Request) {
 	err := json.NewDecoder(req.Body).Decode(&user)
 	defer req.Body.Close()
 	if err != nil {
-		fmt.Printf("%v",err)
+		fmt.Printf("%v", err)
 		sendBoolResponse(rw, err)
 		return
 	}
 	security.EncryptPassword(&user)
 	err = data.SaveUser(&user)
+	sendBoolResponse(rw, err)
+}
+
+func RegisterPatient(rw http.ResponseWriter, req *http.Request) {
+	var patient model.Patient
+	err := json.NewDecoder(req.Body).Decode(&patient)
+	defer req.Body.Close()
+	if err != nil {
+		fmt.Printf("%v", err)
+		sendBoolResponse(rw, err)
+		return
+	}
+	err = data.CreatePatient(&patient)
 	sendBoolResponse(rw, err)
 }
 
@@ -70,5 +83,3 @@ func sendBoolResponse(rw http.ResponseWriter, err error) {
 	// fmt.Printf("%v\n", response)
 	rw.Write(response)
 }
-
-

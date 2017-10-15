@@ -8,12 +8,14 @@ import (
 	"strings"
 	"io"
 	"os"
+	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
 )
 
 
 func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 
+	var document model.Document
 	var buf bytes.Buffer
 	file, header, err := req.FormFile("file") //the key must be "file" and the value is the actual file.
 	defer file.Close()
@@ -38,6 +40,12 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	}
 	osFile.Write(buf.Bytes())
 	buf.Reset()
+
+	// TODO: fill document model
+	document.Url = name[0]
+	// TODO: store document as a record in database
+	// data.SaveDocument(&document)
+
 	sendBoolResponse(rw,err)
 }
 

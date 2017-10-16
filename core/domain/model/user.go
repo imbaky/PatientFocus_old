@@ -8,4 +8,6 @@ type User struct {
 	LastName  string `json:"last_name"`
 	Role      string `json:"role"`
 	Password  string `json:"password"`
+	Patient   *Patient
+	//Doctoer Doctor
 }

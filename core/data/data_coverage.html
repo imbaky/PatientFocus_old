@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/imbaky/PatientFocus/core/data/db_conn.go (13.6%)</option>
+				
+				<option value="file1">github.com/imbaky/PatientFocus/core/data/session.go (88.9%)</option>
+				
+				<option value="file2">github.com/imbaky/PatientFocus/core/data/user.go (68.2%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package data
+
+import (
+        "database/sql"
+        "errors"
+        "fmt"
+        "os"
+        "io/ioutil"
+
+        _ "github.com/lib/pq"
+)
+
+var (
+        username       = os.Getenv("POSTGRES_USER")
+        password       = os.Getenv("POSTGRES_PASSWORD")
+        driverName     = "postgres"
+        dataSourceName = fmt.Sprintf("postgres://%s:%s@db/patientfocus?sslmode=disable", username, password)
+)
+
+// InitDb initializes the database if it not yet initialized
+func InitDb() error <span class="cov0" title="0">{
+        if username == "" || password == "" </span><span class="cov0" title="0">{
+                err := errors.New("Missing username or password")
+                return err
+        }</span>
+
+        <span class="cov0" title="0">db, err := sql.Open(driverName, dataSourceName)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">if err := db.Ping(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">err = createTablesIfNotExist(db)
+        return err</span>
+}
+
+//createTablesInNotExist creates the tables in the database running the sql script INIT_TABLES.sql
+func createTablesIfNotExist(db *sql.DB) error <span class="cov0" title="0">{
+        dat, err := ioutil.ReadFile("data/INIT_TABLES.sql")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">if rows, err := db.Query(string(dat)); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span><span class="cov0" title="0"> else {
+                rows.Close()
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+//GetConnection returns a connection to the database
+func GetConnection() *sql.DB <span class="cov8" title="1">{
+        db, err := sql.Open(driverName, dataSourceName)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">return db</span>
+}
+
+//CloseConnection closes the connection to the database that is passed
+func CloseConnection(conn *sql.DB) <span class="cov0" title="0">{
+        conn.Close()
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package data
+
+import (
+        "fmt"
+        "strconv"
+        "time"
+
+        jwt "github.com/dgrijalva/jwt-go"
+        "github.com/imbaky/PatientFocus/core/domain/model"
+)
+
+//GetSession creates a session token from the id of the passed user
+func GetSession(user *model.User) (string, error) <span class="cov8" title="1">{
+        mySigningKey := []byte("alrkkjfdvouihregtlkjhiuwer")
+        token := jwt.New(jwt.SigningMethodHS256)
+        id := strconv.Itoa(user.Id)
+        claims := token.Claims.(jwt.MapClaims)
+        claims["id"] = id
+        claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
+        tokenString, err := token.SignedString(mySigningKey)
+        return tokenString, err
+}</span>
+
+// CheckSession validates the session token
+func CheckSession(tokenString string) error <span class="cov8" title="1">{
+        token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) </span><span class="cov8" title="1">{
+                if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+                }</span>
+
+                <span class="cov8" title="1">return []byte("alrkkjfdvouihregtlkjhiuwer"), nil</span>
+        })
+        <span class="cov8" title="1">if err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("could not parse session token %v", err)
+        }</span>
+
+        <span class="cov8" title="1">_, ok := token.Claims.(jwt.MapClaims)
+        if !ok || !token.Valid </span><span class="cov0" title="0">{
+                return fmt.Errorf("session token not ok or invalid")
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package data
+
+import(
+        "fmt"
+        "github.com/imbaky/PatientFocus/core/domain/model"
+)
+
+// Get a user from the database and return a model
+func GetUser(userid string) (user model.User) <span class="cov8" title="1">{
+
+        db := GetConnection()
+        if db == nil </span><span class="cov0" title="0">{
+                return user
+        }</span>
+
+        // should only return one
+        <span class="cov8" title="1">var fname string
+        var lname string
+        err := db.QueryRow(`SELECT fname, lname FROM pfuser WHERE id = $1`, userid).Scan(&amp;fname, &amp;lname)
+        if err != nil </span><span class="cov8" title="1">{
+                return user
+        }</span>
+
+
+        <span class="cov0" title="0">user.FirstName = fname
+        user.LastName = lname
+
+        return user</span>
+}
+
+//Save registers the user
+func SaveUser(user *model.User) error <span class="cov8" title="1">{
+        db := GetConnection()
+        if db == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        // for debug
+        <span class="cov8" title="1">fmt.Println(user)
+
+        var userid int
+        err := db.QueryRow(`INSERT INTO pfuser (fname, lname, password, email)
+                     VALUES ($1, $2, $3, $4) RETURNING id;`, user.FirstName, user.LastName, user.Password, user.Email).Scan(&amp;userid)
+        if err != nil </span><span class="cov8" title="1">{
+                fmt.Println(err)
+                return err
+        }</span>
+
+        // should log userid
+
+
+        <span class="cov0" title="0">return err</span>
+}
+
+func CreatePatient(patient *model.Patient) error <span class="cov0" title="0">{
+        return nil
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

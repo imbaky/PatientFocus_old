@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { PillSelectorOption } from '../../../../core/ui/containers/forms/pill-selector/pill-selector.component';
-import { FormsValidators } from '../../../../core/ui/validators/forms/forms.validators';
+import { PillSelectorOption } from '../../../../core/ui/forms/containers/forms/pill-selector/pill-selector.component';
+import { FormsValidators } from '../../../../core/ui/forms/validators/forms/forms.validators';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 
 import 'rxjs/add/operator/catch';

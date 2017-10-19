@@ -18,17 +18,18 @@ func TestGetSession(t *testing.T) {
 		{"checkTest1", "", false},
 		{"checkTest2", "", false},
 		{"checkTest3", "", false},
-		{"checkTest4", "", false},
+		{"checkTest4", "", true},
 	}
+	patient := &model.Patient{}
 	gets := []struct {
 		name    string
 		users   user
 		wantErr bool
 	}{
-		{"getTest1", user{&model.User{-1, "test@gmail.com", "tester", "testerson", "patient", "password"}}, false},
-		{"getTest2", user{&model.User{666, "test@gmail.com", "tester", "testerson", "patient", "1234ERTG$#%k"}}, false},
-		{"getTest3", user{&model.User{444, "test@gmail.com", "tester", "testerson", "doctor", ""}}, false},
-		{"getTest4", user{&model.User{333, "test@gmail.com", "tester", "testerson", "patient", "password"}}, false},
+		{"getTest1", user{&model.User{-1, "test@gmail.com", "tester", "testerson", "patient", "password", patient}}, false},
+		{"getTest2", user{&model.User{666, "test@gmail.com", "tester", "testerson", "patient", "1234ERTG$#%k", patient}}, false},
+		{"getTest3", user{&model.User{444, "test@gmail.com", "tester", "testerson", "doctor", "", patient}}, false},
+		{"getTest4", user{&model.User{333, "test@gmail.com", "tester", "testerson", "patient", "password", patient}}, false},
 	}
 	i := 0
 	for _, tt := range gets {
@@ -42,6 +43,8 @@ func TestGetSession(t *testing.T) {
 			i++
 		})
 	}
+	i--
+	checks[i].token = ""
 	for _, tt := range checks {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := CheckSession(tt.token); (err != nil) != tt.wantErr {

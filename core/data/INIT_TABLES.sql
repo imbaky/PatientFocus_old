@@ -23,3 +23,12 @@ CREATE TABLE IF NOT EXISTS patient (
        date_created DATE NOT NULL default CURRENT_DATE,
        date_modified DATE
 );
+
+CREATE TABLE IF NOT EXISTS doctor (
+       id SERIAL NOT NULL PRIMARY KEY,
+       pfuser INTEGER REFERENCES pfuser(id),
+       specialization TEXT NOT NULL,
+       license INTEGER,
+       date_created DATE NOT NULL default CURRENT_DATE,
+       date_modified DATE
+);

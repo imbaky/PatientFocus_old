@@ -25,7 +25,7 @@ func main() {
 	}
 	router := mux.NewRouter()
 	router.HandleFunc("/patient", handlers.RegisterPatient).Methods("POST")
-	router.HandleFunc("/Document", handlers.ReceiveDocument).Methods("POST");
+	router.HandleFunc("/document", handlers.ReceiveDocument).Methods("POST");
 	router.HandleFunc("/user/{uid}", handlers.GetUser).Methods("GET")
 	router.HandleFunc("/user", handlers.RegisterUser).Methods("POST")
 

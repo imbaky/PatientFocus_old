@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RegisterComponent } from './containers/register/register.component';
 
 // modules
-import { UIModule } from '../../core/ui/ui.module';
+import { UIFromsModule } from '../../core/ui/forms/ui-forms.module';
 
 const ROUTES: Routes = [
   { path: '', component: RegisterComponent }
@@ -20,7 +20,7 @@ const ROUTES: Routes = [
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    UIModule,
+    UIFromsModule,
     RouterModule.forChild(ROUTES)
   ]
 })

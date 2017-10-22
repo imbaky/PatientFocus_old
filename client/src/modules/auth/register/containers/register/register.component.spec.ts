@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { DebugElement } from '@angular/core';
 
 // components
 import { RegisterComponent } from './register.component';
-import { FormGroupComponent } from '../../../../core/ui/components/form-group/form-group.component';
-import { ShortStringComponent } from '../../../../core/ui/containers/forms/short-string/short-string.component';
-import { PillSelectorComponent } from '../../../../core/ui/containers/forms/pill-selector/pill-selector.component';
-import { CheckboxComponent } from '../../../../core/ui/containers/forms/checkbox/checkbox.component';
-import { ValidationMessageComponent } from '../../../../core/ui/components/validation-message/validation-message.component';
+import { FormGroupComponent } from '../../../../core/ui/forms/components/form-group/form-group.component';
+import { ShortStringComponent } from '../../../../core/ui/forms/containers/forms/short-string/short-string.component';
+import { PillSelectorComponent } from '../../../../core/ui/forms/containers/forms/pill-selector/pill-selector.component';
+import { CheckboxComponent } from '../../../../core/ui/forms/containers/forms/checkbox/checkbox.component';
+import { ValidationMessageComponent } from '../../../../core/ui/forms/components/validation-message/validation-message.component';
 
 // services
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -39,8 +39,7 @@ describe('Register Component', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        ReactiveFormsModule,
-        RouterModule
+        ReactiveFormsModule
       ],
       declarations: [
         FormGroupComponent,

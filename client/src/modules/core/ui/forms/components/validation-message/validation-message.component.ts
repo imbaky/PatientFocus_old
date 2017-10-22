@@ -3,8 +3,8 @@ import { FormGroupDirective, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'px-validation-message',
-  templateUrl: 'validation-message.component.html',
-  styleUrls: ['validation-message.component.scss']
+  templateUrl: './validation-message.component.html',
+  styleUrls: ['./validation-message.component.scss']
 })
 export class ValidationMessageComponent implements OnInit {
 

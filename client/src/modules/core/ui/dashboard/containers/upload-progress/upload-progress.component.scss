@@ -1,0 +1,37 @@
+@import "../../../../../../variables";
+
+$upload-progress--width: 28rem;
+$upload-item-height: 3.125rem;
+$side-padding: 1rem;
+
+:host {
+  display: block;
+  position: absolute;
+  right: 15%;
+  bottom: 0;
+  width: $upload-progress--width;
+  box-shadow: 1px 1px 25px rgba(0, 0, 0, 0.1);
+}
+
+.upload-progress {
+  background-color: $px-white;
+}
+
+.upload-progress--head {
+  background-color: $px-grey-1;
+  display: flex;
+  align-items: center;
+  padding-left: $side-padding;
+  padding-right: $side-padding;
+  height: $upload-item-height;
+}
+
+.upload-progress--body {
+  max-height: 20rem;
+  overflow-y: scroll;
+}
+
+.upload-progress--header {
+  color: $px-white;
+  margin-bottom: 0;
+}

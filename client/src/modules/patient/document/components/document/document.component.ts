@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 import {
   DocumentService, UploadFile, UploadState,
@@ -11,6 +11,9 @@ import {
   styleUrls: ['./document.component.scss']
 })
 export class DocumentComponent {
+
+  @ViewChild('fileInput')
+  fileInput: ElementRef;
 
   UploadStatus = UploadStatus;
 
@@ -36,4 +39,9 @@ export class DocumentComponent {
 
     this.documentService.uploadFiles(upload);
   }
+
+  openFileBrowser() {
+    this.fileInput.nativeElement.click();
+  }
+
 }

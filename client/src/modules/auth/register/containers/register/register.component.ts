@@ -29,7 +29,7 @@ export class RegisterComponent {
     'accepted_terms': [false, FormsValidators.isTrue() ]
   });
 
-  errors: any;
+  errors = null;
 
   constructor(
     private fb: FormBuilder,

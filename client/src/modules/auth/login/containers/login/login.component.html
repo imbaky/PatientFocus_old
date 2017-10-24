@@ -19,7 +19,7 @@
     </px-form-group>
     <px-form-group
       label="Password">
-      <span class="form-group--help"><a href="/">- Forgot Password?</a></span>
+      <span class="form-group--help">- <a href="/">Forgot Password?</a></span>
       <px-short-string
         type="password"
         formControlName="password">
@@ -41,6 +41,6 @@
     </button>
   </form>
   <div class="login--redirect">
-    <a href="/auth/register">Don't have an account? Register now</a>
+    Don't have an account? <a routerLink="/auth/register">Register now</a>
   </div>
 </div>

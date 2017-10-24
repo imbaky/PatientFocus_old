@@ -31,4 +31,4 @@ import { ValidationMessageComponent } from './components/validation-message/vali
     ValidationMessageComponent
   ]
 })
-export class UIModule { }
+export class UIFromsModule { }

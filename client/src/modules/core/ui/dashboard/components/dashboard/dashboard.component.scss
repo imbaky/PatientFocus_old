@@ -1,0 +1,79 @@
+@import "../../../../../../variables";
+
+$header-height: 3.75rem;
+$box-showdow: 1px 1px 25px rgba(0, 0, 0, 0.1);
+
+:host {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+.header {
+  height: $header-height;
+  display: flex;
+}
+
+.header--logo {
+  height: $header-height;
+  width: $header-height;
+  background-color: $primary-color;
+  display: flex;
+}
+
+.header--logo-img {
+  width: 1.75rem;
+  margin: auto;
+}
+
+.navbar {
+  height: $header-height;
+  flex-grow: 1;
+  box-shadow: $box-showdow;
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.nav-sidebar {
+  width: $header-height;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: $box-showdow;
+}
+
+.nav-sidebar--links {
+  width: 100%;
+}
+
+.nav-sidebar--link {
+  padding: .75rem;
+  height: $header-height;
+  position: relative;
+}
+
+.nav-sidebar--link__active {
+  background-color: transparentize($primary-color, .90%);
+}
+
+.nav-sidebar--link__active:before {
+  content: " ";
+  position: absolute;
+  height: 100%;
+  border-right: 2px $primary-color solid;
+  right: 0;
+  top: 0;
+}
+
+.dashboard {
+  background-color: $px-grey;
+  flex-grow: 1;
+  overflow: hidden;
+}
+

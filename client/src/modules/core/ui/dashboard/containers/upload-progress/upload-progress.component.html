@@ -1,0 +1,11 @@
+<div class="upload-progress" *ngIf="getTotalUploads()">
+  <div class="upload-progress--head">
+    <h6 class="upload-progress--header">{{ getTotalSuccessUploads() }} of {{ getTotalUploads() }} Completed</h6>
+  </div>
+  <div class="upload-progress--body">
+    <px-upload-item
+      *ngFor="let item of completedUploads"
+      [item]="item"
+      (onRetryUpload)="retryUpload($event)"></px-upload-item>
+  </div>
+</div>

@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
 
 // components
-import { DashboardComponent } from '../core/ui/dashboard/components/dashboard.component';
+import { DashboardComponent } from '../core/ui/dashboard/components/dashboard/dashboard.component';
 import { DashboardModule } from '../core/ui/dashboard/dashboard.module';
 
 const ROUTES: Routes = [

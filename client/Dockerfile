@@ -20,6 +20,8 @@ RUN npm run build
 FROM nginx:1.13.3-alpine
 
 COPY nginx/default.conf /etc/nginx/conf.d/
+COPY ./nginx/nginx-selfsigned.crt /etc/ssl/certs/
+COPY ./nginx/nginx-selfsigned.key /etc/ssl/private/
 
 # remove default nginx page
 RUN rm -fr /usr/share/nginx/html/*

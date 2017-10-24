@@ -10,8 +10,9 @@ export class FilterPipe implements PipeTransform {
    * @returns {Array} - Filtered array
    */
   transform(elements: Array<any>, term: string, key: string): Array<any> {
-    if (!term || !elements)
+    if (!term || !elements) {
       return elements;
+    }
 
     return elements.filter(element => {
       return element[key].toLowerCase().includes(term.toLowerCase());

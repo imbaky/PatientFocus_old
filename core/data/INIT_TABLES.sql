@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS pfuser (
        lname TEXT NOT NULL,
        password TEXT NOT NULL,
        email TEXT NOT NULL,
-       address TEXT,
        date_created DATE NOT NULL default CURRENT_DATE,
        date_modified DATE
 );

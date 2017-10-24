@@ -87,7 +87,7 @@ export class AuthService {
    * @returns {Observable<R|T>}
    */
   registerUser(user: RegistrationUser): Observable<any> {
-    return this.http.post('register', user)
+    return this.http.post('/api/user', user)
       .catch((err) => Observable.throw(err));
   }
 

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '../../../../../app/store';
 
 export interface Label {
+  id?: number;
   name: string;
   color: string;
 }
@@ -25,6 +26,14 @@ export class LabelService {
    */
   createLabel(label: Label): Observable<any> {
     return this.http.post('label', label)
+      .do((res: any) => {
+        if (res.label) {
+          this.store.select('labels').subscribe((labels: any) => {
+            labels.push(res.label);
+            this.store.set('labels', labels);
+          });
+        }
+      })
       .catch((err) => Observable.throw(err));
   }
 

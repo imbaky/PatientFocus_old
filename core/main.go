@@ -8,9 +8,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/imbaky/PatientFocus/core/configuration"
 	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/handler"
-	"github.com/imbaky/PatientFocus/core/configuration"
+	"github.com/imbaky/PatientFocus/core/domain/midware"
 )
 
 //Initialize router and the endpoint as well as the database schema
@@ -25,10 +26,10 @@ func main() {
 	}
 	router := mux.NewRouter()
 	router.HandleFunc("/patient", handlers.RegisterPatient).Methods("POST")
-	router.HandleFunc("/document", handlers.ReceiveDocument).Methods("POST");
-	router.HandleFunc("/user/{uid}", handlers.GetUser).Methods("GET")
+	router.HandleFunc("/Document", midware.Chain(handlers.ReceiveDocument, midware.CheckSession())).Methods("POST")
+	router.HandleFunc("/user/{uid}", midware.Chain(handlers.GetUser, midware.CheckSession())).Methods("GET")
 	router.HandleFunc("/user", handlers.RegisterUser).Methods("POST")
 
 	http.Handle("/", router)
-	log.Fatal(http.ListenAndServeTLS(":9000", configuration.DirectoryForCertificate ,configuration.DirectoryForKey , nil))
+	log.Fatal(http.ListenAndServeTLS(":9000", configuration.DirectoryForCertificate, configuration.DirectoryForKey, nil))
 }

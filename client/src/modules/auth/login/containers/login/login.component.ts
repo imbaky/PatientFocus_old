@@ -18,6 +18,8 @@ export class LoginComponent {
     'remain_signed_in': [false]
   });
 
+  errors = null;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,

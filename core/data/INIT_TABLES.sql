@@ -33,11 +33,25 @@ CREATE TABLE IF NOT EXISTS doctor (
        date_modified DATE
 );
 
-
 CREATE TABLE IF NOT EXISTS document (
        id SERIAL NOT NULL PRIMARY KEY,
        url TEXT NOT NULL,
        description TEXT NOT NULL,
        date_created DATE NOT NULL default CURRENT_DATE,
        date_modified DATE
+);
+
+CREATE TABLE IF NOT EXISTS patient_doctor (
+       patient INTEGER REFERENCES patient(id),
+       doctor INTEGER REFERENCES doctor(id)
+);
+
+CREATE TABLE IF NOT EXISTS patient_document (
+       patient INTEGER REFERENCES patient(id),
+       document INTEGER REFERENCES document(id)
+);
+
+CREATE TABLE IF NOT EXISTS doctor_document (
+       doctor INTEGER REFERENCES doctor(id),
+       document INTEGER REFERENCES document(id)
 );

@@ -8,5 +8,5 @@ type User struct {
 	LastName  string `json:"last_name"`
 	Password  string `json:"password"`
 	Patient   *Patient
-	//Doctoer Doctor
+	Doctor    *Doctor
 }

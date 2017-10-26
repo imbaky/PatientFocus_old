@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
 
 // modules
 import { SharedModule } from '../shared/shared.module';
 
 // components
-import { RouterModule, Routes } from '@angular/router';
 import { DocumentItemComponent } from './components/document-item/document-item.component';
 
 // container
 import { DocumentComponent } from './containers/document/document.component';
 import { DocumentListComponent } from './containers/document-list/document-list.component';
+import { DocumentSidebarComponent } from './components/document-sidebar/document-sidebar.component';
 
 // resolvers
 import { PatientResolver } from '../shared/services/resolvers/patient.resolver';
@@ -25,7 +26,8 @@ const ROUTES: Routes = [
   declarations: [
     DocumentComponent,
     DocumentListComponent,
-    DocumentItemComponent
+    DocumentItemComponent,
+    DocumentSidebarComponent
   ],
   imports: [
     CommonModule,

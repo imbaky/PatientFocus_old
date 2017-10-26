@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 
+import { Label } from '../label/label.service';
+
 /**
  * A wrapper to contain the file to be uploaded, the request promise and status.
  */
@@ -37,6 +39,14 @@ export interface UploadProgress  {
   progress: number;
   current: number;
   total: number;
+}
+
+export interface Documents {
+  name: string;
+  patientid: string;
+  recordid: string;
+  url: string;
+  description: string;
 }
 
 /**
@@ -203,6 +213,21 @@ export class DocumentService {
     }
 
     this.triggerUpload();
+  }
+
+  /**
+   * Adds selected labels to a list of documents
+   * @param documents - the list of documents
+   * @param labels - the list of labels to add
+   */
+  addLabel(documents: Array<Document>, labels: Array<Label>) : Observable<any> {
+    // documents/{document-id}/labels/id=?
+    const documentId = documents[0];
+    const labelIds = labels.map((label) => {
+      return label.id
+    });
+    
+    return this.http.post('documents')
   }
 
 }

@@ -42,9 +42,9 @@ export interface UploadProgress  {
 }
 
 export interface Document {
-  id?: number;
+  id: number;
   name: string;
-  patientid: string;
+  patientid: number;
   url: string;
   description: string;
 }

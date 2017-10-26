@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"os"
 	"io/ioutil"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -52,12 +52,12 @@ func createTablesIfNotExist(db *sql.DB) error {
 }
 
 //GetConnection returns a connection to the database
-func GetConnection() *sql.DB {
+func GetConnection() (*sql.DB, error) {
 	db, err := sql.Open(driverName, dataSourceName)
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not get db connection")
 	}
-	return db
+	return db, nil
 }
 
 //CloseConnection closes the connection to the database that is passed

@@ -1,57 +1,96 @@
 package data
 
-import(
+import (
 	"fmt"
+
+	"database/sql"
+
 	"github.com/imbaky/PatientFocus/core/domain/model"
 )
 
-// Get a user from the database and return a model
-func GetUser(userid string) (user model.User) {
-
-	db := GetConnection()
-	if db == nil {
-		return user
-	}
-
-	// should only return one
-	var fname string
-	var lname string
-	err := db.QueryRow(`SELECT fname, lname FROM pfuser WHERE id = $1`, userid).Scan(&fname, &lname)
+// GetUser from the database and return a model
+func GetUser(user *model.User) error {
+	patient := model.Patient{}
+	doctor := model.Doctor{}
+	db, err := GetConnection()
 	if err != nil {
-		return user
+		return fmt.Errorf("GetUser :%v", err)
 	}
-
-
-	user.FirstName = fname
-	user.LastName = lname
-
-	return user
+	getUserQuery := `SELECT
+	 pfuser.fname,
+	 pfuser.lname,
+	 pfuser.password,
+	 pfuser.email,
+	 patient.id,
+	 patient.race,
+	 patient.gender,
+	 patient.dob,
+	 patient.language,
+	 patient.smoke,
+	 patient.problem_list,
+	 patient.meds_list,
+	 patient.allergy_list,
+	 doctor.id
+	FROM
+	 pfuser
+	INNER JOIN patient ON pfuser.id = patient.pfuser
+	INNER JOIN doctor on pfuser.id = doctor.pfuser
+	WHERE
+	 pfuser.id = $1;`
+	err = db.QueryRow(getUserQuery, user.Id).
+		Scan(&user.FirstName,
+			&user.LastName,
+			&user.Password,
+			&user.Email,
+			&patient.Id,
+			&patient.Race,
+			&patient.Gender,
+			&patient.DateOfBirth,
+			&patient.Language,
+			&patient.Smoke,
+			&patient.ProblemList,
+			&patient.MedsList,
+			&patient.AllergyList,
+		)
+	if err != nil {
+		return fmt.Errorf("could not get user :%v", err)
+	}
+	user.Patient = &patient
+	user.Doctor = &doctor
+	return nil
 }
 
-//Save registers the user
-func SaveUser(user *model.User) error {
-	db := GetConnection()
-	if db == nil {
-		return nil
+//AuthenticateUser returns an error if no user is found with such credentials and nil if the user is found
+func AuthenticateUser(user *model.User) error {
+	db, err := GetConnection()
+	if err != nil {
+		return fmt.Errorf("AuthenticateUser :%v", err)
 	}
+	err = db.QueryRow(`SELECT id FROM pfuser WHERE email = $1 and password = $2`,
+		user.Email,
+		user.Password,
+	).Scan(&user.Id)
 
+	if err != nil && err != sql.ErrNoRows {
+		return fmt.Errorf("could not find the user: %v %v", user.Email, user.Password)
+	}
+	return nil
+}
+
+//CreateUser the user
+func CreateUser(user *model.User) error {
+	db, err := GetConnection()
+	if err != nil {
+		return fmt.Errorf("SaveUser :%v", err)
+	}
 	// for debug
 	fmt.Println(user)
-
-	var userid int
-	err := db.QueryRow(`INSERT INTO pfuser (fname, lname, password, email)
-	             VALUES ($1, $2, $3, $4) RETURNING id;`, user.FirstName, user.LastName, user.Password, user.Email).Scan(&userid)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	// should log userid
-
-
+	err = db.QueryRow(`INSERT INTO pfuser (fname, lname, password, email)
+				 VALUES ($1, $2, $3, $4) RETURNING id;`,
+		user.FirstName,
+		user.LastName,
+		user.Password,
+		user.Email,
+	).Scan(&user.Id)
 	return err
-}
-
-func CreatePatient(patient *model.Patient) error {
-	return nil
 }

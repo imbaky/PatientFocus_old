@@ -23,7 +23,7 @@ func CreatePatient(patient *model.Patient) error {
 		patient.Smoke,
 		patient.ProblemList,
 		patient.MedsList,
-		patient.AlergyList,
+		patient.AllergyList,
 	).Scan(&patient.Id)
 	return err
 }

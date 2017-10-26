@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -41,10 +41,10 @@ export interface UploadProgress  {
   total: number;
 }
 
-export interface Documents {
+export interface Document {
+  id?: number;
   name: string;
   patientid: string;
-  recordid: string;
   url: string;
   description: string;
 }
@@ -217,17 +217,19 @@ export class DocumentService {
 
   /**
    * Adds selected labels to a list of documents
+   * // documents/{document-id}/labels/
    * @param documents - the list of documents
    * @param labels - the list of labels to add
    */
-  addLabel(documents: Array<Document>, labels: Array<Label>) : Observable<any> {
-    // documents/{document-id}/labels/id=?
-    const documentId = documents[0];
+  addLabel(documents: Array<Document>, labels: Array<Label>): Observable<any> {
+    const id = documents[0].id;
     const labelIds = labels.map((label) => {
-      return label.id
+      return label.id;
     });
-    
-    return this.http.post('documents')
+
+    return this.http.put(`documents/${id}/labels/`, {
+      labels: labelIds
+    });
   }
 
 }

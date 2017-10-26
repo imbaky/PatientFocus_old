@@ -80,7 +80,7 @@ describe('Auth Service', () => {
         expect(result.status).toBe(true);
       });
 
-    const req = httpMock.expectOne('register');
+    const req = httpMock.expectOne('/api/user');
     req.flush({ status: true }, okResponse);
 
     httpMock.verify();

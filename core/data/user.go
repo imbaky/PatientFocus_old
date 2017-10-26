@@ -50,7 +50,7 @@ func GetUser(user *model.User) error {
 			&patient.Smoke,
 			&patient.ProblemList,
 			&patient.MedsList,
-			&patient.AlergyList,
+			&patient.AllergyList,
 		)
 	if err != nil {
 		return fmt.Errorf("could not get user :%v", err)

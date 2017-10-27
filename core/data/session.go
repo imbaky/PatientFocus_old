@@ -9,9 +9,10 @@ import (
 	"github.com/imbaky/PatientFocus/core/domain/model"
 )
 
-const(
+const (
 	S_KEY = "alrkkjfdvouihregtlkjhiuwer"
 )
+
 //GetSession creates a session token from the id of the passed user
 func GetSession(user *model.User) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -41,4 +42,25 @@ func CheckSession(tokenString string) error {
 		return fmt.Errorf("session token not ok or invalid")
 	}
 	return nil
+}
+
+//GetIdFromSession gets the id from the session token
+func GetIdFromSession(tokenString string) (int, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return []byte(S_KEY), nil
+	})
+	if err != nil {
+		return -1, fmt.Errorf("could not parse session token %v", err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return -1, fmt.Errorf("session token not ok or invalid")
+	}
+	id := claims["id"].(int)
+	return id, nil
 }

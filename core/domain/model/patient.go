@@ -14,7 +14,7 @@ type Patient struct {
 	Smoke       bool      `json:"smoke"`
 	ProblemList []string  `json:"problem_list"`
 	MedsList    []string  `json:"meds_list"`
-	AlergyList  []string  `json:"alergy_list"`
+	AllergyList []string  `json:"alergy_list"`
 }
 
 // Gender is an enum of type string that is either male or female

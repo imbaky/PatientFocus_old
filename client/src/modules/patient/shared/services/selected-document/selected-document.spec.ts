@@ -10,7 +10,7 @@ describe('Selected Document Service', () => {
     {
       id: 1,
       name: 'Doc 1',
-      patientid: '1111',
+      patientid: 1111,
       url: 'www.patientfocus.com',
       description:
         'This is my first document'
@@ -18,7 +18,7 @@ describe('Selected Document Service', () => {
     {
       id: 2,
       name: 'Doc 2',
-      patientid: '1112',
+      patientid: 1112,
       url: 'www.patientfocus.com',
       description:
         'This is my second document'
@@ -28,7 +28,7 @@ describe('Selected Document Service', () => {
   const document: Document = {
     id: 3,
     name: 'Doc 3',
-    patientid: '12',
+    patientid: 12,
     url: 'www.patientfocus.com',
     description:
       'This is my third document'

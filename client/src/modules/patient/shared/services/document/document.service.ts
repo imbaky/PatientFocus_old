@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
+
+import { Label } from '../label/label.service';
 
 /**
  * A wrapper to contain the file to be uploaded, the request promise and status.
@@ -37,6 +39,14 @@ export interface UploadProgress  {
   progress: number;
   current: number;
   total: number;
+}
+
+export interface Document {
+  id: number;
+  name: string;
+  patientid: number;
+  url: string;
+  description: string;
 }
 
 /**
@@ -203,6 +213,23 @@ export class DocumentService {
     }
 
     this.triggerUpload();
+  }
+
+  /**
+   * Adds selected labels to a list of documents
+   * // documents/{document-id}/labels/
+   * @param documents - the list of documents
+   * @param labels - the list of labels to add
+   */
+  addLabel(documents: Array<Document>, labels: Array<Label>): Observable<any> {
+    const id = documents[0].id;
+    const labelIds = labels.map((label) => {
+      return label.id;
+    });
+
+    return this.http.put(`documents/${id}/labels/`, {
+      labels: labelIds
+    });
   }
 
 }

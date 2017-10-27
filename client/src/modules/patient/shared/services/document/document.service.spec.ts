@@ -4,7 +4,10 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { Observable } from 'rxjs/Observable';
 
-import { DocumentService, UploadFile, UploadStatus } from './document.service';
+import { DocumentService, UploadFile, UploadStatus, Document } from './document.service';
+import { Label } from '../label/label.service';
+
+const okResponse = { status: 200, statusText: 'OK' };
 
 describe('Document Service', () => {
 
@@ -190,5 +193,36 @@ describe('Document Service', () => {
 
     expect(service.triggerUpload).not.toHaveBeenCalled();
   });
+
+  it('GIVEN an single document THEN it should successfully add labels',
+    inject([HttpTestingController], (httpMock: HttpTestingController) => {
+
+    const documents: Array<Document> = [{
+      id: 1,
+      name: 'CTScan1',
+      patientid: 123,
+      description: 'Scan from Jewish General Hospital',
+      url: 'testurl.com'
+    }];
+
+    const id = documents[0].id;
+
+    const labels: Array<Label> = [
+      {
+        id: 1,
+        name: 'JGH',
+        color: 'Crimson'
+      }
+    ];
+
+    service.addLabel(documents, labels)
+      .subscribe((res: any) => {
+        expect(res.status).toBe(true);
+      });
+
+    const req = httpMock.expectOne(`documents/${id}/labels/`);
+    req.flush({ status: true }, okResponse);
+    httpMock.verify();
+  }));
 
 });

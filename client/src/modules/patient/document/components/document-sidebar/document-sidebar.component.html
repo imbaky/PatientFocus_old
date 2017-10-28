@@ -1,0 +1,29 @@
+<div class="document-sidebar">
+  <ng-container *ngIf="documents.length === 1; else select">
+    <div class="document-sidebar--header">
+      <div class="document-sidebar--filename">{{ documents[0].name }}</div>
+      <img class="document-sidebar--share" src="/assets/images/icons/share.svg" alt="Share">
+    </div>
+    <div class="document-sidebar--sub-header">
+      <div class="document-sidebar--light-header">
+        Preview
+      </div>
+    </div>
+    <div class="document-sidebar--details">
+
+    </div>
+    <div class="document-sidebar--sub-header">
+      <div class="document-sidebar--light-header">
+        Labels
+      </div>
+      <div>
+        +
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #select>
+    <div class="text-center mt-5">
+      Please select a file :)
+    </div>
+  </ng-template>
+</div>

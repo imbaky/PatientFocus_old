@@ -5,16 +5,27 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 
 // components
-import { DocumentComponent } from './components/document/document.component';
 import { RouterModule, Routes } from '@angular/router';
+import { DocumentItemComponent } from './components/document-item/document-item.component';
+
+// container
+import { DocumentComponent } from './containers/document/document.component';
+import { DocumentListComponent } from './containers/document-list/document-list.component';
+
+// resolvers
+import { PatientResolver } from '../shared/services/resolvers/patient.resolver';
 
 const ROUTES: Routes = [
-  { path: '', component: DocumentComponent }
+  { path: '', component: DocumentComponent, resolve: {
+    patient: PatientResolver
+  } }
 ];
 
 @NgModule({
   declarations: [
-    DocumentComponent
+    DocumentComponent,
+    DocumentListComponent,
+    DocumentItemComponent
   ],
   imports: [
     CommonModule,

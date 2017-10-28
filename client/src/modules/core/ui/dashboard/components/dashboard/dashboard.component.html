@@ -3,7 +3,9 @@
     <img class="header--logo-img" src="/assets/images/logo-avatar.svg" alt="">
   </div>
   <nav class="navbar navbar-light">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <span class="navbar-brand ml-auto" *ngIf="user$ | async as user">
+      {{ user.first_name }} {{ user.last_name }}
+    </span>
   </nav>
 </div>
 <div class="content">

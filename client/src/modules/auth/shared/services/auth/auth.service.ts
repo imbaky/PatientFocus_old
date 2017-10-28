@@ -10,10 +10,12 @@ import 'rxjs/observable/throw';
 import { LocalStorageService } from 'angular-2-local-storage';
 
 import { Store } from '../../../../../app/store';
+import { environment } from '../../../../../environments/environment';
 
 export type Role = 'patient' | 'doctor';
 
 export interface User {
+  id: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -38,7 +40,7 @@ export interface UserCredentials {
 @Injectable()
 export class AuthService {
 
-  user$: Observable<User>;
+  private payload_data: any;
 
   constructor(
     private http: HttpClient,
@@ -46,8 +48,21 @@ export class AuthService {
     private localStorage: LocalStorageService
   ) { }
 
-  get token() {
-    return this.localStorage.get('token');
+  get token(): string {
+    return this.localStorage.get('token') as string;
+  }
+
+  get payload() {
+    if (this.payload_data) {
+      return this.payload_data;
+    }
+    const token = this.token;
+    const start = token.indexOf('.') + 1;
+
+    this.payload_data = JSON.parse(atob(
+      token.substr(start, token.lastIndexOf('.') - start)
+    ));
+    return this.payload_data;
   }
 
   /**
@@ -56,7 +71,7 @@ export class AuthService {
    * @returns {Observable<R|T>}
    */
   loginUser(credentials: UserCredentials): Observable<string> {
-    return this.http.post('login', credentials)
+    return this.http.post(`${environment.host_server}/auth/login`, credentials)
       .do((res: any) => {
         if (res.token) {
           const token = res.token;
@@ -73,11 +88,10 @@ export class AuthService {
    */
   fetchCurrentUser(): void {
     if (this.token) {
-        this.http.get('fetchCurrentUser')
-          .pluck('user')
-          .subscribe((user: User) => {
-            this.store.set('user', user);
-          }, (err) => { });
+      this.http.get(`${environment.host_server}/auth/user`)
+        .subscribe((user: User) => {
+          this.store.set('user', user);
+        }, (err) => { });
     }
   }
 
@@ -87,7 +101,7 @@ export class AuthService {
    * @returns {Observable<R|T>}
    */
   registerUser(user: RegistrationUser): Observable<any> {
-    return this.http.post('/api/user', user)
+    return this.http.post(`${environment.host_server}/auth/register`, user)
       .catch((err) => Observable.throw(err));
   }
 

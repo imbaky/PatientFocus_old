@@ -3,9 +3,14 @@ import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse, Http
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
 
 import { Label } from '../label/label.service';
+import { Patient } from '../patient/patient.service';
+
+import { environment } from '../../../../../environments/environment';
 
 /**
  * A wrapper to contain the file to be uploaded, the request promise and status.
@@ -48,6 +53,8 @@ export interface Document {
   url: string;
   description: string;
 }
+
+export declare type Documents = Document[];
 
 /**
  * Upload statuses for UploadFile
@@ -213,6 +220,15 @@ export class DocumentService {
     }
 
     this.triggerUpload();
+  }
+
+  /**
+   * Gets all documents of the patient.
+   * @returns {Observable<R|T>}
+   */
+  getDocuments(patient: Patient): Observable<Documents> {
+    return this.http.get(`${environment.host_server}/documents?patient_id=${patient.id}`)
+      .catch((err) => Observable.throw(err));
   }
 
   /**

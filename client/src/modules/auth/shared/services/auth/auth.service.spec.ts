@@ -19,6 +19,7 @@ const credentials: UserCredentials = {
 };
 
 const currentUser: User = {
+  id: 1,
   first_name: 'Eric',
   last_name: 'Snowden',
   email: '',
@@ -80,7 +81,7 @@ describe('Auth Service', () => {
         expect(result.status).toBe(true);
       });
 
-    const req = httpMock.expectOne('/api/user');
+    const req = httpMock.expectOne('/auth/register');
     req.flush({ status: true }, okResponse);
 
     httpMock.verify();
@@ -98,7 +99,7 @@ describe('Auth Service', () => {
       expect(localStorage.set).toHaveBeenCalled();
     });
 
-    const req = httpMock.expectOne('login');
+    const req = httpMock.expectOne('/auth/login');
     req.flush({ status: true, token: token }, okResponse);
   }));
 
@@ -110,8 +111,8 @@ describe('Auth Service', () => {
 
     // Act & Assert
     service.fetchCurrentUser();
-    const req = httpMock.expectOne('fetchCurrentUser');
-    req.flush({ status: true, user: currentUser }, okResponse);
+    const req = httpMock.expectOne('/auth/user');
+    req.flush(currentUser, okResponse);
 
     expect(req.request.headers.get('Authorization')).toBe(`Bearer ${token}`);
     expect(store.set).toHaveBeenCalledWith('user', currentUser);
@@ -128,11 +129,11 @@ describe('Auth Service', () => {
     // Act & Assert
     service.fetchCurrentUser();
 
-    const req = httpMock.expectOne('fetchCurrentUser');
+    const req = httpMock.expectOne('/auth/user');
     req.flush({ status: false }, { status: 401, statusText: 'UNAUTHORIZED' }); // we get a 401 backend response for invalid token
 
     expect(store.set).not.toHaveBeenCalled();
-    expect(MockRouter.navigate).toHaveBeenCalledWith(['/login']);
+    expect(MockRouter.navigate).toHaveBeenCalledWith(['/auth/login']);
   }));
 
 });

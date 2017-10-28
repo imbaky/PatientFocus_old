@@ -18,7 +18,7 @@ export class DocumentListComponent implements OnDestroy {
 
   @HostListener('document:click', ['$event'])
   documentClick($event) {
-    if (!$event.target.closest('document-item')) {
+    if (!$event.target.closest('document-item') && !$event.target.closest('document-sidebar')) {
       this.selectedService.clearAllDocuments();
     }
   }

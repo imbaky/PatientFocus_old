@@ -1,5 +1,9 @@
 @import "../../../../../variables";
 
+:host {
+  display: block;
+}
+
 .document-sidebar {
   padding: 2.5rem 1.25rem;
 }

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { FormsValidators } from '../../../../core/ui/forms/validators/forms/forms.validators';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 
 @Component({
@@ -31,10 +30,11 @@ export class LoginComponent {
       this.authService.loginUser(this.form.value)
         .subscribe(() => {
           this.authService.fetchCurrentUser();
-          this.router.navigate(['/']);
+          this.router.navigate(['/patient']);
         }, (err) => {
 
         });
     }
   }
+
 }

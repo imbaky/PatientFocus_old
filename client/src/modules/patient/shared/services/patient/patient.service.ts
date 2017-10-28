@@ -8,9 +8,11 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
 
+import { environment } from '../../../../../environments/environment';
+
 export interface Patient {
-  id: number,
-  pfuser: number;
+  id: number;
+  user_id: number;
   race: string;
   gender: string;
   dob: string;
@@ -33,12 +35,12 @@ export class PatientService {
     private store: Store
   ) {}
 
-  getPatient(id: number) {
-    return this.http.get(`/patient/${id}`)
-      .do((res: any) => {
-        if ( res.patient) {
-          this.store.set('patient',  res.patient);
-          this.patient =  res.patient;
+  getPatient(id: number): Observable<Patient> {
+    return this.http.get(`${environment.host_server}/patients/${id}`)
+      .do((patient: Patient) => {
+        if (patient) {
+          this.store.set('patient', patient);
+          this.patient =  patient;
         }
       })
       .catch(err => Observable.throw(err));

@@ -6,6 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { DocumentService } from './services/document/document.service';
 import { SelectedDocumentService } from './services/selected-document/selected-document.service';
 import { PatientService } from './services/patient/patient.service';
+import { PatientResolver } from './services/resolvers/patient.resolver';
+import { LabelService } from './services/label/label.service';
 
 @NgModule({
   imports: [
@@ -19,7 +21,9 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        LabelService,
         PatientService,
+        PatientResolver,
         DocumentService,
         SelectedDocumentService,
       ]

@@ -37,7 +37,7 @@ export class SelectedDocumentService {
   }
 
   /**
-   * Deletes all Document
+   * Clears all selected documents.
    */
   clearAllDocuments() {
     this.documents = [];

@@ -31,13 +31,13 @@ describe('Document Service', () => {
     http = bed.get(HttpClient);
     patient = {
       id: 1,
-      pfuser: 1,
+      user_id: 1,
       race: 'Canadian',
       gender: 'male',
       dob: '1996/08/19',
       language: 'en_US',
       smoke: false
-    }
+    };
   });
 
   it('GIVEN a patient id THEN the patient is returned.', inject([HttpTestingController], (httpMock: HttpTestingController) => {
@@ -48,7 +48,7 @@ describe('Document Service', () => {
       });
 
     const req = httpMock.expectOne({
-      url: '/patient/1',
+      url: '/patients/1',
       method: 'GET'
     });
 

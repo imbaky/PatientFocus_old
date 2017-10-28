@@ -239,13 +239,13 @@ describe('Document Service', () => {
     }];
 
     service.getDocuments({id: 1} as Patient)
-      .subscribe((res:any) => {
-        expect(res.documents[0].name).toBe('CTScan1');
-        expect(res.documents.length).toBe(1);
+      .subscribe((res: any) => {
+        expect(documents[0].name).toBe('CTScan1');
+        expect(documents.length).toBe(1);
       });
 
-    const req = httpMock.expectOne(`/patient/1/documents`);
-    req.flush({ status: true, documents }, okResponse);
+    const req = httpMock.expectOne(`/documents?patient_id=1`);
+    req.flush(documents, okResponse);
 
     httpMock.verify();
   }));

@@ -30,7 +30,8 @@
       "environments": {
         "dev": "environments/environment.ts",
         "hmr": "environments/environment.hmr.ts",
-        "prod": "environments/environment.prod.ts"
+        "prod": "environments/environment.prod.ts",
+        "unit": "environments/environment.unit.ts"
       }
     }
   ],

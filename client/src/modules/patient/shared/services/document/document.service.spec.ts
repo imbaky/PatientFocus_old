@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/Observable';
 
 import { DocumentService, UploadFile, UploadStatus, Document } from './document.service';
 import { Label } from '../label/label.service';
+import { Store } from '../../../../../app/store';
+import { Patient } from '../patient/patient.service';
 
 const okResponse = { status: 200, statusText: 'OK' };
 
@@ -222,6 +224,29 @@ describe('Document Service', () => {
 
     const req = httpMock.expectOne(`documents/${id}/labels/`);
     req.flush({ status: true }, okResponse);
+    httpMock.verify();
+  }));
+
+  it('GIVEN a patient session THEN it should fetch the documents',
+    inject([HttpTestingController], (httpMock: HttpTestingController) => {
+
+    const documents: Array<Document> = [{
+      id: 1,
+      name: 'CTScan1',
+      patientid: 123,
+      description: 'Scan from Jewish General Hospital',
+      url: 'testurl.com'
+    }];
+
+    service.getDocuments({id: 1} as Patient)
+      .subscribe((res:any) => {
+        expect(res.documents[0].name).toBe('CTScan1');
+        expect(res.documents.length).toBe(1);
+      });
+
+    const req = httpMock.expectOne(`/patient/1/documents`);
+    req.flush({ status: true, documents }, okResponse);
+
     httpMock.verify();
   }));
 

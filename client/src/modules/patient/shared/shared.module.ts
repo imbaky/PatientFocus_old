@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 // services
 import { DocumentService } from './services/document/document.service';
+import { SelectedDocumentService } from './services/selected-document/selected-document.service';
+import { PatientService } from './services/patient/patient.service';
 
 @NgModule({
   imports: [
@@ -16,7 +18,11 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [ DocumentService ]
+      providers: [
+        PatientService,
+        DocumentService,
+        SelectedDocumentService,
+      ]
     };
   }
 

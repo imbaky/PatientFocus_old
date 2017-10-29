@@ -1,3 +1,10 @@
-<div class="list-group">
-  
+<div class="document-labels">
+  <div class="input-group input-group-sm">
+      <input type="text" class="form-control" placeholder="Filter labels..." [formControl]="search">
+  </div>
+  <div class="document-labels--list">
+      <div *ngFor="let label of labels$ | async | filter:value:'name'"> 
+        <span class="badge" [style.backgroundColor]="label.color"> {{ label.name }} </span>
+      </div>
+  </div>
 </div>

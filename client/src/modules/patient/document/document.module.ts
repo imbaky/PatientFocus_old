@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 // modules
 import { SharedModule } from '../shared/shared.module';
 import { UIGeneric } from '../../core/ui/generic/ui-generic.module'
+import { PipeModule } from '../../core/pipe/pipe.module';
 
 // components
 import { DocumentItemComponent } from './components/document-item/document-item.component';
@@ -36,7 +38,9 @@ const ROUTES: Routes = [
     CommonModule,
     SharedModule,
     RouterModule.forChild(ROUTES),
-    UIGeneric
+    UIGeneric,
+    PipeModule,
+    ReactiveFormsModule
   ]
 })
 export class DocumentModule { }

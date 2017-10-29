@@ -23,8 +23,8 @@
         <document-labels></document-labels>
       </ng-template>
     </div>
-    <div *ngFor="let label of documents[0].labels" [style.backgroundColor]="label.color" >
-      {{ label.name }}
+    <div *ngFor="let label of documents[0].labels">
+      <span class="badge" [style.backgroundColor]="label.color">{{ label.name }}</span>
     </div>
   </ng-container>
   <ng-template #select>

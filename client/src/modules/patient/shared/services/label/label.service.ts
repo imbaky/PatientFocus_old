@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 
 import { Store } from '../../../../../app/store';
 
+import { environment } from '../../../../../environments/environment';
+
 export interface Label {
   id: number;
   name: string;
@@ -42,7 +44,7 @@ export class LabelService {
    * @returns {Observable<T>}
    */
   getAllLabels(): Observable<any> {
-    return this.http.get('label')
+    return this.http.get(`${environment.host_server}/labels`)
       .do((labels: Label[]) => {
         this.store.set('labels', labels);
       })

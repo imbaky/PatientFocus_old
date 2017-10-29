@@ -27,3 +27,20 @@ func CreatePatient(patient *model.Patient) error {
 	).Scan(&patient.Id)
 	return err
 }
+
+func LinkDoctorDocument(user model.User, documents[]model.Document) error {
+	db, err := GetConnection()
+	if err != nil {
+		return fmt.Errorf("LinkDoctorDocument")
+	}
+
+	linkQuery := "INSERT INTO doctor_document VALUES ($1, $2)"
+	// insert one at a time, revisit for multiple inserts
+	for i := 0; i < len(documents); i++ {
+		stmt, _ := db.Prepare(linkQuery)
+		_, err = stmt.Exec(user.Doctor.Id, documents[i].Id)
+		stmt.Close()
+	}
+
+	return nil
+}

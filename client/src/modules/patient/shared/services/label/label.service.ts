@@ -28,8 +28,8 @@ export class LabelService {
    */
   createLabel(label: Label): Observable<any> {
     return this.http.post('label', label)
-      .do((label: Label) => {
-        if (label) {
+      .do((labelsRes: Label) => {
+        if (labelsRes) {
           this.store.select('labels').subscribe((labels: any) => {
             labels.push(label);
             this.store.set('labels', labels);
@@ -44,7 +44,7 @@ export class LabelService {
    * @returns {Observable<T>}
    */
   getAllLabels(): Observable<any> {
-    return this.http.get(`${environment.host_server}/labels`)
+    return this.http.get('labels')
       .do((labels: Label[]) => {
         this.store.set('labels', labels);
       })

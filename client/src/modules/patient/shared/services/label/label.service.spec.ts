@@ -103,11 +103,11 @@ describe('Label Service', () => {
       }
     ];
 
-    service.getAllLabels().subscribe((labels: Label[]) => {
-      expect(labels.length).toBe(2);
+    service.getAllLabels().subscribe((labelsRes: Label[]) => {
+      expect(labelsRes.length).toBe(2);
     });
 
-    const req = httpMock.expectOne('label');
+    const req = httpMock.expectOne('labels');
     req.flush(labels, okResponse);
     httpMock.verify();
     expect(store.set).toHaveBeenCalledWith('labels', labels);

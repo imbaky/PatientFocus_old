@@ -4,18 +4,18 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Observable } from 'rxjs/Observable';
 
 import { Patient, PatientService } from '../patient/patient.service';
-import { AuthService } from '../../../../auth/shared/services/auth/auth.service';
+import { SelectedPatientService } from '../selected-patient/selected-patient.service';
 
 @Injectable()
 export class PatientResolver implements Resolve<Patient> {
 
   constructor(
     private patientService: PatientService,
-    private authService: AuthService
+    private selectedPatient: SelectedPatientService
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Patient> {
-    return this.patientService.getPatient(this.authService.payload.patient_id);
+    return this.patientService.getPatient(this.selectedPatient.getSelectedPatientId());
   }
 
 }

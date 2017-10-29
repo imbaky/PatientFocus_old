@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // services
 import { AuthService } from './services/auth/auth.service';
+import { AuthGuard } from './guards/auth/auth.guard';
 
 // components
 import { AuthPageComponent } from './components/auth-page/auth-page.component';
@@ -39,6 +40,7 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        AuthGuard,
         AuthService,
         {
           provide: HTTP_INTERCEPTORS,

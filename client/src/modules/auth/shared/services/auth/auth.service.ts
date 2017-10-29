@@ -52,7 +52,7 @@ export class AuthService {
     return this.localStorage.get('token') as string;
   }
 
-  get payload() {
+  get payload(): any {
     if (this.payload_data) {
       return this.payload_data;
     }
@@ -63,6 +63,10 @@ export class AuthService {
       token.substr(start, token.lastIndexOf('.') - start)
     ));
     return this.payload_data;
+  }
+
+  get role(): string {
+    return this.payload.role;
   }
 
   /**

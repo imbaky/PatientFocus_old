@@ -32,6 +32,9 @@ func GetDocumentsFromArray(docs []string, documents *[]model.Document) error {
         var url string
         var desc string
         err = rows.Scan(&id, &url, &desc)
+        if err != nil {
+            return fmt.Errorf("Error from database: %v", err)
+        }
         *documents = append(*documents, model.Document{Id: id, Url: url, Desc: desc})
     }
 

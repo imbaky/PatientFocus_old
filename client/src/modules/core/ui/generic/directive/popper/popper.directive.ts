@@ -109,7 +109,7 @@ export class PopperDirective implements OnInit, OnDestroy {
   }
 
   private configure(configuration: PopperConfiguration) {
-    this.config = { closeOnOutsideClick: true,  ...configuration || { }} as PopperConfiguration ;
+    this.config = { closeOnOutsideClick: true, removeOnDestroy: true,  ...configuration || { } } as PopperConfiguration ;
   }
 
 }

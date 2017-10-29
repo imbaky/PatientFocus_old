@@ -16,9 +16,15 @@
       <div class="document-sidebar--light-header">
         Labels
       </div>
-      <div>
+      <div [px-popper]="labels" [px-popper-config]="configuration">
         +
       </div>
+      <ng-template #labels>
+        <document-labels></document-labels>
+      </ng-template>
+    </div>
+    <div *ngFor="let label of documents[0].labels" [style.backgroundColor]="label.color" >
+      {{ label.name }}
     </div>
   </ng-container>
   <ng-template #select>

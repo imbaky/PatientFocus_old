@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 // modules
 import { SharedModule } from '../shared/shared.module';
+import { UIGeneric } from '../../core/ui/generic/ui-generic.module'
 
 // components
 import { DocumentItemComponent } from './components/document-item/document-item.component';
@@ -12,6 +13,7 @@ import { DocumentItemComponent } from './components/document-item/document-item.
 import { DocumentComponent } from './containers/document/document.component';
 import { DocumentListComponent } from './containers/document-list/document-list.component';
 import { DocumentSidebarComponent } from './components/document-sidebar/document-sidebar.component';
+import { DocumentLabelsComponent } from './containers/document-labels/document-labels.component';
 
 // resolvers
 import { PatientResolver } from '../shared/services/resolvers/patient.resolver';
@@ -27,12 +29,14 @@ const ROUTES: Routes = [
     DocumentComponent,
     DocumentListComponent,
     DocumentItemComponent,
-    DocumentSidebarComponent
+    DocumentSidebarComponent,
+    DocumentLabelsComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
-    RouterModule.forChild(ROUTES)
+    RouterModule.forChild(ROUTES),
+    UIGeneric
   ]
 })
 export class DocumentModule { }

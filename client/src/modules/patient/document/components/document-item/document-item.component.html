@@ -8,11 +8,12 @@
 
     </div>
   </div>
+
   <div class="document-item--update">
-    October 19, 2016 by John Smith
+    {{ document.updatedAt }} by {{ document.last_modified.first_name }} {{ document.last_modified.last_name }}
   </div>
   <div class="document-item--size">
-    208Kb
+    {{ document.size }}
   </div>
 </div>
 

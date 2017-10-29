@@ -11,6 +11,7 @@ import { Label } from '../label/label.service';
 import { Patient } from '../patient/patient.service';
 
 import { environment } from '../../../../../environments/environment';
+import { User } from '../../../../auth/shared/services/auth/auth.service';
 
 /**
  * A wrapper to contain the file to be uploaded, the request promise and status.
@@ -49,10 +50,12 @@ export interface UploadProgress  {
 export interface Document {
   id: number;
   name: string;
-  patientid: number;
-  url: string;
-  description: string;
-  labels: Label[];
+  size: number,
+  labels?: Label[],
+  patient?: Patient | number;
+  last_modified?: User;
+  url?: string;
+  description?: string;
 }
 
 export declare type Documents = Document[];
@@ -99,20 +102,24 @@ export class DocumentService {
   /**
    * An array of document files to be uploaded.
    * @param documents - Array of files
+   * @param patient - The patient
    */
-  uploadFiles(documents: Array<File>) {
-    documents.forEach(document => this.uploadFile(document));
+  uploadFiles(documents: Array<File>, patient: Patient) {
+    documents.forEach(document => this.uploadFile(document, patient));
   }
 
   /**
    * Adds a single document to a queue to be uploaded.
    * @param document - the document file
+   * @param patient - The patient
    */
-  uploadFile(document: File) {
-
+  uploadFile(document: File, patient: Patient) {
     const form = new FormData();
+
     form.append('file', document);
-    const setup = new HttpRequest('POST', '/upload/file', form, {
+    form.append('patient', patient.id + '');
+
+    const setup = new HttpRequest('POST', `${environment.host_server}/document/upload`, form, {
       reportProgress: true
     });
 
@@ -228,7 +235,7 @@ export class DocumentService {
    * @returns {Observable<R|T>}
    */
   getDocuments(patient: Patient): Observable<Documents> {
-    return this.http.get(`${environment.host_server}/documents?patient_id=${patient.id}`)
+    return this.http.get(`${environment.host_server}/document?patient=${patient.id}`)
       .catch((err) => Observable.throw(err));
   }
 

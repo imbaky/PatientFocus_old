@@ -8,6 +8,7 @@ import { SelectedDocumentService } from './services/selected-document/selected-d
 import { PatientService } from './services/patient/patient.service';
 import { PatientResolver } from './services/resolvers/patient.resolver';
 import { LabelService } from './services/label/label.service';
+import { SelectedPatientService } from './services/selected-patient/selected-patient.service';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ export class SharedModule {
         PatientResolver,
         DocumentService,
         SelectedDocumentService,
+        SelectedPatientService
       ]
     };
   }

@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+    frontend:
+        image: frontend
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - "db"
+        networks:
+            - patientfocus
+    backend:
+        image: backend
+        ports:
+            - "9000:9000"
+        depends_on:
+            - "db"
+        networks:
+            - patientfocus
+
+    db:
+        image: postgres
+        environment:
+            POSTGRES_DB: patientfocus
+        volumes:
+            - /tmp/data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        networks:
+            patientfocus:
+                aliases:
+                    - db
+
+
+networks:
+    patientfocus:
+
+

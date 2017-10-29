@@ -12,21 +12,23 @@ describe('Selected Document Service', () => {
     {
       id: 1,
       name: 'Doc 1',
-      patientid: 1111,
+      size: 1,
+      patient: 1111,
       url: 'www.patientfocus.com',
-      description: 'This is my first document',
       labels: [
         {
           id: 1,
           name: 'label',
           color: 'YellowGreen'
         }
-      ]
+      ],
+      description: 'This is my first document'
     },
     {
       id: 2,
       name: 'Doc 2',
-      patientid: 1112,
+      size: 1,
+      patient: 1112,
       url: 'www.patientfocus.com',
       description: 'This is my second document',
       labels: [
@@ -42,7 +44,8 @@ describe('Selected Document Service', () => {
   const document: Document = {
     id: 3,
     name: 'Doc 3',
-    patientid: 12,
+    size: 1,
+    patient: 12,
     url: 'www.patientfocus.com',
     description: 'This is my third document',
     labels: [

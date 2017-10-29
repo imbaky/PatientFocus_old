@@ -52,7 +52,7 @@ export interface Document {
   patientid: number;
   url: string;
   description: string;
-  labels: Label[]
+  labels: Label[];
 }
 
 export declare type Documents = Document[];

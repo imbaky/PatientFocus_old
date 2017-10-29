@@ -207,8 +207,8 @@ describe('Document Service', () => {
       url: 'testurl.com',
       labels: [{
         id: 21,
-        name: "label21",
-        color: "greenyellow"
+        name: 'label21',
+        color: 'greenyellow'
       }]
     }];
 
@@ -216,14 +216,14 @@ describe('Document Service', () => {
 
     const labels: Label[] = [{
       id: 21,
-      name: "label21",
-      color: "greenyellow"
+      name: 'label21',
+      color: 'greenyellow'
     },
     {
       id: 22,
-      name: "label22",
-      color: "darkblue"
-    }]
+      name: 'label22',
+      color: 'darkblue'
+    }];
 
     service.addLabel(documents, labels)
       .subscribe((res: any) => {
@@ -246,8 +246,8 @@ describe('Document Service', () => {
       url: 'testurl.com',
       labels: [{
         id: 21,
-        name: "label21",
-        color: "greenyellow"
+        name: 'label21',
+        color: 'greenyellow'
       }]
     }];
 

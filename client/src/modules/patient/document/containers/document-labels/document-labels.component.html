@@ -4,7 +4,7 @@
   </div>
   <div class="document-labels--list">
       <div *ngFor="let label of labels$ | async | filter:value:'name'"> 
-        <span class="badge" [style.backgroundColor]="label.color"> {{ label.name }} </span>
+        <document-label [label]="label" ></document-label>
       </div>
   </div>
 </div>

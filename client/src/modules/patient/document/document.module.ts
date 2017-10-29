@@ -5,11 +5,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 // modules
 import { SharedModule } from '../shared/shared.module';
-import { UIGeneric } from '../../core/ui/generic/ui-generic.module'
+import { UIGeneric } from '../../core/ui/generic/ui-generic.module';
 import { PipeModule } from '../../core/pipe/pipe.module';
 
 // components
 import { DocumentItemComponent } from './components/document-item/document-item.component';
+import { DocumentLabelComponent } from './components/document-label/document-label.component';
 
 // container
 import { DocumentComponent } from './containers/document/document.component';
@@ -32,7 +33,8 @@ const ROUTES: Routes = [
     DocumentListComponent,
     DocumentItemComponent,
     DocumentSidebarComponent,
-    DocumentLabelsComponent
+    DocumentLabelsComponent,
+    DocumentLabelComponent
   ],
   imports: [
     CommonModule,

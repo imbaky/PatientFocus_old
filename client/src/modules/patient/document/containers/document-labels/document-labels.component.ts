@@ -13,7 +13,7 @@ import { LabelService } from '../../../shared/services/label/label.service';
 export class DocumentLabelsComponent implements OnInit {
 
   labels$: Observable<Label[]>;
-  search = new FormControl("");
+  search = new FormControl('');
 
   get value(){
     return this.search.value;
@@ -21,8 +21,8 @@ export class DocumentLabelsComponent implements OnInit {
   constructor(
     private labelService: LabelService
   ) { }
-  
-  ngOnInit() { 
+
+  ngOnInit() {
     this.labels$ = this.labelService.getAllLabels();
   }
 }

@@ -1,27 +1,41 @@
 import { Document } from '../document/document.service';
+import { Label } from '../label/label.service';
 import { SelectedDocumentService } from './selected-document.service';
 import { TestBed } from '@angular/core/testing';
+
 
 describe('Selected Document Service', () => {
 
   let service;
 
-  const documents: Array<Document> = [
+  const documents: Document[] = [
     {
       id: 1,
       name: 'Doc 1',
       patientid: 1111,
       url: 'www.patientfocus.com',
-      description:
-        'This is my first document'
+      description: 'This is my first document',
+      labels: [
+        {
+          id: 1,
+          name: 'label',
+          color: 'YellowGreen'
+        }
+      ]
     },
     {
       id: 2,
       name: 'Doc 2',
       patientid: 1112,
       url: 'www.patientfocus.com',
-      description:
-        'This is my second document'
+      description: 'This is my second document',
+      labels: [
+        {
+          id: 2,
+          name: 'label2',
+          color: 'DarkSlateGray'
+        }
+      ]
     }
   ];
 
@@ -30,9 +44,33 @@ describe('Selected Document Service', () => {
     name: 'Doc 3',
     patientid: 12,
     url: 'www.patientfocus.com',
-    description:
-      'This is my third document'
+    description: 'This is my third document',
+    labels: [
+      {
+        id: 2,
+        name: 'label2',
+        color: 'DarkSlateGray'
+      }
+    ]
   };
+
+  const newLabels: Label[] = [
+    {
+      id: 1,
+      name: 'label',
+      color: 'YellowGreen'
+    },
+    {
+      id: 2,
+      name: 'label2',
+      color: 'DarkSlateGray'
+    },
+    {
+      id: 3,
+      name: 'label3',
+      color: 'LightSteelBlue'
+    }
+  ];
 
   beforeEach(() => {
     const bed = TestBed.configureTestingModule({

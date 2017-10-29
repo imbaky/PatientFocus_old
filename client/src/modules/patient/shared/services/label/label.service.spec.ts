@@ -33,7 +33,7 @@ describe('Label Service', () => {
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
 
     // Setup
-    const labels: Array<Label> = [
+    const labels: Label[] = [
       {
         id: 1,
         name: 'label',
@@ -52,7 +52,7 @@ describe('Label Service', () => {
       color: 'LightSteelBlue'
     };
 
-    const newLabels: Array<Label> = [
+    const newLabels: Label[] = [
       {
         id: 1,
         name: 'label',
@@ -75,7 +75,6 @@ describe('Label Service', () => {
 
     service.createLabel(label)
       .subscribe((result: any) => {
-        expect(result.status).toBe(true);
         expect(store.set).toHaveBeenCalledWith('labels', newLabels);
     });
 
@@ -83,7 +82,7 @@ describe('Label Service', () => {
       url: 'label',
       method: 'POST'
     });
-    req.flush({ status: true , label: label }, okResponse);
+    req.flush(label, okResponse);
 
     httpMock.verify();
   }));
@@ -91,7 +90,7 @@ describe('Label Service', () => {
   it('GIVEN existing labels THEN it should successfully fetch all labels',
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
     spyOn(store, 'set');
-    const labels: Array<Label> = [
+    const labels: Label[] = [
       {
         id: 1,
         name: 'label',
@@ -104,12 +103,12 @@ describe('Label Service', () => {
       }
     ];
 
-    service.getAllLabels().subscribe((res: any) => {
-      expect(res.labels.length).toBe(2);
+    service.getAllLabels().subscribe((labels: Label[]) => {
+      expect(labels.length).toBe(2);
     });
 
     const req = httpMock.expectOne('label');
-    req.flush({ status: true, labels: labels }, okResponse);
+    req.flush(labels, okResponse);
     httpMock.verify();
     expect(store.set).toHaveBeenCalledWith('labels', labels);
   }));

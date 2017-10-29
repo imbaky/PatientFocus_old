@@ -199,23 +199,31 @@ describe('Document Service', () => {
   it('GIVEN an single document THEN it should successfully add labels',
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
 
-    const documents: Array<Document> = [{
+    const documents: Document[] = [{
       id: 1,
       name: 'CTScan1',
       patientid: 123,
       description: 'Scan from Jewish General Hospital',
-      url: 'testurl.com'
+      url: 'testurl.com',
+      labels: [{
+        id: 21,
+        name: "label21",
+        color: "greenyellow"
+      }]
     }];
 
     const id = documents[0].id;
 
-    const labels: Array<Label> = [
-      {
-        id: 1,
-        name: 'JGH',
-        color: 'Crimson'
-      }
-    ];
+    const labels: Label[] = [{
+      id: 21,
+      name: "label21",
+      color: "greenyellow"
+    },
+    {
+      id: 22,
+      name: "label22",
+      color: "darkblue"
+    }]
 
     service.addLabel(documents, labels)
       .subscribe((res: any) => {
@@ -230,12 +238,17 @@ describe('Document Service', () => {
   it('GIVEN a patient session THEN it should fetch the documents',
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
 
-    const documents: Array<Document> = [{
+    const documents: Document[] = [{
       id: 1,
       name: 'CTScan1',
       patientid: 123,
       description: 'Scan from Jewish General Hospital',
-      url: 'testurl.com'
+      url: 'testurl.com',
+      labels: [{
+        id: 21,
+        name: "label21",
+        color: "greenyellow"
+      }]
     }];
 
     service.getDocuments({id: 1} as Patient)

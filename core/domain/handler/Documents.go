@@ -2,12 +2,16 @@ package handlers
 
 import (
 	"net/http"
+	"encoding/json"
 	"fmt"
 	"log"
 	"bytes"
 	"strings"
 	"io"
 	"os"
+	"strconv"
+
+	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
 )
@@ -49,6 +53,68 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	sendBoolResponse(rw,err)
 }
 
+
+// form expected from frontend for document share
+type DocSharePayload struct {
+	Email 		string    `json:"email"`
+	Mesage  	string    `json:"message"`
+	Documents   []int  `json:"documents"`
+}
+
+// Patient shares docuement with doctor
+func ShareDocument(rw http.ResponseWriter, req *http.Request) {
+	// initialization
+	var docshare_payload DocSharePayload
+	// var dd model.DoctorDocument
+	var user model.User
+
+	err := json.NewDecoder(req.Body).Decode(&docshare_payload)
+	email := docshare_payload.Email
+	// convert array to string array
+	var documents_array []string
+	for _, i := range docshare_payload.Documents {
+		documents_array = append(documents_array, strconv.Itoa(i))
+	}
+
+	// look up doctor by email
+	user.Email = email
+	err = data.GetUserByEmail(&user)
+	if err != nil {
+		// return 404
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte(err.Error()))
+		return
+	}
+	// get id
+	if user.Doctor == nil {
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte("Doctor does not exist"))
+		return
+	}
+	// verify document ids
+	documents, err := data.GetDocumentsFromArray(documents_array)
+	if err != nil {
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte("One or more documents do not exist"))
+		return
+	}
+	// check lengths
+	if len(documents) != len(documents_array) {
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte("One or more documents do not exist"))
+		return
+	}
+	// share documents
+	err = data.LinkDoctorDocument(user, documents)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("Error sharing documents"))
+		return
+	}
+
+	return
+}
+
 type Session struct{ //temperary session wrapper to store user id. Needs to be deleted later once sessions are implemented
 	patient_id string
 
@@ -58,6 +124,3 @@ func createFileDestination(fileName string) (destination string) { //we need to 
 	session := &Session{patient_id: "patientId"}
 	return session.patient_id + "/" + fileName
 }
-
-
-

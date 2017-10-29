@@ -60,6 +60,38 @@ func GetUser(user *model.User) error {
 	return nil
 }
 
+func GetUserByEmail(user *model.User) error {
+	doctor := model.Doctor{}
+	db, err := GetConnection()
+	if err != nil {
+		return fmt.Errorf("GetUserByEmail :%v", err)
+	}
+	getUserQuery := `SELECT
+	 pfuser.fname,
+	 pfuser.lname,
+	 pfuser.password,
+	 pfuser.email,
+	 doctor.id
+	FROM
+	 pfuser
+	LEFT JOIN patient ON pfuser.id = patient.pfuser
+	LEFT JOIN doctor on pfuser.id = doctor.pfuser
+	WHERE
+	 pfuser.email = $1;`
+	err = db.QueryRow(getUserQuery, user.Email).
+		Scan(&user.FirstName,
+			&user.LastName,
+			&user.Password,
+			&user.Email,
+			&doctor.Id,
+		)
+	if err != nil {
+		return fmt.Errorf("could not get user :%v", err)
+	}
+	user.Doctor = &doctor
+	return nil
+}
+
 //AuthenticateUser returns an error if no user is found with such credentials and nil if the user is found
 func AuthenticateUser(user *model.User) error {
 	db, err := GetConnection()

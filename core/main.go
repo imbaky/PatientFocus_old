@@ -26,7 +26,8 @@ func main() {
 	}
 	router := mux.NewRouter()
 	router.HandleFunc("/patient", handlers.RegisterPatient).Methods("POST")
-	router.HandleFunc("/Document", midware.Chain(handlers.ReceiveDocument, midware.CheckSession())).Methods("POST")
+	router.HandleFunc("/document", midware.Chain(handlers.ReceiveDocument, midware.CheckSession())).Methods("POST")
+	router.HandleFunc("/document/share", midware.Chain(handlers.ShareDocument)).Methods("POST")
 	router.HandleFunc("/user/{uid}", midware.Chain(handlers.GetUser, midware.CheckSession())).Methods("GET")
 	router.HandleFunc("/user", handlers.RegisterUser).Methods("POST")
 

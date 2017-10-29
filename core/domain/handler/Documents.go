@@ -95,8 +95,9 @@ func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	var documents []model.Document
 	err = data.GetDocumentsFromArray(documents_array, &documents)
 	if err != nil {
-		rw.WriteHeader(http.StatusNotFound)
-		rw.Write([]byte("One or more documents do not exist"))
+		// TODO: log real error
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("Error retrieving documents from database"))
 		return
 	}
 	// check lengths

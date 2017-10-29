@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
+// services
+import { AuthGuard } from '../auth/shared/guards/auth/auth.guard';
+
 // modules
 import { SharedModule } from './shared/shared.module';
 
@@ -10,9 +13,11 @@ import { DashboardComponent } from '../core/ui/dashboard/components/dashboard/da
 import { DashboardModule } from '../core/ui/dashboard/dashboard.module';
 
 const ROUTES: Routes = [
-  { path: 'patient', component: DashboardComponent, children: [
-    { path: '', pathMatch: 'full', redirectTo: 'document' },
-    { path: 'document', loadChildren: './document/document.module#DocumentModule' }
+  { path: '', component: DashboardComponent, canActivate: [
+    AuthGuard
+  ], children: [
+    { path: '', loadChildren: './user/user.module#UserModule' },
+    { path: 'document', loadChildren: './document/document.module#DocumentModule' },
   ] }
 ];
 

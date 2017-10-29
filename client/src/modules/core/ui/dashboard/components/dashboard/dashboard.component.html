@@ -2,7 +2,19 @@
   <div class="header--logo">
     <img class="header--logo-img" src="/assets/images/logo-avatar.svg" alt="">
   </div>
-  <nav class="navbar navbar-light">
+  <nav class="navbar navbar-light justify-content-between">
+    <span *ngIf="isDoctor">
+      <span [px-popper]="patients" [px-popper-config]="{placement: 'bottom-start'}">
+        {{ (selectedPatient)? selectedPatient.user.first_name : 'Select a Patient' }}
+      </span>
+      <ng-template #patients>
+        <div class="dropdown-menu dropdown-menu--patient">
+          <a *ngFor="let patient  of patients$ | async"
+           class="dropdown-item"
+           (click)="select(patient)">{{ patient.user.first_name }}</a>
+        </div>
+      </ng-template>
+    </span>
     <span class="navbar-brand ml-auto" *ngIf="user$ | async as user">
       {{ user.first_name }} {{ user.last_name }}
     </span>
@@ -11,14 +23,16 @@
 <div class="content">
   <div class="nav-sidebar">
     <ul class="nav flex-column nav-sidebar--links">
-      <li *ngFor="let link of links"
-        class="nav-link nav-sidebar--link"
-        routerLinkActive="nav-sidebar--link__active"
-        [routerLinkActiveOptions]="{ exact: true }">
-        <a [routerLink]="[link.url]">
-          <img [src]="link.icon" alt="">
-        </a>
-      </li>
+      <ng-container *ngFor="let link of links">
+        <li *ngIf="!link.isVisible || (link.isVisible && link.isVisible())"
+          class="nav-link nav-sidebar--link"
+          routerLinkActive="nav-sidebar--link__active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <a [routerLink]="[link.url]">
+            <img [src]="link.icon" alt="">
+          </a>
+        </li>
+      </ng-container>
     </ul>
   </div>
   <div class="dashboard">

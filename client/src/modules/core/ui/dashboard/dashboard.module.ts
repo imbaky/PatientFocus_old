@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
+// modules
+import { UIGeneric } from '../generic/ui-generic.module';
+
 // containers
 import { UploadProgressComponent } from './containers/upload-progress/upload-progress.component';
 
@@ -13,11 +16,12 @@ import { UploadItemComponent } from './components/upload-item/upload-item.compon
   declarations: [
     DashboardComponent,
     UploadProgressComponent,
-    UploadItemComponent
+    UploadItemComponent,
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    UIGeneric
   ],
   exports: [
     DashboardComponent

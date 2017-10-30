@@ -21,7 +21,7 @@
 .document-sidebar--sub-header {
   border-bottom: 1px solid $px-grey;
   margin-top: 1rem;
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
 }
 
 .document-sidebar--share {
@@ -34,4 +34,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.document-sidebar--label + .document-sidebar--label  {
+  margin-top: .25rem;
 }

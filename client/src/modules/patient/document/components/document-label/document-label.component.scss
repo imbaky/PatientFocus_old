@@ -1,8 +1,11 @@
-.document-label {
+:host {
   display: block;
-  max-width: 100%;
-  padding: 6px 10px;
-  font-size: 12px;
+  + & {
+    margin-top: 1rem;
+  }
+}
+
+.document-label {
   text-align: center;
-  margin-top: 3px;
+  border-radius: .25rem;
 }

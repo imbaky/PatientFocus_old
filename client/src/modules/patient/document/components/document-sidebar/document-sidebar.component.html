@@ -23,9 +23,7 @@
         <document-labels></document-labels>
       </ng-template>
     </div>
-    <div *ngFor="let label of documents[0].labels">
-      <document-label [label]="label"></document-label>
-    </div>
+    <document-label *ngFor="let label of documents[0].labels" [label]="label" class="document-sidebar--label"></document-label>
   </ng-container>
   <ng-template #select>
     <div class="text-center mt-5">

@@ -106,6 +106,7 @@ export class PopperDirective implements OnInit, OnDestroy {
     }
     this.isOpen = true;
     document.body.appendChild(this.popperElement);
+    this.popper.scheduleUpdate();
   }
 
   private configure(configuration: PopperConfiguration) {

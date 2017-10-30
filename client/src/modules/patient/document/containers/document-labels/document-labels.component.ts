@@ -18,6 +18,7 @@ export class DocumentLabelsComponent implements OnInit {
   get value(){
     return this.search.value;
   }
+
   constructor(
     private labelService: LabelService
   ) { }

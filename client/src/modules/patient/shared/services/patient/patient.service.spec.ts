@@ -10,7 +10,7 @@ const okResponse = { status: 200, statusText: 'OK' };
 describe('Document Service', () => {
 
   let patient: Patient;
-  let patients: Array<Patient>;
+  let patients: Patient[];
   let service: PatientService;
   let http: HttpClient;
   let store: Store;
@@ -88,7 +88,6 @@ describe('Document Service', () => {
   }));
 
   it('SHOULD get all patients', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-
     service.getAllPatients()
       .subscribe((res: any) => {
         expect(res.patients.length).toBe(3);
@@ -100,7 +99,6 @@ describe('Document Service', () => {
     });
 
     req.flush({ status: true , patients: patients }, okResponse);
-
   }));
 
 });

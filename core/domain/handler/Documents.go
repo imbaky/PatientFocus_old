@@ -14,8 +14,6 @@ import (
 	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
-	"github.com/imbaky/PatientFocus/core/data"
-	"encoding/json"
 )
 
 

@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
 
-import { Label } from '../../../shared/services/label/label.service';
-
 @Component({
   selector: 'document-label',
   templateUrl: 'document-label.component.html',
@@ -10,7 +8,7 @@ import { Label } from '../../../shared/services/label/label.service';
 export class DocumentLabelComponent {
 
   @Input()
-  label: Label;
+  label;
 
   constructor() { }
 

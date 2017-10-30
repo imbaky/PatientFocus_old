@@ -6,12 +6,14 @@ import { AuthService } from '../../../../../auth/shared/services/auth/auth.servi
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../environments/environment';
 
 export interface DashboardNavLink {
   icon: string;
   label: string;
   url: string;
-  isVisible?: () => boolean
+  isVisible?: () => boolean;
 }
 
 @Component({
@@ -21,20 +23,17 @@ export interface DashboardNavLink {
 })
 export class DashboardComponent {
 
-  patients$ = Observable.of([
-    {
-      id: 1,
-      user: {
-        first_name: 'Bob'
-      },
-      race: 'Canadian',
-      gender: 'M',
-      date_of_birth: '2001/2/12',
-      language: 'English'
-    }
-  ]);
+  patients$ = this.http.get(`${environment.host_server}/patient`);
+
+  links: Array<DashboardNavLink> = [
+    { icon: '/assets/images/icons/user.svg', label: 'user', url: '/' },
+    { icon: '/assets/images/icons/document.svg', label: 'Documents', url: '/document', isVisible: () => {
+      return this.selectedPatientService.getSelectedPatientId() !== null;
+    }}
+  ];
 
   constructor(
+    private http: HttpClient,
     private store: Store,
     private authService: AuthService,
     private selectedPatientService: SelectedPatientService
@@ -55,12 +54,5 @@ export class DashboardComponent {
   select(patient) {
     this.selectedPatientService.setSelectedPatient(patient);
   }
-
-  links: Array<DashboardNavLink> = [
-    { icon: '/assets/images/icons/user.svg', label: 'user', url: '/' },
-    { icon: '/assets/images/icons/document.svg', label: 'Documents', url: '/document', isVisible: () => {
-      return this.selectedPatientService.getSelectedPatientId() !== null;
-    }}
-  ];
 
 }

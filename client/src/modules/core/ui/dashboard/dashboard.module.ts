@@ -11,6 +11,7 @@ import { UploadProgressComponent } from './containers/upload-progress/upload-pro
 // components
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { UploadItemComponent } from './components/upload-item/upload-item.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { UploadItemComponent } from './components/upload-item/upload-item.compon
   imports: [
     CommonModule,
     RouterModule,
-    UIGeneric
+    UIGeneric,
+    HttpClientModule,
   ],
   exports: [
     DashboardComponent

@@ -50,10 +50,10 @@ export interface UploadProgress  {
 export interface Document {
   id: number;
   name: string;
-  size: number,
-  labels?: Label[],
+  size: number;
+  labels?: Label[];
   patient?: Patient | number;
-  last_modified?: User;
+  last_modified_by?: User | number;
   url?: string;
   description?: string;
 }
@@ -251,7 +251,7 @@ export class DocumentService {
       return label.id;
     });
 
-    return this.http.put(`documents/${id}/labels/`, {
+    return this.http.put(`document/${id}/labels/`, {
       labels: labelIds
     });
   }

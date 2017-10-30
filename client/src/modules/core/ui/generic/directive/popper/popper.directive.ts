@@ -17,7 +17,9 @@ interface PopperConfiguration extends PopperOptions {
   selector: 'px-popper',
   template: `<ng-content></ng-content>`
 })
-export class PopperComponent { }
+export class PopperComponent {
+  isOpen = false;
+}
 
 @Directive({
   selector: '[px-popper]'
@@ -35,6 +37,7 @@ export class PopperDirective implements OnInit, OnDestroy {
   popper: Popper = null;
   popperElement: HTMLElement;
   popperFactory: ComponentFactory<PopperComponent>;
+  component:PopperComponent;
 
   private static isSameOrWithinElement(target: HTMLElement, element: HTMLElement) {
     return target === element || element.contains(target);
@@ -78,6 +81,9 @@ export class PopperDirective implements OnInit, OnDestroy {
     const viewRef = this.viewContainerRef.createEmbeddedView(<TemplateRef<any>>this.body, null);
     const ref = this.viewContainerRef.createComponent(this.popperFactory, 0, this.injector, [viewRef.rootNodes]);
 
+    this.component = ref.instance;
+    this.component.isOpen = false;
+
     this.popperElement = ref.location.nativeElement;
     this.popperElement = this.popperElement.parentNode.removeChild(this.popperElement);
 
@@ -88,8 +94,9 @@ export class PopperDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.erd.uninstall(this.popperElement);
+    this.hide();
     this.popper.destroy();
+    this.erd.uninstall(this.popperElement);
   }
 
   hide() {
@@ -97,6 +104,7 @@ export class PopperDirective implements OnInit, OnDestroy {
       return;
     }
     this.isOpen = false;
+    this.component.isOpen = this.isOpen;
     this.popperElement = this.popperElement.parentNode.removeChild(this.popperElement);
   }
 
@@ -105,12 +113,13 @@ export class PopperDirective implements OnInit, OnDestroy {
       return;
     }
     this.isOpen = true;
+    this.component.isOpen = this.isOpen;
     document.body.appendChild(this.popperElement);
     this.popper.scheduleUpdate();
   }
 
   private configure(configuration: PopperConfiguration) {
-    this.config = { closeOnOutsideClick: true, removeOnDestroy: true,  ...configuration || { } } as PopperConfiguration ;
+    this.config = { closeOnOutsideClick: true,  ...configuration || { } } as PopperConfiguration ;
   }
 
 }

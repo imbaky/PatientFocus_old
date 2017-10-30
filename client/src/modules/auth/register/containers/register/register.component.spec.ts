@@ -76,7 +76,7 @@ describe('Register Component', () => {
     component.onRegister();
 
     expect(component.form.valid).toBe(true);
-    expect(MockRouter.navigate).toHaveBeenCalledWith(['/']);
+    expect(MockRouter.navigate).toHaveBeenCalledWith(['/auth/login']);
   });
 
   it('GIVEN invalid form values THEN it should not register the user.', () => {

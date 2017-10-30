@@ -14,7 +14,7 @@ import { AuthPageComponent } from './components/auth-page/auth-page.component';
 import { AuthInterceptor } from './interceptors/auth/auth.interceptor';
 
 // local storage
-import { LocalStorageModule, LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageModule } from 'angular-2-local-storage';
 
 const ROUTES: Routes = [ ];
 

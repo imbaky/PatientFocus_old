@@ -46,4 +46,9 @@ export class PatientService {
       .catch(err => Observable.throw(err));
   }
 
+  getAllPatients(): Observable<Array<Patient>> {
+    return this.http.get(`${environment.host_server}/patients/`)
+      .catch(err => Observable.throw(err));
+  }
+
 }

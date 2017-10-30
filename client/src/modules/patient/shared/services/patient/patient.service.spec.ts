@@ -95,7 +95,7 @@ describe('Document Service', () => {
         expect(res.patients[2].race).toBe('Nigerian');
       });
     const req = httpMock.expectOne( {
-      url: '/patients/',
+      url: '/patient',
       method: 'GET'
     });
 

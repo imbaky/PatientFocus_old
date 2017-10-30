@@ -35,6 +35,11 @@ export class PatientService {
     private store: Store
   ) {}
 
+  /**
+   * Get a patient by id
+   * @param {number} id
+   * @returns {Observable<Patient>}
+   */
   getPatient(id: number): Observable<Patient> {
     return this.http.get(`${environment.host_server}/patients/${id}`)
       .do((patient: Patient) => {
@@ -43,6 +48,15 @@ export class PatientService {
           this.patient =  patient;
         }
       })
+      .catch(err => Observable.throw(err));
+  }
+
+  /**
+   * Get all patients
+   * @returns {Observable<Patient[]>}
+   */
+  getAllPatients(): Observable<Patient[]> {
+    return this.http.get(`${environment.host_server}/patient`)
       .catch(err => Observable.throw(err));
   }
 

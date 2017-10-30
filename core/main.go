@@ -30,7 +30,7 @@ func main() {
 	router.HandleFunc("/document/share", midware.Chain(handlers.ShareDocument)).Methods("POST")
 	router.HandleFunc("/user/{uid}", midware.Chain(handlers.GetUser, midware.CheckSession())).Methods("GET")
 	router.HandleFunc("/user", handlers.RegisterUser).Methods("POST")
-
+  router.HandleFunc( "/patientdocuments", handlers.GetSharedDocuments).Methods("POST")
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServeTLS(":9000", configuration.DirectoryForCertificate, configuration.DirectoryForKey, nil))
 }

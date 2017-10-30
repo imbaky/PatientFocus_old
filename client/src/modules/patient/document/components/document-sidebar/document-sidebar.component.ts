@@ -8,6 +8,7 @@ import { SelectedDocumentService } from '../../../shared/services/selected-docum
 })
 export class DocumentSidebarComponent {
 
+  configuration = { placement : 'bottom-end' };
 
   constructor(
     private selectedService: SelectedDocumentService

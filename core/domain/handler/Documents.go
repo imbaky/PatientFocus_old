@@ -2,16 +2,18 @@ package handlers
 
 import (
 	"net/http"
+	"encoding/json"
 	"fmt"
 	"log"
 	"bytes"
 	"strings"
 	"io"
 	"os"
+	"strconv"
+
+	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
-	"github.com/imbaky/PatientFocus/core/data"
-	"encoding/json"
 )
 
 
@@ -49,6 +51,67 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	// data.SaveDocument(&document)
 
 	sendBoolResponse(rw,err)
+}
+
+// form expected from frontend for document share
+type DocSharePayload struct {
+	Email 		string    `json:"email"`
+	Mesage  	string    `json:"message"`
+	Documents   []int  `json:"documents"`
+}
+
+// Patient shares docuement with doctor
+func ShareDocument(rw http.ResponseWriter, req *http.Request) {
+	// initialization
+	var docSharePayload DocSharePayload
+	var user model.User
+
+	err := json.NewDecoder(req.Body).Decode(&docSharePayload)
+	// convert array to string array
+	var documentsArray []string
+	for _, i := range docSharePayload.Documents {
+		documentsArray = append(documentsArray, strconv.Itoa(i))
+	}
+
+	// look up doctor by email
+	user.Email = docSharePayload.Email
+	err = data.GetUserByEmail(&user)
+	if err != nil {
+		// return 404
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte(err.Error()))
+		return
+	}
+	// get id
+	if user.Doctor == nil {
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte("Doctor does not exist"))
+		return
+	}
+	// verify document ids
+	var documents []model.Document
+	err = data.GetDocumentsFromArray(documentsArray, &documents)
+	if err != nil {
+		// TODO: log real error
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("Error retrieving documents from database"))
+		return
+	}
+	// check lengths
+	if len(documents) != len(documentsArray) {
+		rw.WriteHeader(http.StatusNotFound)
+		rw.Write([]byte("One or more documents do not exist"))
+		return
+	}
+	// share documents
+	err = data.LinkDoctorDocument(user, documents)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("Error sharing documents"))
+		return
+	}
+
+	return
 }
 
 //TODO use jwt token to get doctor
@@ -95,16 +158,11 @@ func GetSharedDocuments(rw http.ResponseWriter, req *http.Request) {
 	rw.Write(js)
 }
 
-
 type Session struct{ //temperary session wrapper to store user id. Needs to be deleted later once sessions are implemented
 	patient_id string
-
 }
 
 func createFileDestination(fileName string) (destination string) { //we need to finalize file structure
 	session := &Session{patient_id: "patientId"}
 	return session.patient_id + "/" + fileName
 }
-
-
-

@@ -63,19 +63,19 @@ type DocSharePayload struct {
 // Patient shares docuement with doctor
 func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	// initialization
-	var docshare_payload DocSharePayload
+	var docSharePayload DocSharePayload
 	// var dd model.DoctorDocument
 	var user model.User
 
-	err := json.NewDecoder(req.Body).Decode(&docshare_payload)
+	err := json.NewDecoder(req.Body).Decode(&docSharePayload)
 	// convert array to string array
 	var documents_array []string
-	for _, i := range docshare_payload.Documents {
+	for _, i := range docSharePayload.Documents {
 		documents_array = append(documents_array, strconv.Itoa(i))
 	}
 
 	// look up doctor by email
-	user.Email = docshare_payload.Email
+	user.Email = docSharePayload.Email
 	err = data.GetUserByEmail(&user)
 	if err != nil {
 		// return 404

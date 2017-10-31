@@ -15,7 +15,6 @@ import (
 	"encoding/json"
 	"archive/zip"
 	"path/filepath"
-	"bufio"
 )
 
 
@@ -173,35 +172,58 @@ func GetSharedDocuments(rw http.ResponseWriter, req *http.Request) {
 		sendBoolResponse(rw, err)
 		return
 	}
-	// Create a buffer to write our archive to.
-	buf := new(bytes.Buffer)
+	var zipPath string = configuration.DirectoryForUploadedDocs + strconv.Itoa(userPatient.Doctor.Id) + "/" + "share.zip"
+	os.Mkdir(configuration.DirectoryForUploadedDocs + strconv.Itoa(userPatient.Doctor.Id), 0777)
+	zipFile, err := os.Create(zipPath)
+	defer zipFile.Close()
+	if err != nil {
+		fmt.Printf("%v", err)
+		sendBoolResponse(rw, err)
+		return
+	}
 	// Create a new zip archive.
-	w := zip.NewWriter(buf)
-	defer w.Close()
-	createZip(w, urls)
+	zipWriter := zip.NewWriter(zipFile)
+	createZip(zipWriter, urls)
+	_, zipFileName := filepath.Split(zipPath)
+	var contentDisposition string = "attachment; filename=" + "'" + zipFileName + "'"
 
 	rw.Header().Set("Content-Type", "application/zip")
-	rw.Header().Set("Content-Disposition", "attachment; filename='file.html.zip'")
-	http.ServeFile(rw, req, configuration.DirectoryForUploadedDocs)
-
+	rw.Header().Set("Content-Disposition", contentDisposition)
+	http.ServeFile(rw, req, zipPath)
+	os.RemoveAll(configuration.DirectoryForUploadedDocs + strconv.Itoa(ids.PatientId))
 }
 
-func createZip(zip *zip.Writer, urls []string) {
-
+func createZip(zipWriter *zip.Writer, urls []string) {
+	defer zipWriter.Close()
 	for _, url := range urls {
 		file, err := os.Open(url)
-		scanner := bufio.NewScanner(file)
-		_, fileName := filepath.Split(url)
-		zipFileWriter, err :=zip.Create(fileName)
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = zipFileWriter.Write(scanner.Bytes())
+		defer file.Close()
+		// Get the file information
+		info, err := file.Stat()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		header, err := zip.FileInfoHeader(info)
+		if err != nil {
+			log.Fatal(err)
+		}
+		header.Method = zip.Deflate
+
+		writer, err := zipWriter.CreateHeader(header)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = io.Copy(writer, file)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 }
+
 
 type Session struct{ //temperary session wrapper to store user id. Needs to be deleted later once sessions are implemented
 	patient_id string

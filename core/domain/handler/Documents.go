@@ -68,7 +68,6 @@ func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	var user model.User
 
 	err := json.NewDecoder(req.Body).Decode(&docshare_payload)
-	email := docshare_payload.Email
 	// convert array to string array
 	var documents_array []string
 	for _, i := range docshare_payload.Documents {
@@ -76,7 +75,7 @@ func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// look up doctor by email
-	user.Email = email
+	user.Email = docshare_payload.Email
 	err = data.GetUserByEmail(&user)
 	if err != nil {
 		// return 404

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"encoding/json"
 	"fmt"
 	"log"
 	"bytes"
@@ -10,10 +9,13 @@ import (
 	"io"
 	"os"
 	"strconv"
-
-	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
+	"github.com/imbaky/PatientFocus/core/data"
+	"encoding/json"
+	"archive/zip"
+	"path/filepath"
+	"bufio"
 )
 
 
@@ -144,19 +146,37 @@ func GetSharedDocuments(rw http.ResponseWriter, req *http.Request) {
 		sendBoolResponse(rw, err)
 		return
 	}
-	type urlJsonWrapper struct {
-		Urls []string
-	}
-	urlsJson := urlJsonWrapper{}
-	urlsJson.Urls = urls
-	js, err := json.Marshal(urlsJson)
-	if err != nil {
-		fmt.Printf("%v", err)
-		sendBoolResponse(rw, err)
-	}
-	rw.Header().Set("Content-Type", "application/json")
-	rw.Write(js)
+	// Create a buffer to write our archive to.
+	buf := new(bytes.Buffer)
+	// Create a new zip archive.
+	w := zip.NewWriter(buf)
+	defer w.Close()
+	createZip(w, urls)
+	//files := []zip.File{}
+
+	rw.Header().Set("Content-Type", "application/zip")
+	rw.Header().Set("Content-Disposition", "attachment; filename='file.html.zip'")
+	http.ServeFile(rw, req, configuration.DirectoryForUploadedDocs)
+
 }
+
+func createZip(zip *zip.Writer, urls []string) {
+
+	for _, url := range urls {
+		file, err := os.Open(url)
+		scanner := bufio.NewScanner(file)
+		_, fileName := filepath.Split(url)
+		zipFileWriter, err :=zip.Create(fileName)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = zipFileWriter.Write(scanner.Bytes())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
 
 type Session struct{ //temperary session wrapper to store user id. Needs to be deleted later once sessions are implemented
 	patient_id string

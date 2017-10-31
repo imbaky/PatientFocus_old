@@ -64,14 +64,13 @@ type DocSharePayload struct {
 func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	// initialization
 	var docSharePayload DocSharePayload
-	// var dd model.DoctorDocument
 	var user model.User
 
 	err := json.NewDecoder(req.Body).Decode(&docSharePayload)
 	// convert array to string array
-	var documents_array []string
+	var documentsArray []string
 	for _, i := range docSharePayload.Documents {
-		documents_array = append(documents_array, strconv.Itoa(i))
+		documentsArray = append(documentsArray, strconv.Itoa(i))
 	}
 
 	// look up doctor by email
@@ -91,7 +90,7 @@ func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	}
 	// verify document ids
 	var documents []model.Document
-	err = data.GetDocumentsFromArray(documents_array, &documents)
+	err = data.GetDocumentsFromArray(documentsArray, &documents)
 	if err != nil {
 		// TODO: log real error
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -99,7 +98,7 @@ func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	// check lengths
-	if len(documents) != len(documents_array) {
+	if len(documents) != len(documentsArray) {
 		rw.WriteHeader(http.StatusNotFound)
 		rw.Write([]byte("One or more documents do not exist"))
 		return

@@ -4,16 +4,15 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
-	"log"
 	"bytes"
 	"strings"
 	"io"
 	"os"
 	"strconv"
-
 	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
+	"log"
 )
 
 
@@ -26,29 +25,39 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 		fmt.Printf("%v",err)
-		panic(err)
 		sendBoolResponse(rw,err)
 		return
 	}
 	name := strings.Split(header.Filename, ".")
 	fmt.Printf("File name %s\n", name[0])
 	io.Copy(&buf, file)
-	directory := configuration.DirectoryForUploadedDocs + header.Filename
-	var osFile, osErr = os.Create(directory)
+	tkn := strings.Replace(req.Header.Get("Authorization"), "Bearer ", "", -1)
+	id, err := data.GetIdFromSession(tkn)
+	if err != nil {
+		fmt.Printf("%v",err)
+	}
+	user := model.User{}
+	user.Id = id
+	data.GetUser(&user)
+	if err != nil {
+		fmt.Printf("%v",err)
+	}
+	fileDir := configuration.DirectoryForUploadedDocs + "patient-" + strconv.Itoa(user.Patient.Id)
+	err = os.Mkdir(fileDir, 0777)
+	if err != nil {
+		fmt.Printf("%v",err)
+	}
+	fileUrl := fileDir + "/" + header.Filename
+	var osFile, osErr = os.Create(fileUrl)
 	defer osFile.Close()
 	if osErr != nil {
-		fmt.Printf("There was a problem writing the file to " + directory + "\n")
+		fmt.Printf("There was a problem writing the file to " + fileUrl + "\n")
 		panic(err)
 		sendBoolResponse(rw,err)
 		return
 	}
 	osFile.Write(buf.Bytes())
 	buf.Reset()
-
-	// TODO: fill document model
-	document.Url = name[0]
-	// TODO: store document as a record in database
-	// data.SaveDocument(&document)
 
 	sendBoolResponse(rw,err)
 }

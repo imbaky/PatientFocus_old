@@ -11,9 +11,17 @@
         </button>
       </div>
     </div>
+    <div>
+      <ng-container *ngIf="documents$ | async as documents; else documentsLoading">
+        <document-list [documents]="documents"></document-list>
+      </ng-container>
+      <ng-template #documentsLoading>
+        Loading Documents
+      </ng-template>
+    </div>
   </div>
   <div class="document--sidebar">
-
+    <document-sidebar></document-sidebar>
   </div>
 </div>
 

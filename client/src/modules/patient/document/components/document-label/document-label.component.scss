@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  + & {
+    margin-top: 1rem;
+  }
+}
+
+.document-label {
+  text-align: center;
+  border-radius: .25rem;
+}

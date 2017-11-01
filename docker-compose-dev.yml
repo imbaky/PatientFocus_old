@@ -1,4 +1,4 @@
-version: '3.1'
+version: '2.1'
 
 services:
     frontend:
@@ -6,21 +6,30 @@ services:
         ports:
             - "80:80"
             - "443:443"
-        depends_on:
-            - "db"
+    
+    db:
+        image: postgres
+        environment:
+            POSTGRES_USER: pf
+            POSTGRES_PASSWORD: patientfocus
+            POSTGRES_DB: patientfocus
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready"]
+            interval: 10s
+            timeout: 10s
+            retries: 3
+        volumes:
+            - /Users/cyap/work/data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
 
     backend:
         image: backend
         ports:
             - "9000:9000"
         depends_on:
-            - "db"
-
-    db:
-        image: postgres
-        environment:
-            POSTGRES_DB: patientfocus
-        volumes:
-            - /home/cyap/work/data:/var/lib/postgresql/data
-        ports:
-            - "5432:5432"
+            db:
+                condition: service_healthy
+        links:
+            - db:db
+    

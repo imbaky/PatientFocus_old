@@ -41,7 +41,7 @@ $box-showdow: 1px 1px 25px rgba(0, 0, 0, 0.1);
 }
 
 .nav-sidebar {
-  width: $header-height;
+  min-width: $header-height;
   display: flex;
   align-items: center;
   position: relative;

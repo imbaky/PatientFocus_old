@@ -4,7 +4,12 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { Observable } from 'rxjs/Observable';
 
-import { DocumentService, UploadFile, UploadStatus } from './document.service';
+import { DocumentService, UploadFile, UploadStatus, Document } from './document.service';
+import { Label } from '../label/label.service';
+import { Store } from '../../../../../app/store';
+import { Patient } from '../patient/patient.service';
+
+const okResponse = { status: 200, statusText: 'OK' };
 
 describe('Document Service', () => {
 
@@ -190,5 +195,72 @@ describe('Document Service', () => {
 
     expect(service.triggerUpload).not.toHaveBeenCalled();
   });
+
+  it('GIVEN an single document THEN it should successfully add labels',
+    inject([HttpTestingController], (httpMock: HttpTestingController) => {
+
+    const documents: Document[] = [{
+      id: 1,
+      name: 'CTScan1',
+      patientid: 123,
+      description: 'Scan from Jewish General Hospital',
+      url: 'testurl.com',
+      labels: [{
+        id: 21,
+        name: 'label21',
+        color: 'greenyellow'
+      }]
+    }];
+
+    const id = documents[0].id;
+
+    const labels: Label[] = [{
+      id: 21,
+      name: 'label21',
+      color: 'greenyellow'
+    },
+    {
+      id: 22,
+      name: 'label22',
+      color: 'darkblue'
+    }];
+
+    service.addLabel(documents, labels)
+      .subscribe((res: any) => {
+        expect(res.status).toBe(true);
+      });
+
+    const req = httpMock.expectOne(`documents/${id}/labels/`);
+    req.flush({ status: true }, okResponse);
+    httpMock.verify();
+  }));
+
+  it('GIVEN a patient session THEN it should fetch the documents',
+    inject([HttpTestingController], (httpMock: HttpTestingController) => {
+
+    const documents: Document[] = [{
+      id: 1,
+      name: 'CTScan1',
+      patientid: 123,
+      description: 'Scan from Jewish General Hospital',
+      url: 'testurl.com',
+      labels: [{
+        id: 21,
+        name: 'label21',
+        color: 'greenyellow'
+      }]
+    }];
+
+    service.getDocuments({id: 1} as Patient)
+      .subscribe((res: any) => {
+        expect(documents[0].name).toBe('CTScan1');
+        expect(documents.length).toBe(1);
+      });
+
+    const req = httpMock.expectOne(`/documents?patient_id=1`);
+    req.flush(documents, okResponse);
+
+    httpMock.verify();
+  }));
 
 });

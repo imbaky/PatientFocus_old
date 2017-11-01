@@ -22,6 +22,8 @@ var (
 	registerUser    = handlers.RegisterUser
 	registerPatient = handlers.RegisterPatient
 	receiveDoc      = handlers.ReceiveDocument
+  shareDoc        = handlers.ShareDocument
+  getSharedDocs   = handlers.GetSharedDocuments
 )
 
 //Initialize router and the endpoint as well as the database schema
@@ -30,10 +32,12 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/document", chain(receiveDoc, logInfo, session)).Methods("POST")
-	router.HandleFunc("/auth/login", chain(login, logInfo)).Methods("POST")
+  router.HandleFunc("/document/share", midware.Chain(shareDoc, logInfo, session)).Methods("POST")
 	router.HandleFunc("/user/{uid}", chain(getUser, logInfo, session)).Methods("GET")
+  router.HandleFunc("/auth/login", chain(login, logInfo)).Methods("POST")
 	router.HandleFunc("/auth/register", chain(registerUser, logInfo)).Methods("POST")
 	router.HandleFunc("patient", chain(registerPatient, logInfo)).Methods("POST")
+  router.HandleFunc( "/patientdocuments", getSharedDocs, logInfo, session).Methods("POST")
 
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServeTLS(":9000", configuration.DirectoryForCertificate, configuration.DirectoryForKey, nil))

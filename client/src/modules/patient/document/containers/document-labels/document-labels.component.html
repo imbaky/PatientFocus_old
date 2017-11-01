@@ -1,0 +1,10 @@
+<div class="document-labels">
+  <div class="input-group document-labels--input-wrap">
+    <input type="text" class="form-control document-labels--form-control" placeholder="Search..." [formControl]="search">
+  </div>
+  <div class="document-labels--list">
+    <document-label class="document-labels--item"
+      *ngFor="let label of labels$ | async | filter:value:'name'"
+      [label]="label"></document-label>
+  </div>
+</div>

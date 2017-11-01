@@ -5,8 +5,10 @@ import { Observable } from 'rxjs/Observable';
 
 import { Store } from '../../../../../app/store';
 
+import { environment } from '../../../../../environments/environment';
+
 export interface Label {
-  id?: number;
+  id: number;
   name: string;
   color: string;
 }
@@ -25,11 +27,11 @@ export class LabelService {
    * @returns {Observable<any>}
    */
   createLabel(label: Label): Observable<any> {
-    return this.http.post('label', label)
-      .do((res: any) => {
-        if (res.label) {
+    return this.http.post(`${environment.host_server}/labels`, label)
+      .do((labelsRes: Label) => {
+        if (labelsRes) {
           this.store.select('labels').subscribe((labels: any) => {
-            labels.push(res.label);
+            labels.push(label);
             this.store.set('labels', labels);
           });
         }
@@ -42,11 +44,9 @@ export class LabelService {
    * @returns {Observable<T>}
    */
   getAllLabels(): Observable<any> {
-    return this.http.get('label')
-      .do((res: any) => {
-        if (res.labels) {
-          this.store.set('labels', res.labels);
-        }
+    return this.http.get(`${environment.host_server}/labels`)
+      .do((labels: Label[]) => {
+        this.store.set('labels', labels);
       })
       .catch((err) => Observable.throw(err));
   }

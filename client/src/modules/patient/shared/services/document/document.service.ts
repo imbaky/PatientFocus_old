@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
+
+import { Label } from '../label/label.service';
+import { Patient } from '../patient/patient.service';
+
+import { environment } from '../../../../../environments/environment';
 
 /**
  * A wrapper to contain the file to be uploaded, the request promise and status.
@@ -38,6 +45,17 @@ export interface UploadProgress  {
   current: number;
   total: number;
 }
+
+export interface Document {
+  id: number;
+  name: string;
+  patientid: number;
+  url: string;
+  description: string;
+  labels: Label[];
+}
+
+export declare type Documents = Document[];
 
 /**
  * Upload statuses for UploadFile
@@ -203,6 +221,32 @@ export class DocumentService {
     }
 
     this.triggerUpload();
+  }
+
+  /**
+   * Gets all documents of the patient.
+   * @returns {Observable<R|T>}
+   */
+  getDocuments(patient: Patient): Observable<Documents> {
+    return this.http.get(`${environment.host_server}/documents?patient_id=${patient.id}`)
+      .catch((err) => Observable.throw(err));
+  }
+
+  /**
+   * Adds selected labels to a list of documents
+   * // documents/{document-id}/labels/
+   * @param documents - the list of documents
+   * @param labels - the list of labels to add
+   */
+  addLabel(documents: Array<Document>, labels: Array<Label>): Observable<any> {
+    const id = documents[0].id;
+    const labelIds = labels.map((label) => {
+      return label.id;
+    });
+
+    return this.http.put(`documents/${id}/labels/`, {
+      labels: labelIds
+    });
   }
 
 }

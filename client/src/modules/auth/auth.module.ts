@@ -8,7 +8,7 @@ import { SharedModule } from './shared/shared.module';
 
 const ROUTES: Routes = [
   { path: 'auth', component: AuthPageComponent, children: [
-    { path: '', redirectTo: 'register', pathMatch: 'full' },
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'register', loadChildren: './register/register.module#RegisterModule' },
     { path: 'login', loadChildren: './login/login.module#LoginModule'}
   ]}

@@ -12,6 +12,7 @@ import (
 	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
+	"time"
 	"log"
 )
 
@@ -42,7 +43,8 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Printf("%v",err)
 	}
-	fileDir := configuration.DirectoryForUploadedDocs + "patient-" + strconv.Itoa(user.Patient.Id)
+	var fileDir = ""
+	createFileDestination(&fileDir, user)
 	err = os.Mkdir(fileDir, 0777)
 	if err != nil {
 		fmt.Printf("%v",err)
@@ -58,7 +60,17 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	}
 	osFile.Write(buf.Bytes())
 	buf.Reset()
-
+	document.Url = fileUrl
+	timeStamp := time.Now().Format(time.Stamp)
+	document.Date_created = timeStamp
+	document.Date_modified = timeStamp
+	err = data.InsertPatientDocument(document, *user.Patient)
+	if err != nil {
+		fmt.Printf("%v", err)
+		panic(err)
+		sendBoolResponse(rw,err)
+		return
+	}
 	sendBoolResponse(rw,err)
 }
 
@@ -171,7 +183,10 @@ type Session struct{ //temperary session wrapper to store user id. Needs to be d
 	patient_id string
 }
 
-func createFileDestination(fileName string) (destination string) { //we need to finalize file structure
-	session := &Session{patient_id: "patientId"}
-	return session.patient_id + "/" + fileName
+func createFileDestination(fileDir *string, user model.User) { //we need to finalize file structure
+	if user.Patient != nil {
+		*fileDir = configuration.DirectoryForUploadedDocs + "patient-" + strconv.Itoa(user.Patient.Id)
+	} else {
+		*fileDir = configuration.DirectoryForUploadedDocs + "doctor-" + strconv.Itoa(user.Doctor.Id)
+	}
 }

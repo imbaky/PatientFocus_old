@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"encoding/json"
 	"fmt"
 	"log"
 	"bytes"
@@ -10,10 +9,13 @@ import (
 	"io"
 	"os"
 	"strconv"
-
-	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
+	"github.com/imbaky/PatientFocus/core/data"
+	"encoding/json"
+	"archive/zip"
+    "strconv"
+	"path/filepath"
 )
 
 
@@ -144,19 +146,63 @@ func GetSharedDocuments(rw http.ResponseWriter, req *http.Request) {
 		sendBoolResponse(rw, err)
 		return
 	}
-	type urlJsonWrapper struct {
-		Urls []string
-	}
-	urlsJson := urlJsonWrapper{}
-	urlsJson.Urls = urls
-	js, err := json.Marshal(urlsJson)
+	var zipPath string = configuration.DirectoryForUploadedDocs + strconv.Itoa(userPatient.Doctor.Id) + "/" + "share.zip"
+	os.Mkdir(configuration.DirectoryForUploadedDocs + strconv.Itoa(userPatient.Doctor.Id), 0777)
+	zipFile, err := os.Create(zipPath)
+	defer zipFile.Close()
 	if err != nil {
 		fmt.Printf("%v", err)
 		sendBoolResponse(rw, err)
+		return
 	}
-	rw.Header().Set("Content-Type", "application/json")
-	rw.Write(js)
+	// Create a new zip archive.
+	zipWriter := zip.NewWriter(zipFile)
+	createZip(zipWriter, urls)
+	_, zipFileName := filepath.Split(zipPath)
+	var contentDisposition string = "attachment; filename=" + "'" + zipFileName + "'"
+
+	if err != nil {
+		fmt.Printf("%v", err)
+		sendBoolResponse(rw, err)
+		return
+	}
+	rw.Header().Set("Content-Type", "application/zip")
+	rw.Header().Set("Content-Disposition", contentDisposition)
+	http.ServeFile(rw, req, zipPath)
+	os.RemoveAll(configuration.DirectoryForUploadedDocs + strconv.Itoa(ids.PatientId))
 }
+
+func createZip(zipWriter *zip.Writer, urls []string) {
+	defer zipWriter.Close()
+	for _, url := range urls {
+		file, err := os.Open(url)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		// Get the file information
+		info, err := file.Stat()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		header, err := zip.FileInfoHeader(info)
+		if err != nil {
+			log.Fatal(err)
+		}
+		header.Method = zip.Deflate
+
+		writer, err := zipWriter.CreateHeader(header)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = io.Copy(writer, file)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
 
 type Session struct{ //temperary session wrapper to store user id. Needs to be deleted later once sessions are implemented
 	patient_id string

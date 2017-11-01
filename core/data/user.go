@@ -26,17 +26,13 @@ func GetUser(user *model.User) error {
 	 patient.gender,
 	 patient.dob,
 	 patient.language,
-	 patient.smoke,
-	 patient.problem_list,
-	 patient.meds_list,
-	 patient.allergy_list,
-	 doctor.id
+	 patient.smoke
 	FROM
-	 pfuser
-	INNER JOIN patient ON pfuser.id = patient.pfuser
-	INNER JOIN doctor on pfuser.id = doctor.pfuser
+	pfuser
+	LEFT JOIN patient ON pfuser.id = patient.pfuser
+	LEFT JOIN doctor on pfuser.id = doctor.pfuser
 	WHERE
-	 pfuser.id = $1;`
+	pfuser.id= $1;`
 	err = db.QueryRow(getUserQuery, user.Id).
 		Scan(&user.FirstName,
 			&user.LastName,
@@ -48,9 +44,6 @@ func GetUser(user *model.User) error {
 			&patient.DateOfBirth,
 			&patient.Language,
 			&patient.Smoke,
-			&patient.ProblemList,
-			&patient.MedsList,
-			&patient.AllergyList,
 		)
 	if err != nil {
 		return fmt.Errorf("could not get user :%v", err)

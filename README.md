@@ -1,9 +1,21 @@
 # PatientFocus
+
 SOEN490 project
+
+## Documentation
+1. [Frontend documentation](client/Readme.md)
+2. [Backend documentation](core/Readme.md)
+
+## File Structure
+
+1. Documents for course: `./CourseAdmin`
+2. Frontend: `./client`
+3. Backend: `./core`
 
 ## Development
 
 ### Tools used
+
 * Zenhub Addon
 * tortoisegit (optional)
 
@@ -13,7 +25,7 @@ SOEN490 project
 
 * Atomic commits: Every change you make should have its on separate commit.
 
-* Commit messages should be short but clear.
+* Commit messages should be short and include the issue tag that it is related to. (eg. `#123 Did something`)
 
 
 ### Done implementing your Feature?
@@ -36,13 +48,16 @@ git pull dev
 
 ### Pull Requests
 
+*Make sure that you clean up your git history before creating the PR*
+
 * Open a pull request for your branch based on the develop branch and add everyone as a reviewer.
 
 * Move your task to the **'In Review'** column on the Zenhub board.
 
-* Once you get approval from 2 people, go ahead and merge (Make sure to select the option to close/delete the branch + Squash commits ).
+* Once you get approval from 2 people, go ahead and merge (Make sure to select the option to close/delete the branch + Merge commits ).
 
 * Move your task to **'Done'** on the Zenhub board.
+
 
 #### Pull Request format
 

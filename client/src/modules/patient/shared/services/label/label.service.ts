@@ -8,7 +8,7 @@ import { Store } from '../../../../../app/store';
 import { environment } from '../../../../../environments/environment';
 
 export interface Label {
-  id: number;
+  id?: number;
   name: string;
   color: string;
 }

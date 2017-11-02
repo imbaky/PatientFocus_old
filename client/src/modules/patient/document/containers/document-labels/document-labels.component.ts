@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 
@@ -11,17 +11,27 @@ import { LabelService } from '../../../shared/services/label/label.service';
   styleUrls: ['document-labels.component.scss']
 })
 export class DocumentLabelsComponent implements OnInit {
+  @ViewChild('colorPicker')
+  colorPicker: ElementRef;
 
-  labels$: Observable<Label[]>;
   search = new FormControl('');
-
-  get value(){
-    return this.search.value;
-  }
+  color = new FormControl('#' + Math.floor(Math.random() * 16777215).toString(16)); // random hex color
+  labels$: Observable<Label[]>;
 
   constructor(
     private labelService: LabelService
   ) { }
+
+  createLabel() {
+    this.labelService.createLabel({ name: this.search.value, color: this.color.value })
+      .subscribe((newLabel: Label) => {
+          this.labels$ = this.labelService.getAllLabels();
+      });
+  }
+
+  openColorPicker() {
+    this.colorPicker.nativeElement.click();
+  }
 
   ngOnInit() {
     this.labels$ = this.labelService.getAllLabels();

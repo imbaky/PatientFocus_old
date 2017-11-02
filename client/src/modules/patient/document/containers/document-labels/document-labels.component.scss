@@ -26,3 +26,23 @@ $side-padding: 1rem;
 .document-labels--item + .document-labels--item {
   margin-top: .25rem;
 }
+
+.document-labels--action {
+  display: flex;
+}
+
+.document-labels--action-colorPicker {
+  display:none;
+}
+
+.document-labels--action-color {
+  display: grid;
+  width: 60%;
+  margin: auto 0;
+  height: 1.5rem;
+}
+
+.document-labels--action-btn {
+  width: 40%;
+  cursor: pointer;
+}

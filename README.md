@@ -3,8 +3,8 @@
 SOEN490 project
 
 ## Documentation
-1. [Frontend documentation](client/Readme.md)
-2. [Backend documentation](core/Readme.md)
+1. [Frontend documentation](./client/Readme.md)
+2. [Backend documentation](./core/Readme.md)
 
 ## File Structure
 

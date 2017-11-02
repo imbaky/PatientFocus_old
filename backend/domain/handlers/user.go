@@ -17,7 +17,7 @@ func CreateUser(c *gin.Context) {
 			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
 		return
 	}
-	_, err = data.CreateUser(&newUser)
+	err = data.CreateUser(&newUser)
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status":     http.StatusOK,

@@ -5,29 +5,30 @@ import { Injectable } from '@angular/core';
 export class ModalService {
     private modals: any[] = [];
 
+    // add modal to array of active modals
     add(modal: any) {
-        // add modal to array of active modals
         this.modals.push(modal);
     }
 
+    // remove modal from array of active modals
     remove(id: string) {
-        // remove modal from array of active modals
-        let modalToRemove = _.findWhere(this.modals, { id: id });
+        const modalToRemove = _.findWhere(this.modals, { id: id });
         this.modals = _.without(this.modals, modalToRemove);
     }
 
+    // open modal specified by id
     open(id: string) {
-        // open modal specified by id
-        let modal = _.findWhere(this.modals, { id: id });
+        const modal = _.findWhere(this.modals, { id: id });
         modal.open();
     }
 
+    // close modal specified by id
     close(id: string) {
-        // close modal specified by id
-        let modal = _.find(this.modals, { id: id });
+        const modal = _.find(this.modals, { id: id });
         modal.close();
     }
-    getModals(): any[]{
+
+    getModals(): any[] {
         return this.modals;
     }
 }

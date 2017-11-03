@@ -10,19 +10,19 @@ export class ModalService {
         this.modals.push(modal);
     }
 
-    remove(id: number) {
+    remove(id: string) {
         // remove modal from array of active modals
         let modalToRemove = _.findWhere(this.modals, { id: id });
         this.modals = _.without(this.modals, modalToRemove);
     }
 
-    open(id: number) {
+    open(id: string) {
         // open modal specified by id
         let modal = _.findWhere(this.modals, { id: id });
         modal.open();
     }
 
-    close(id: number) {
+    close(id: string) {
         // close modal specified by id
         let modal = _.find(this.modals, { id: id });
         modal.close();

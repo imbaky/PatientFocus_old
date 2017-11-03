@@ -1,0 +1,42 @@
+
+
+import { ModalService } from './modal.service';
+import { TestBed } from '@angular/core/testing';
+import { ModalComponent } from '../../directive/modal/modal.component';
+
+fdescribe('Service: ModalService', () => {
+    let service: ModalService;
+    let modal: ModalComponent;
+    beforeEach(() => {
+        const bed = TestBed.configureTestingModule({
+            providers: [
+                ModalService
+            ]
+        });
+        service = bed.get(ModalService);
+    });
+
+    it('GIVEN that a modal is added THEN the array of modals should be incremented', () => {
+        modal = {} as ModalComponent;
+        service.add(modal);
+        expect(service.getModals().length).toBe(1);
+    })
+    it('GIVEN that a modal is added and removed THEN the array of modals size will not be changed', () => {
+        modal = {id:1} as ModalComponent;
+        service.add(modal);
+        service.remove(modal.id);
+        expect(service.getModals().length).toBe(0);
+    })
+
+    it('GIVEN that a modal is created and opened THEN the modal appears', () => {
+        modal = {
+            id:1,
+            open: jasmine.createSpy('open')
+        } as any;
+
+        service.add(modal);
+        service.open(1);
+        
+        expect(modal.open).toHaveBeenCalled();
+    })
+});

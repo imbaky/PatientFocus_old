@@ -22,7 +22,7 @@ func CreateUser(c *gin.Context) {
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status":     http.StatusOK,
-			"id":         newUser.Id,
+			"id":         newUser.Uid,
 			"email":      newUser.Email,
 			"first_name": newUser.FirstName,
 			"last_name":  newUser.LastName})
@@ -34,7 +34,7 @@ func CreateUser(c *gin.Context) {
 
 func GetUser(c *gin.Context) {
 	var user models.PFUser
-	user.Id, _ = strconv.Atoi(c.Param("uid"))
+	user.Uid, _ = strconv.Atoi(c.Param("uid"))
 	qs := data.ReadUser(&user)
 	if qs != nil {
 		c.JSON(http.StatusNotFound,
@@ -56,8 +56,10 @@ func Login(c *gin.Context) {
 			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
 		return
 	}
-	err = data.ReadUser(&user)
-	if err != nil {
+	err = data.AuthenticateUser(&user)
+	fmt.Printf("%v\n", user)
+	fmt.Printf("%v\n", err)
+	if err == nil {
 		fmt.Println("Read User Worked")
 		// sendBoolResponse(rw, err)
 		return

@@ -6,7 +6,7 @@ import (
 
 //The Patient struct holds all basic patient info
 type Patient struct {
-	Id          int       `json:"id"`
+	Pid         int       `orm:"pk" json:"id"`
 	Race        string    `json:"race"`
 	Gender      Gender    `json:"gender"`
 	Language    Language  `json:"language"`

@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/astaxie/beego/orm"
-	"github.com/imbaky/PatientFocus/core/domain/model"
 	_ "github.com/lib/pq" //PostgreSQL Driver
 
 	"github.com/imbaky/PatientFocus/backend/domain/models"
@@ -27,7 +26,7 @@ func ConnectToDb() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
 	dbInfo := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", username, password, dbName, host)
 	orm.RegisterDataBase("default", driverName, dbInfo)
-	orm.RegisterModel(new(models.PFUser), new(model.Patient), new(models.Doctor))
+	orm.RegisterModel(new(models.PFUser), new(models.Patient), new(models.Doctor))
 	orm.RunSyncdb("default", false, true)
 	ormObject = orm.NewOrm()
 }

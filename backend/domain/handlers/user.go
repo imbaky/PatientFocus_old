@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -44,4 +45,34 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "users": &user})
 
 	return
+}
+
+//Login endpoint authenticates and returns a token
+func Login(c *gin.Context) {
+	var user models.PFUser
+	err := c.BindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
+		return
+	}
+	err = data.ReadUser(&user)
+	if err != nil {
+		fmt.Println("Read User Worked")
+		// sendBoolResponse(rw, err)
+		return
+	}
+	// tkn, err := data.GetSession(&user)
+	// if err != nil {
+	// 	sendBoolResponse(rw, err)
+	// 	return
+	// }
+	// response, err := json.Marshal(token{tkn})
+	// if err != nil {
+	// 	sendBoolResponse(rw, err)
+	// 	return
+	// }
+	// rw.Header().Set("Content-type", "application/json")
+	// rw.WriteHeader(http.StatusOK)
+	// rw.Write([]byte(response))
 }

@@ -9,6 +9,6 @@ services:
             POSTGRES_PASSWORD: patientfocus
             POSTGRES_DB: patientfocus
         volumes:
-            - /Users/cyap/work/data:/var/lib/postgresql/data
+            - /home/george/data:/var/lib/postgresql/data
         ports:
             - "5432:5432"

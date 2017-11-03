@@ -2,7 +2,7 @@ package models
 
 //The Doctor struct holds all user data
 type Doctor struct {
-	Did int `orm:"pk" json:"id"`
+	Did int `orm:"pk;auto" json:"id"`
 }
 
 type DoctorDocument struct {

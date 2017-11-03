@@ -15,3 +15,8 @@ func ReadUser(user *models.PFUser) error {
 func AuthenticateUser(user *models.PFUser) error {
 	return ormObject.Read(user, "email", "password")
 }
+
+func AssociatePatient(user *models.PFUser) error {
+	_, err := ormObject.Update(user, "patient_id")
+	return err
+}

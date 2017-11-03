@@ -2,9 +2,9 @@
 
 import { ModalService } from './modal.service';
 import { TestBed } from '@angular/core/testing';
-import { ModalComponent } from '../../../generic/components/modal/modal.component';
+import { ModalComponent } from '../../../dashboard/components/modal-share/modal-share.component';
 
-fdescribe('Service: ModalService', () => {
+describe('Service: ModalService', () => {
     let service: ModalService;
     let modal: ModalComponent;
     beforeEach(() => {
@@ -20,23 +20,23 @@ fdescribe('Service: ModalService', () => {
         modal = {} as ModalComponent;
         service.add(modal);
         expect(service.getModals().length).toBe(1);
-    })
+    });
     it('GIVEN that a modal is added and removed THEN the array of modals size will not be changed', () => {
-        modal = {id:"Test modal"} as ModalComponent;
+        modal = { id: 'Test modal' } as ModalComponent;
         service.add(modal);
         service.remove(modal.id);
         expect(service.getModals().length).toBe(0);
-    })
+    });
 
     it('GIVEN that a modal is created and opened THEN the modal appears', () => {
         modal = {
-            id:"Test modal",
+            id: 'Test modal',
             open: jasmine.createSpy('open')
         } as any;
 
         service.add(modal);
-        service.open("Test modal");
-        
+        service.open('Test modal');
+
         expect(modal.open).toHaveBeenCalled();
-    })
+    });
 });

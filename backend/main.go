@@ -4,11 +4,12 @@ import (
 	"io"
 	"os"
 
+	"github.com/imbaky/PatientFocus/backend/domain/middlewares"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/gin-gonic/gin"
 	"github.com/imbaky/PatientFocus/backend/data"
 	"github.com/imbaky/PatientFocus/backend/domain/handlers"
-	"github.com/imbaky/PatientFocus/backend/domain/middlewares"
 )
 
 var ORM orm.Ormer
@@ -31,12 +32,8 @@ func main() {
 	router.POST("/auth/login", handlers.Login)
 	router.POST("/user", handlers.CreateUser)
 
-	// group middleware for authorization
-	authorized := router.Group("/")
-	authorized.Use(middlewares.Authenticate)
-	{
-		router.GET("/user/:uid", handlers.GetUser)
-		router.POST("/patient", handlers.CreatePatient)
-	}
+	router.Use(middlewares.Authenticate)
+	router.GET("/user/:uid", middlewares.Authenticate, handlers.GetUser)
+	router.POST("/patient", handlers.CreatePatient)
 	router.Run(":9000")
 }

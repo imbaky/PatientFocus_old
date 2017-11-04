@@ -61,6 +61,12 @@ func GetIdFromSession(tokenString string) (int, error) {
 	if !ok || !token.Valid {
 		return -1, fmt.Errorf("session token not ok or invalid")
 	}
-	id := claims["id"].(int)
-	return id, nil
+
+	id := claims["id"].(string)
+	uid, err := strconv.Atoi(id)
+	if err != nil {
+		return -1, fmt.Errorf("session token could not be converted")
+	}
+
+	return uid, nil
 }

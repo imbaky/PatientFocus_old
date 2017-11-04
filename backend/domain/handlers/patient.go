@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/imbaky/PatientFocus/backend/data"
@@ -14,8 +13,6 @@ func CreatePatient(c *gin.Context) {
 	user := models.PFUser{Uid: c.GetInt("uid")}
 	err := c.BindJSON(&patient)
 	if err != nil {
-		fmt.Println(user)
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
 		return

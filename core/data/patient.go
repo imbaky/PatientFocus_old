@@ -28,7 +28,7 @@ func CreatePatient(patient *model.Patient) error {
 	return err
 }
 
-func LinkDoctorDocument(user model.User, documents[]model.Document) error {
+func LinkDoctorDocument(user model.User, documents []model.Document) error {
 	db, err := GetConnection()
 	if err != nil {
 		return fmt.Errorf("LinkDoctorDocument")

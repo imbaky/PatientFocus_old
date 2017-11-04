@@ -12,21 +12,26 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { Store } from '../../../../../app/store';
 import { environment } from '../../../../../environments/environment';
 
-export type Role = 'patient' | 'doctor';
+export type RoleType = 'patient' | 'doctor';
+
+export interface Role {
+  id: number;
+  name: string;
+}
 
 export interface User {
   id: number;
   first_name: string;
   last_name: string;
   email: string;
-  roles: Array<Role>;
+  roles: Array<RoleType>;
 }
 
 export interface RegistrationUser {
   email: string;
   first_name: string;
   last_name: string;
-  role: Role;
+  role: RoleType;
   password: string;
   accepted_terms: boolean;
 }
@@ -40,33 +45,52 @@ export interface UserCredentials {
 @Injectable()
 export class AuthService {
 
-  private payload_data: any;
-
   constructor(
     private http: HttpClient,
     private store: Store,
     private localStorage: LocalStorageService
   ) { }
 
+  /**
+   * Returns the JWT token
+   * @returns {string}
+   */
   get token(): string {
     return this.localStorage.get('token') as string;
   }
 
+  /**
+   * Returns the payload data in the JWT token
+   * @returns {any}
+   */
   get payload(): any {
-    if (this.payload_data) {
-      return this.payload_data;
-    }
     const token = this.token;
     const start = token.indexOf('.') + 1;
 
-    this.payload_data = JSON.parse(atob(
+    const data = JSON.parse(atob(
       token.substr(start, token.lastIndexOf('.') - start)
     ));
-    return this.payload_data;
+    return data;
   }
 
-  get role(): string {
-    return this.payload.role;
+  /**
+   * Returns the current Role object of the user
+   * @returns {Role}
+   */
+  getRole(): Role {
+    return {
+      id: this.payload.role_id,
+      name: this.payload.role
+    };
+  }
+
+  /**
+   * Checks if the current user has the specified role
+   * @param role
+   * @returns {boolean}
+   */
+  hasRole(role: string): boolean {
+    return this.getRole().name === role;
   }
 
   /**

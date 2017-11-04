@@ -6,11 +6,11 @@ import { Label } from '../../../shared/services/label/label.service';
 import { LabelService } from '../../../shared/services/label/label.service';
 
 @Component({
-  selector: 'document-labels',
-  templateUrl: './document-labels.component.html',
-  styleUrls: ['document-labels.component.scss']
+  selector: 'labels',
+  templateUrl: './labels.component.html',
+  styleUrls: ['./labels.component.scss']
 })
-export class DocumentLabelsComponent implements OnInit {
+export class LabelsComponent implements OnInit {
   @ViewChild('colorPicker')
   colorPicker: ElementRef;
 
@@ -36,4 +36,9 @@ export class DocumentLabelsComponent implements OnInit {
   ngOnInit() {
     this.labels$ = this.labelService.getAllLabels();
   }
+
+  get value(){
+    return this.search.value;
+  }
+
 }

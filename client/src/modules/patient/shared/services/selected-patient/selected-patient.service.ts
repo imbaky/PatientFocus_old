@@ -5,25 +5,37 @@ import { Patient } from '../patient/patient.service';
 @Injectable()
 export class SelectedPatientService {
 
-  private patient: Patient = null;
+  private patient: Patient;
 
-  constructor(
-    private authService: AuthService
-  ) { }
-
-  getSelectedPatientId(): number {
-    if (this.authService.payload.role  === 'patient') {
-      return this.authService.payload.role_id;
-    }
-    return this.patient ? this.patient.id : null;
-  }
-
+  /**
+   * Returns the selected Patient
+   * @returns {Patient}
+   */
   getSelectedPatient(): Patient {
     return this.patient;
   }
 
+  /**
+   * Return true if there is a selected patient
+   * @returns {boolean}
+   */
+  hasSelectedPatient(): boolean {
+    return !!(this.patient);
+  }
+
+  /**
+   * Returns the selected patient
+   * @param patient
+   */
   setSelectedPatient(patient: Patient): void {
     this.patient = patient;
+  }
+
+  /**
+   * Clears the selected patient.
+   */
+  clearSelectedPatient(): void {
+    this.patient = null;
   }
 
 }

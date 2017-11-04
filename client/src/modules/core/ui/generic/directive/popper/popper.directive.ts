@@ -37,7 +37,7 @@ export class PopperDirective implements OnInit, OnDestroy {
   popper: Popper = null;
   popperElement: HTMLElement;
   popperFactory: ComponentFactory<PopperComponent>;
-  component:PopperComponent;
+  component: PopperComponent;
 
   private static isSameOrWithinElement(target: HTMLElement, element: HTMLElement) {
     return target === element || element.contains(target);

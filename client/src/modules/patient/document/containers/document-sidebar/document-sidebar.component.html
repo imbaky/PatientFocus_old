@@ -16,11 +16,11 @@
       <div class="document-sidebar--light-header">
         Labels
       </div>
-      <div [px-popper]="labels" [px-popper-config]="configuration">
+      <div [px-popper]="labels" [px-popper-config]="popperConfiguration">
         +
       </div>
       <ng-template #labels>
-        <document-labels></document-labels>
+        <labels></labels>
       </ng-template>
     </div>
     <document-label *ngFor="let label of documents[0].labels" [label]="label" class="document-sidebar--label"></document-label>

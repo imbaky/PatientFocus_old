@@ -31,6 +31,11 @@ export class DocumentListComponent implements OnDestroy {
     this.selectedService.clearAllDocuments();
   }
 
+  /**
+   * Selects a document with a single click, multi selection with ctrl or shift keys.
+   * @param $event
+   * @param document
+   */
   select($event: MouseEvent, document: Document) {
     if ($event.metaKey) {
       this.toggleSelection(document);
@@ -53,6 +58,10 @@ export class DocumentListComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Toggles the selection of a document to be selected or not.
+   * @param document
+   */
   toggleSelection(document: Document) {
     if (this.selectedService.isSelected(document)) {
       this.selectedService.removeDocument(document);

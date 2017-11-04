@@ -7,10 +7,10 @@ import { AppComponent } from './containers/app/app.component';
 
 // modules
 import { AuthModule } from '../modules/auth/auth.module';
-import { PatientModule } from '../modules/patient/patient.module';
 
 // services
 import { Store } from './store';
+import { DashboardModule } from '../modules/dashboard/dashboard.module';
 
 // routes
 const ROUTES: Routes = [ ];
@@ -22,7 +22,7 @@ const ROUTES: Routes = [ ];
   imports: [
     BrowserModule,
     AuthModule,
-    PatientModule,
+    DashboardModule,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [

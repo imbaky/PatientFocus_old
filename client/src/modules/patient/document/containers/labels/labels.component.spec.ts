@@ -8,7 +8,7 @@ import { Store } from '../../../../../app/store';
 import { LabelService, Label } from '../../../shared/services/label/label.service';
 import { PipeModule } from '../../../../core/pipe/pipe.module';
 
-import { DocumentLabelsComponent } from '../document-labels/document-labels.component';
+import { LabelsComponent } from '../labels/labels.component';
 import { DocumentLabelComponent } from '../../components/document-label/document-label.component';
 
 const okResponse = { status: 200, statusText: 'OK' };
@@ -48,7 +48,7 @@ describe('Document Labels Container', () => {
   beforeEach(() => {
     const testBed = TestBed.configureTestingModule({
       declarations: [
-        DocumentLabelsComponent,
+        LabelsComponent,
         DocumentLabelComponent
       ],
       providers: [
@@ -63,16 +63,16 @@ describe('Document Labels Container', () => {
       ]
     });
 
-    fixture = TestBed.createComponent(DocumentLabelsComponent);
+    fixture = TestBed.createComponent(LabelsComponent);
     labelService = testBed.get(LabelService);
   });
 
   it('GIVEN a specific label name, THEN we should see all matching labels',
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
     fixture.detectChanges();
-    const input = fixture.debugElement.query(By.css('.document-labels--form-control')).nativeElement;
+    const input = fixture.debugElement.query(By.css('.labels--form-control')).nativeElement;
     const req = httpMock.expectOne({
-      url: '/labels',
+      url: '/label',
       method: 'GET'
     });
     req.flush(labels, okResponse);
@@ -84,7 +84,7 @@ describe('Document Labels Container', () => {
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      const documentItemComponents = fixture.debugElement.queryAll(By.css('.document-labels--item'));
+      const documentItemComponents = fixture.debugElement.queryAll(By.css('.labels--item'));
       expect(documentItemComponents.length).toBe(2);
     });
   }));
@@ -92,9 +92,9 @@ describe('Document Labels Container', () => {
   it('GIVEN no label name, THEN we should see all existing labels',
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
     fixture.detectChanges();
-    const input = fixture.debugElement.query(By.css('.document-labels--form-control')).nativeElement;
+    const input = fixture.debugElement.query(By.css('.labels--form-control')).nativeElement;
     const req = httpMock.expectOne({
-      url: '/labels',
+      url: '/label',
       method: 'GET'
     });
     req.flush(labels, okResponse);
@@ -106,7 +106,7 @@ describe('Document Labels Container', () => {
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      const documentItemComponents = fixture.debugElement.queryAll(By.css('.document-labels--item'));
+      const documentItemComponents = fixture.debugElement.queryAll(By.css('.labels--item'));
       expect(documentItemComponents.length).toBe(labels.length);
     });
   }));
@@ -114,16 +114,16 @@ describe('Document Labels Container', () => {
   it('GIVEN a name and a color AND creating a label, THEN we should see the new label in the list',
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
     spyOn(labelService, 'createLabel');
-    const btn = fixture.debugElement.query(By.css('.document-labels--action-btn')).nativeElement;
-    const input = fixture.debugElement.query(By.css('.document-labels--form-control')).nativeElement;
-    const color = fixture.debugElement.query(By.css('.document-labels--action-colorPicker')).nativeElement;
+    const btn = fixture.debugElement.query(By.css('.labels--action-btn')).nativeElement;
+    const input = fixture.debugElement.query(By.css('.labels--form-control')).nativeElement;
+    const color = fixture.debugElement.query(By.css('.labels--action-colorPicker')).nativeElement;
 
     fixture.detectChanges();
     input.value = 'test';
     input.dispatchEvent(new Event('input'));
 
     const req = httpMock.expectOne({
-      url: '/labels',
+      url: '/label',
       method: 'GET'
     });
     req.flush(labels, okResponse);

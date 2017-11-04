@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 
 // services
-import {
-  DocumentService, UploadFile,
-  UploadState, UploadStatus
-} from '../../../../../patient/shared/services/document/document.service';
+import { DocumentService, UploadFile, UploadState, UploadStatus } from '../../../patient/shared/services/document/document.service';
 
 @Component({
   selector: 'px-upload-progress',

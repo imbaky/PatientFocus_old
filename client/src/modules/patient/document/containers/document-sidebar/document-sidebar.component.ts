@@ -8,14 +8,18 @@ import { SelectedDocumentService } from '../../../shared/services/selected-docum
 })
 export class DocumentSidebarComponent {
 
-  configuration = { placement : 'bottom-end' };
+  popperConfiguration = { placement : 'bottom-end' };
 
   constructor(
-    private selectedService: SelectedDocumentService
+    private selectedDocumentService: SelectedDocumentService
   ) { }
 
+  /**
+   * Returns all selected documents for the sidebar
+   * @returns {Array<Document>}
+   */
   get documents() {
-    return this.selectedService.getAllDocuments();
+    return this.selectedDocumentService.getAllDocuments();
   }
 
 }

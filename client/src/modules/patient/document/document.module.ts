@@ -15,16 +15,21 @@ import { DocumentLabelComponent } from './components/document-label/document-lab
 // container
 import { DocumentComponent } from './containers/document/document.component';
 import { DocumentListComponent } from './containers/document-list/document-list.component';
-import { DocumentSidebarComponent } from './components/document-sidebar/document-sidebar.component';
-import { DocumentLabelsComponent } from './containers/document-labels/document-labels.component';
+import { DocumentSidebarComponent } from './containers/document-sidebar/document-sidebar.component';
+import { LabelsComponent } from './containers/labels/labels.component';
 
 // resolvers
-import { PatientResolver } from '../shared/services/resolvers/patient.resolver';
+import { PatientResolver } from '../shared/resolvers/patient/patient.resolver';
+
+// guard
+import { PatientGuard } from '../shared/guards/patient/patient.guard';
 
 const ROUTES: Routes = [
   { path: '', component: DocumentComponent, resolve: {
-    patient: PatientResolver
-  } }
+    patient: PatientResolver,
+  }, canActivate: [
+      PatientGuard
+  ] }
 ];
 
 @NgModule({
@@ -33,8 +38,8 @@ const ROUTES: Routes = [
     DocumentListComponent,
     DocumentItemComponent,
     DocumentSidebarComponent,
-    DocumentLabelsComponent,
-    DocumentLabelComponent
+    DocumentLabelComponent,
+    LabelsComponent,
   ],
   imports: [
     CommonModule,
@@ -42,7 +47,7 @@ const ROUTES: Routes = [
     RouterModule.forChild(ROUTES),
     UIGeneric,
     PipeModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ]
 })
 export class DocumentModule { }

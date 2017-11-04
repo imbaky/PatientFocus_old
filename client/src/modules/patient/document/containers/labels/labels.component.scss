@@ -2,28 +2,28 @@
 
 $side-padding: 1rem;
 
-.document-labels {
+.labels {
   background-color: $px-white;
   box-shadow: 0 3px 12px rgba(27,31,35,0.15);
   min-width: 12rem;
 }
 
-.document-labels--input-wrap {
+.labels--input-wrap {
   background-color: $px-grey-2;
   padding: .25rem $side-padding;
 }
 
-.document-labels--form-control {
+.labels--form-control {
   background-color: transparent;
   border: none;
   color: $px-black;
 }
 
-.document-labels--list {
+.labels--list {
   padding: 1rem $side-padding;
 }
 
-.document-labels--item + .document-labels--item {
+.labels--item + .labels--item {
   margin-top: .25rem;
 }
 

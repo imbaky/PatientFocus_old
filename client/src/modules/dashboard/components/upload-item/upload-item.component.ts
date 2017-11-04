@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {
-  UploadFile, UploadProgress, UploadStatus
-} from '../../../../../patient/shared/services/document/document.service';
+
+// services
+import { UploadFile, UploadStatus } from '../../../patient/shared/services/document/document.service';
 
 @Component({
   selector: 'px-upload-item',
-  templateUrl: 'upload-item.component.html',
-  styleUrls: ['upload-item.component.scss']
+  templateUrl: './upload-item.component.html',
+  styleUrls: ['./upload-item.component.scss']
 })
 export class UploadItemComponent {
 

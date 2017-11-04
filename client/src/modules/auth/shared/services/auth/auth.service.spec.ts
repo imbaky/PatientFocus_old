@@ -59,6 +59,7 @@ describe('Auth Service', () => {
         })
       ]
     });
+
     http = bed.get(HttpClient);
     service = bed.get(AuthService);
     store = bed.get(Store);
@@ -135,5 +136,48 @@ describe('Auth Service', () => {
     expect(store.set).not.toHaveBeenCalled();
     expect(MockRouter.navigate).toHaveBeenCalledWith(['/auth/login']);
   }));
+
+  it('GIVEN a token THEN it should decode the payload AND storage it locally', () => {
+    const payload = btoa(JSON.stringify({
+      role: 'patient',
+      role_id: 1,
+      user_id: 1
+    }));
+
+    localStorage.set('token', 'header.' + payload + '.signature');
+
+    expect(service.payload).toEqual({
+      role: 'patient',
+      role_id: 1,
+      user_id: 1
+    });
+  });
+
+  it('GIVEN a token with a role THEN it should return the role', () => {
+    const payload = btoa(JSON.stringify({
+      role: 'patient',
+      role_id: 1,
+      user_id: 8
+    }));
+
+    localStorage.set('token', 'header.' + payload + '.signature');
+
+    expect(service.getRole()).toEqual({
+      name: 'patient',
+      id: 1
+    } as Role);
+  });
+
+  it('GIVEN a token with a patient role THEN the current user is currently that role', () => {
+    const payload = btoa(JSON.stringify({
+      role: 'patient',
+      role_id: 1,
+      user_id: 8
+    }));
+
+    localStorage.set('token', 'header.' + payload + '.signature');
+
+    expect(service.hasRole('patient')).toBe(true);
+  });
 
 });

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -57,24 +56,19 @@ func Login(c *gin.Context) {
 		return
 	}
 	err = data.AuthenticateUser(&user)
-	fmt.Printf("%v\n", user)
-	fmt.Printf("%v\n", err)
-	if err == nil {
-		fmt.Println("Read User Worked")
-		// sendBoolResponse(rw, err)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusInternalServerError, "error": "Bad username or password "})
 		return
 	}
-	// tkn, err := data.GetSession(&user)
-	// if err != nil {
-	// 	sendBoolResponse(rw, err)
-	// 	return
-	// }
-	// response, err := json.Marshal(token{tkn})
-	// if err != nil {
-	// 	sendBoolResponse(rw, err)
-	// 	return
-	// }
-	// rw.Header().Set("Content-type", "application/json")
-	// rw.WriteHeader(http.StatusOK)
-	// rw.Write([]byte(response))
+	tkn, err := data.GetSession(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusInternalServerError, "error": "Could not create session token"})
+		return
+	}
+	c.JSON(200,
+		gin.H{
+			"token": tkn,
+		})
 }

@@ -24,15 +24,18 @@ func CreatePatient(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"status": http.StatusInternalServerError, "error": "Failed to create the patient"})
+		return
 	}
+	user.Patient = &patient
 	err = data.AssociatePatient(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"status": http.StatusInternalServerError, "error": "Failed to associate the patient witht the user"})
+			gin.H{"status": http.StatusInternalServerError, "error": "Failed to associate the patient with the user"})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":        http.StatusOK,
-		"id":            user.Patient.Pid,
+		"id":            user.Patient.Ptid,
 		"race":          user.Patient.Race,
 		"gender":        user.Patient.Gender,
 		"language":      user.Patient.Language,

@@ -15,8 +15,8 @@ var ormObject orm.Ormer
 var (
 	username       = os.Getenv("POSTGRES_USER")
 	password       = os.Getenv("POSTGRES_PASSWORD")
-	dbName         = os.Getenv("DB_NAME")
-	host           = os.Getenv("HOST")
+	dbName         = os.Getenv("POSTGRES_DB")
+	host           = os.Getenv("POSTGRES_HOST")
 	driverName     = "postgres"
 	dataSourceName = fmt.Sprintf("postgres://%s:%s@db/patientfocus?sslmode=disable", username, password)
 )

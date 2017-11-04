@@ -26,7 +26,13 @@ func ConnectToDb() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
 	dbInfo := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", username, password, dbName, host)
 	orm.RegisterDataBase("default", driverName, dbInfo)
-	orm.RegisterModel(new(models.PFUser), new(models.Patient), new(models.Doctor))
+	orm.RegisterModel(
+		new(models.PFUser), 
+		new(models.Patient), 
+		new(models.Doctor), 
+		new(models.Document),
+		new(models.DoctorDocument),
+	)
 	orm.RunSyncdb("default", false, true)
 	ormObject = orm.NewOrm()
 }

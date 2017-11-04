@@ -10,7 +10,7 @@ type Patient struct {
 	Race        string    `json:"race"`
 	Gender      Gender    `json:"gender"`
 	Language    Language  `json:"language"`
-	DateOfBirth time.Time `orm:"type(date)" json:"dob"`
+	DateOfBirth time.Time `orm:"type(date);column(dob)" json:"dob"`
 	Smoke       bool      `orm:"type(bool) default(false)" json:"smoke"`
 	// ProblemList string    `orm:"type(string)" json:"problem_list"`
 	//	MedsList    []string  `json:"meds_list"`

@@ -25,6 +25,9 @@ export class LoginComponent {
     private router: Router
   ) { }
 
+  /**
+   * Logs in user if form is valid and response is ok
+   */
   onLogin() {
     if (this.form.valid) {
       this.authService.loginUser(this.form.value)
@@ -34,6 +37,13 @@ export class LoginComponent {
         }, (err) => {
 
         });
+    } else {
+      for (const control in this.form.controls) {
+        if (control) {
+          this.form.get(control).markAsTouched();
+          this.form.get(control).updateValueAndValidity();
+        }
+      }
     }
   }
 

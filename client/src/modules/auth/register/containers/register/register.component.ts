@@ -37,13 +37,26 @@ export class RegisterComponent {
     private router: Router
   ) { }
 
-  onRegister() {
+  /**
+   * Registers a user if all required fields are valid and response is ok
+   */
+  onRegister(): void {
     if (this.form.valid) {
       this.authService.registerUser(this.form.value).subscribe(() => {
         this.router.navigate(['/auth/login']);
       }, (err) => {
 
       });
+    } else {
+      for (const control in this.form.controls) {
+        if (control) {
+          if (control === 'accepted_terms') {
+            console.log(control);
+          }
+          this.form.get(control).markAsTouched();
+          this.form.get(control).updateValueAndValidity();
+        }
+      }
     }
   }
 

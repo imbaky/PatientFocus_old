@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
 
-import { Label } from '../../../shared/services/label/label.service';
-
 @Component({
   selector: 'document-label',
   templateUrl: 'document-label.component.html',
@@ -10,7 +8,7 @@ import { Label } from '../../../shared/services/label/label.service';
 export class DocumentLabelComponent {
 
   @Input()
-  label: Label;
+  label;
 
   constructor() { }
 
@@ -24,4 +22,5 @@ export class DocumentLabelComponent {
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     return (yiq >= 128) ? 'black' : 'white';
   }
+
 }

@@ -10,6 +10,7 @@ import { Store } from '../../../../../app/store';
 import { Patient } from '../patient/patient.service';
 
 const okResponse = { status: 200, statusText: 'OK' };
+const patient = { id: 1 } as Patient;
 
 describe('Document Service', () => {
 
@@ -41,7 +42,7 @@ describe('Document Service', () => {
       new File(['crust'], 'file2.txt'),
       new File(['tomato'], 'file3.txt'),
     ];
-    service.uploadFiles(files);
+    service.uploadFiles(files, patient);
 
     expect(service.uploadFile).toHaveBeenCalledTimes(3);
   });
@@ -52,7 +53,7 @@ describe('Document Service', () => {
       .and.callFake(() => null);
 
     const file = new File(['cheese'], 'file1.txt');
-    service.uploadFile(file);
+    service.uploadFile(file, patient);
 
     expect(service.uploadState.queued.length).toBe(1);
     expect(service.triggerUpload).toHaveBeenCalled();
@@ -84,7 +85,7 @@ describe('Document Service', () => {
     });
 
     const file = new File(['cheese'], 'file1.txt');
-    service.uploadFile(file);
+    service.uploadFile(file, patient);
   });
 
   it('GIVEN a file THEN queue a request and trigger an upload', () => {
@@ -123,7 +124,7 @@ describe('Document Service', () => {
     });
 
     const file = new File(['cheese'], 'file1.txt');
-    service.uploadFile(file);
+    service.uploadFile(file, patient);
   });
 
   it('GIVEN a queued UploadFile THEN it should upload the file and trigger the next upload', () => {
@@ -201,8 +202,9 @@ describe('Document Service', () => {
 
     const documents: Document[] = [{
       id: 1,
+      size: 1,
       name: 'CTScan1',
-      patientid: 123,
+      patient: 123,
       description: 'Scan from Jewish General Hospital',
       url: 'testurl.com',
       labels: [{
@@ -230,7 +232,7 @@ describe('Document Service', () => {
         expect(res.status).toBe(true);
       });
 
-    const req = httpMock.expectOne(`documents/${id}/labels/`);
+    const req = httpMock.expectOne(`document/${id}/labels/`);
     req.flush({ status: true }, okResponse);
     httpMock.verify();
   }));
@@ -240,8 +242,9 @@ describe('Document Service', () => {
 
     const documents: Document[] = [{
       id: 1,
+      size: 1,
       name: 'CTScan1',
-      patientid: 123,
+      patient: 123,
       description: 'Scan from Jewish General Hospital',
       url: 'testurl.com',
       labels: [{
@@ -257,7 +260,7 @@ describe('Document Service', () => {
         expect(documents.length).toBe(1);
       });
 
-    const req = httpMock.expectOne(`/documents?patient_id=1`);
+    const req = httpMock.expectOne(`/document?patient=1`);
     req.flush(documents, okResponse);
 
     httpMock.verify();

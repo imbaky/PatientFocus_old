@@ -75,7 +75,7 @@ describe('Login Component', () => {
     component.onLogin();
 
     expect(component.form.valid).toBe(true);
-    expect(MockRouter.navigate).toHaveBeenCalledWith(['/patient']);
+    expect(MockRouter.navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('GIVEN invalid form values THEN it should not login the user.', () => {

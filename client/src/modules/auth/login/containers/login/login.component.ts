@@ -30,7 +30,7 @@ export class LoginComponent {
       this.authService.loginUser(this.form.value)
         .subscribe(() => {
           this.authService.fetchCurrentUser();
-          this.router.navigate(['/patient']);
+          this.router.navigate(['/']);
         }, (err) => {
 
         });

@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // services
 import { AuthService } from './services/auth/auth.service';
+import { AuthGuard } from './guards/auth/auth.guard';
 
 // components
 import { AuthPageComponent } from './components/auth-page/auth-page.component';
@@ -13,7 +14,7 @@ import { AuthPageComponent } from './components/auth-page/auth-page.component';
 import { AuthInterceptor } from './interceptors/auth/auth.interceptor';
 
 // local storage
-import { LocalStorageModule, LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageModule } from 'angular-2-local-storage';
 
 const ROUTES: Routes = [ ];
 
@@ -39,6 +40,7 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        AuthGuard,
         AuthService,
         {
           provide: HTTP_INTERCEPTORS,

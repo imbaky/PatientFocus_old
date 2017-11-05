@@ -11,6 +11,7 @@ import { Patient } from '../../../shared/services/patient/patient.service';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/mergeMap';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   'selector': 'document',
@@ -26,14 +27,16 @@ export class DocumentComponent implements OnInit {
 
   documents$: Observable<Documents>;
 
+  patient: Patient;
+
   constructor(
-    private store: Store,
-    private documentService: DocumentService
+    private documentService: DocumentService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    this.documents$ = this.store.select('patient')
-      .mergeMap((patient: Patient) => this.documentService.getDocuments(patient));
+    this.patient = this.route.snapshot.data['patient'];
+    this.documents$ = this.documentService.getDocuments(this.patient);
   }
 
   get progress(): UploadState {
@@ -52,7 +55,7 @@ export class DocumentComponent implements OnInit {
       upload.push(files.item(i));
     }
 
-    this.documentService.uploadFiles(upload);
+    this.documentService.uploadFiles(upload, this.patient);
   }
 
   openFileBrowser() {

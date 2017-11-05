@@ -79,7 +79,7 @@ describe('Label Service', () => {
     });
 
     const req = httpMock.expectOne({
-      url: '/labels',
+      url: '/label',
       method: 'POST'
     });
     req.flush(label, okResponse);
@@ -107,7 +107,7 @@ describe('Label Service', () => {
       expect(labelsRes.length).toBe(2);
     });
 
-    const req = httpMock.expectOne('/labels');
+    const req = httpMock.expectOne('/label');
     req.flush(labels, okResponse);
     httpMock.verify();
     expect(store.set).toHaveBeenCalledWith('labels', labels);

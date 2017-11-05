@@ -4,7 +4,7 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 
 import { Observable } from 'rxjs/Observable';
 
-import { AuthService } from '../../../shared/services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

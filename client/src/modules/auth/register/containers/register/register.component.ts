@@ -40,7 +40,7 @@ export class RegisterComponent {
   onRegister() {
     if (this.form.valid) {
       this.authService.registerUser(this.form.value).subscribe(() => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/auth/login']);
       }, (err) => {
 
       });

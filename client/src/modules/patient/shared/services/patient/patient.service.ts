@@ -9,13 +9,14 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
 
 import { environment } from '../../../../../environments/environment';
+import { User } from '../../../../auth/shared/services/auth/auth.service';
 
 export interface Patient {
   id: number;
-  user_id: number;
+  user: User | number;
   race: string;
   gender: string;
-  dob: string;
+  date_of_birth: string;
   language: string;
   smoke: boolean;
   problem_list?: string;
@@ -41,7 +42,7 @@ export class PatientService {
    * @returns {Observable<Patient>}
    */
   getPatient(id: number): Observable<Patient> {
-    return this.http.get(`${environment.host_server}/patients/${id}`)
+    return this.http.get(`${environment.host_server}/patient/${id}`)
       .do((patient: Patient) => {
         if (patient) {
           this.store.set('patient', patient);

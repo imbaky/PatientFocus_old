@@ -32,10 +32,10 @@ describe('Document Service', () => {
     http = bed.get(HttpClient);
     patient = {
       id: 1,
-      user_id: 1,
+      user: 1,
       race: 'Canadian',
       gender: 'male',
-      dob: '1996/08/19',
+      date_of_birth: '1996/08/19',
       language: 'en_US',
       smoke: false
     };
@@ -44,28 +44,28 @@ describe('Document Service', () => {
   patients = [
     {
       id: 1,
-      user_id: 1,
+      user: 1,
       race: 'Canadian',
       gender: 'male',
-      dob: '1996/08/19',
+      date_of_birth: '1996/08/19',
       language: 'en_US',
       smoke: false
     },
     {
       id: 2,
-      user_id: 2,
+      user: 2,
       race: 'Russian',
       gender: 'male',
-      dob: '1946/08/19',
+      date_of_birth: '1946/08/19',
       language: 'en_US',
       smoke: false
     },
     {
       id: 3,
-      user_id: 3,
+      user: 3,
       race: 'Nigerian',
       gender: 'male',
-      dob: '1969/09/11',
+      date_of_birth: '1969/09/11',
       language: 'en_US',
       smoke: false
     },
@@ -79,7 +79,7 @@ describe('Document Service', () => {
       });
 
     const req = httpMock.expectOne({
-      url: '/patients/1',
+      url: '/patient/1',
       method: 'GET'
     });
 

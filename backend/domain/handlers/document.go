@@ -9,6 +9,17 @@ import (
 	"github.com/imbaky/PatientFocus/backend/domain/models"
 )
 
+// form expected from frontend for document share
+type DocSharePayload struct {
+	Email     string `json:"email"`
+	Mesage    string `json:"message"`
+	Documents []int  `json:"documents"`
+}
+
+type JsonUrls struct {
+	Urls []string `json:"urls"`
+}
+
 func UploadDocument(c *gin.Context) {
 	var document models.Document
 	var user models.PFUser
@@ -64,13 +75,6 @@ func UploadDocument(c *gin.Context) {
 		})
 }
 
-// form expected from frontend for document share
-type DocSharePayload struct {
-	Email     string `json:"email"`
-	Mesage    string `json:"message"`
-	Documents []int  `json:"documents"`
-}
-
 func ShareDocument(c *gin.Context) {
 	var docSharePayload DocSharePayload
 	var user models.PFUser
@@ -120,6 +124,39 @@ func ShareDocument(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK})
 }
 
-// func GetSharedDocuments(c *gin.Context){
+func GetSharedDocuments(c *gin.Context) {
+	var patient models.PFUser
+	var doctor models.PFUser
+	doctor.Uid = c.GetInt("uid")
 
-// }
+	err := data.ReadUser(&doctor)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not find doctor "})
+		return
+	}
+
+	err = data.ReadUser(&patient)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not find patient "})
+		return
+	}
+
+	// err, documents := data.GetSharedDocuments(&doctor, &patient)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not find shared documents "})
+		return
+	}
+
+	// urls := JsonUrls{Urls: make([]string, len(documents))}
+	// for i, url := range documents {
+	// 	urls.Urls[i] = url
+	// }
+	// c.JSON(http.StatusOK,
+	// 	g.H(
+	// 		"documents" : documents,
+	// 	)
+	// )
+}

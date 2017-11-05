@@ -74,6 +74,9 @@ type DocSharePayload struct {
 func ShareDocument(c *gin.Context) {
 	var docSharePayload DocSharePayload
 	var user models.PFUser
+	var doctor models.PFUser
+	documents := make([]models.Document, len(docSharePayload.Documents))
+	user.Uid = c.GetInt("uid")
 
 	err := c.BindJSON(&docSharePayload)
 	if err != nil {
@@ -81,7 +84,15 @@ func ShareDocument(c *gin.Context) {
 			gin.H{"status": http.StatusBadRequest, "error": "Could not bind json"})
 		return
 	}
-	user.Email = docSharePayload.Email
+
+	doctor.Email = docSharePayload.Email
+	err = data.ReadUser(&doctor)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not get doctor by email"})
+		return
+	}
+
 	err = data.ReadUser(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
@@ -89,4 +100,26 @@ func ShareDocument(c *gin.Context) {
 		return
 	}
 
+	// err := data.DoctorPatientAssociated(&doctor, &user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Doctor and patient are not connected"})
+		return
+	}
+
+	for i, did := range docSharePayload.Documents {
+		documents[i].Did = did
+	}
+
+	// err := data.LinkDoctorDocument(&doctor, documents)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not give doctor access to document"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK})
 }
+
+// func GetSharedDocuments(c *gin.Context){
+
+// }

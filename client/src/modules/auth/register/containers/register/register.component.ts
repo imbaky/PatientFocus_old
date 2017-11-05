@@ -8,6 +8,9 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 
 import 'rxjs/add/operator/catch';
 
+/**
+ * Register component
+ */
 @Component({
   selector: 'register',
   styleUrls: ['./register.component.scss'],
@@ -15,11 +18,19 @@ import 'rxjs/add/operator/catch';
 })
 export class RegisterComponent {
 
+  /**
+   * Array of role label and respective value
+   * @type {Array<PillSelectorOption>}
+   */
   roleOptions: Array<PillSelectorOption> = [
     { label: 'Patient', value: 'patient' },
     { label: 'Doctor', value: 'doctor' }
   ];
 
+  /**
+   * Registration form
+   * @type {FormGroup}
+   */
   form: FormGroup = this.fb.group({
     'email': ['', [Validators.required, Validators.email]],
     'first_name': ['', Validators.required],
@@ -29,8 +40,18 @@ export class RegisterComponent {
     'accepted_terms': [false, FormsValidators.isTrue() ]
   });
 
+  /**
+   * Error
+   * @type {any}
+   */
   errors = null;
 
+  /**
+   * Constructor
+   * @param {FormBuilder} fb
+   * @param {AuthService} authService
+   * @param {Router} router
+   */
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -50,9 +71,6 @@ export class RegisterComponent {
     } else {
       for (const control in this.form.controls) {
         if (control) {
-          if (control === 'accepted_terms') {
-            console.log(control);
-          }
           this.form.get(control).markAsTouched();
           this.form.get(control).updateValueAndValidity();
         }

@@ -16,6 +16,12 @@
       onError="required">
       An email address is required.
       </px-validation-message>
+      <px-validation-message
+        controlName="email"
+        [responseErrors]="errors"
+        onError="email">
+        Please enter a valid email address.
+      </px-validation-message>
     </px-form-group>
     <px-form-group
       label="Password">

@@ -8,8 +8,7 @@ func CreateUser(user *models.PFUser) (err error) {
 }
 
 func ReadUser(user *models.PFUser) error {
-	u := *user
-	return ormObject.QueryTable("PFUser").Filter("uid", u.Uid).One(user)
+	return ormObject.Read(user)
 }
 
 func AuthenticateUser(user *models.PFUser) error {

@@ -44,7 +44,7 @@ func UploadDocument(c *gin.Context) {
 		return
 	}
 	document.Url = dest
-	// err = data.CreateDocument(&document)
+	err = data.CreateDocument(&document)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not save document in db"})
@@ -58,7 +58,7 @@ func UploadDocument(c *gin.Context) {
 		return
 	}
 
-	// err = data.AssociateDocumentToPatient(&document, &user)
+	err = data.LinkDocumentPatient(&document, &user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not save document in db"})
@@ -104,7 +104,7 @@ func ShareDocument(c *gin.Context) {
 		return
 	}
 
-	// err := data.DoctorPatientAssociated(&doctor, &user)
+	err = data.PatientDoctorLinked(&doctor, &user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Doctor and patient are not connected"})
@@ -115,7 +115,7 @@ func ShareDocument(c *gin.Context) {
 		documents[i].Did = did
 	}
 
-	// err := data.LinkDoctorDocument(&doctor, documents)
+	err = data.LinkDoctorDocument(&doctor, documents)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not give doctor access to document"})
@@ -143,20 +143,20 @@ func GetSharedDocuments(c *gin.Context) {
 		return
 	}
 
-	// err, documents := data.GetSharedDocuments(&doctor, &patient)
+	documents, err := data.GetSharedDocuments(&doctor, &patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not find shared documents "})
 		return
 	}
 
-	// urls := JsonUrls{Urls: make([]string, len(documents))}
-	// for i, url := range documents {
-	// 	urls.Urls[i] = url
-	// }
-	// c.JSON(http.StatusOK,
-	// 	g.H(
-	// 		"documents" : documents,
-	// 	)
-	// )
+	urls := JsonUrls{Urls: make([]string, len(documents))}
+	for i, url := range documents {
+		urls.Urls[i] = url.Url
+	}
+	c.JSON(http.StatusOK,
+		gin.H{
+			"documents": urls,
+		},
+	)
 }

@@ -36,14 +36,15 @@ func UploadDocument(c *gin.Context) {
 			gin.H{"status": http.StatusBadRequest, "error": "Could not get file"})
 		return
 	}
-	dest := configuration.DirectoryForUploadedDocs + file.Filename
-	err = c.SaveUploadedFile(file, dest)
+	
+	document.Url = configuration.DirectoryForUploadedDocs + file.Filename
+	err = c.SaveUploadedFile(file, document.Url)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not save the file"})
 		return
 	}
-	document.Url = dest
+	
 	err = data.CreateDocument(&document)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,

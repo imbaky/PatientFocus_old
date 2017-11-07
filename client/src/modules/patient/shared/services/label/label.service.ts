@@ -28,14 +28,6 @@ export class LabelService {
    */
   createLabel(label: Label): Observable<any> {
     return this.http.post(`${environment.host_server}/label`, label)
-      .do((labelsRes: Label) => {
-        if (labelsRes) {
-          this.store.select('labels').subscribe((labels: any) => {
-            labels.push(label);
-            this.store.set('labels', labels);
-          });
-        }
-      })
       .catch((err) => Observable.throw(err));
   }
 

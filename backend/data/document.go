@@ -1,10 +1,15 @@
 package data
 
 import (
-    "fmt"
-    
-    "github.com/imbaky/PatientFocus/backend/domain/models"
+	"fmt"
+
+	"github.com/imbaky/PatientFocus/backend/domain/models"
 )
+
+func CreateDocument(document *models.Document) error {
+	_, err := ormObject.Insert(&document)
+	return err
+}
 
 func GetDocumentsFromArray(docs []int, documents *[]models.Document) error {
 

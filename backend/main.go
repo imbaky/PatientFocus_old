@@ -33,7 +33,10 @@ func main() {
 	router.POST("/user", handlers.CreateUser)
 
 	router.Use(middlewares.Authenticate)
-	router.GET("/user/:uid", middlewares.Authenticate, handlers.GetUser)
+	router.GET("/user/:uid", handlers.GetUser)
 	router.POST("/patient", handlers.CreatePatient)
+	router.POST("/patientdocuments", handlers.GetSharedDocuments)
+	router.POST("/document", handlers.UploadDocument)
+	router.POST("/document/share", handlers.ShareDocument)
 	router.Run(":9000")
 }

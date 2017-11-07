@@ -11,7 +11,21 @@ func CreatePatient(patient *models.Patient) (err error) {
 	return
 }
 
-func LinkDoctorDocument(user models.PFUser, documents []models.Document) error {
+func LinkDocumentPatient(document *models.Document, patient *models.PFUser) error {
+	documentPatientLink := &models.PatientDocument{Patient: patient.Patient, Document: document}
+	_, err := ormObject.Insert(documentPatientLink)
+	return err
+}
+
+func PatientDoctorLinked(doctor, patient *models.PFUser) error {
+	patientDoctorLink := &models.PatientDoctor{
+		Patient: patient.Patient,
+		Doctor:  doctor.Doctor}
+	err := ormObject.Read(patientDoctorLink)
+	return err
+}
+
+func LinkDoctorDocument(user *models.PFUser, documents []models.Document) error {
 	// build the values to insert
 	var dDocuments []models.DoctorDocument
 

@@ -47,9 +47,9 @@ func InsertPatientDocument(document model.Document, patient model.Patient) error
         return fmt.Errorf("Db connection problem :%v", err)
     }
     insertDocumentQuery := `INSERT INTO document
-    (url,description,date_created,date_modified)
-    VALUES($1,$2, $3, $4) RETURNING id`
-    err = db.QueryRow(insertDocumentQuery, document.Url, document.Desc, document.Date_created, document.Date_modified).Scan(&document.Id)
+    (url,description)
+    VALUES($1,$2) RETURNING id`
+    err = db.QueryRow(insertDocumentQuery, document.Url, document.Desc).Scan(&document.Id)
     if err != nil {
         return fmt.Errorf("Error inserting document into database: %v", err)
     }

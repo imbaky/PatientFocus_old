@@ -12,7 +12,6 @@ import (
 	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
-	"time"
 	"log"
 )
 
@@ -42,13 +41,19 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	err = data.GetUser(&user)
 	if err != nil {
 		fmt.Printf("%v \n",err)
+		http.Error(rw, "", http.StatusNotFound);
+		return;
 	}
 	//3. Create directory for patient/doctor if it does not already exist
 	var fileDir = ""
 	createFileDestination(&fileDir, user)
 	err = os.Mkdir(fileDir, 0777)
 	if err != nil {
-		fmt.Printf("%v \n",err) // message that directory already exists.
+		if(err.Error() != "mkdir " + fileDir + ": file exists") { //skip the case where directory already exists
+			fmt.Printf("%v \n",err.Error())
+			http.Error(rw, "Error creating user directory", http.StatusInternalServerError);
+			return;
+		}
 	}
 	//4. Save file in directory
 	fileUrl := fileDir + "/" + header.Filename
@@ -65,9 +70,6 @@ func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
 	//5. create document model
 	var document model.Document
 	document.Url = fileUrl
-	timeStamp := time.Now().Format(time.ANSIC)
-	document.Date_created = timeStamp
-	document.Date_modified = timeStamp
 	//6. insert document url in database
 	err = data.InsertPatientDocument(document, *user.Patient)
 	if err != nil {

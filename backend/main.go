@@ -17,6 +17,7 @@ var ORM orm.Ormer
 func init() {
 	data.ConnectToDb()
 	ORM = data.GetOrmObject()
+	// Open and intilialize log file to be written to.
 	f, _ := os.Create("logfile.log")
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 }
@@ -29,9 +30,11 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
+	// Routes captured and handled
 	router.POST("/auth/login", handlers.Login)
 	router.POST("/user", handlers.CreateUser)
 
+	// Routes that require a session token
 	router.Use(middlewares.Authenticate)
 	router.GET("/user/:uid", handlers.GetUser)
 	router.POST("/patient", handlers.CreatePatient)

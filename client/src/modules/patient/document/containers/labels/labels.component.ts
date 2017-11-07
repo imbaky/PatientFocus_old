@@ -31,12 +31,19 @@ export class LabelsComponent implements OnInit {
     return this.search.value;
   }
 
+  /**
+   * Adds selected label to document
+   * @param label - Label to add
+   */
   addLabelToDocument(label: Label) {
     if (this.selectedDocumentService.documents && label) {
       this.documentService.addLabel(this.selectedDocumentService.documents, [label]).subscribe();
     }
   }
 
+  /**
+   * Create new label with name and color
+   */
   createLabel() {
     this.labelService.createLabel({ name: this.search.value, color: this.color.value })
       .subscribe((newLabel: Label) => {
@@ -44,6 +51,9 @@ export class LabelsComponent implements OnInit {
       });
   }
 
+  /**
+   * Toggles the native HTML5 color selector
+   */
   openColorPicker() {
     this.colorPicker.nativeElement.click();
   }

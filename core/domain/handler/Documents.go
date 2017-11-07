@@ -4,52 +4,79 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
-	"log"
 	"bytes"
 	"strings"
 	"io"
 	"os"
 	"strconv"
-
 	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
+	"log"
 )
 
 
 func ReceiveDocument(rw http.ResponseWriter, req *http.Request) {
-
-	var document model.Document
+	//1. get file from request
 	var buf bytes.Buffer
 	file, header, err := req.FormFile("file") //the key must be "file" and the value is the actual file.
 	defer file.Close()
 	if err != nil {
 		log.Fatal(err)
-		fmt.Printf("%v",err)
-		panic(err)
+		fmt.Printf("%v \n",err)
 		sendBoolResponse(rw,err)
 		return
 	}
 	name := strings.Split(header.Filename, ".")
 	fmt.Printf("File name %s\n", name[0])
 	io.Copy(&buf, file)
-	directory := configuration.DirectoryForUploadedDocs + header.Filename
-	var osFile, osErr = os.Create(directory)
+	//2. get current user id from jwt token
+	tkn := strings.Replace(req.Header.Get("Authorization"), "Bearer ", "", -1)
+	id, err := data.GetIdFromSession(tkn)
+	if err != nil {
+		fmt.Printf("%v \n",err)
+	}
+	user := model.User{}
+	user.Id = id
+	err = data.GetUser(&user)
+	if err != nil {
+		fmt.Printf("%v \n",err)
+		http.Error(rw, "", http.StatusNotFound);
+		return;
+	}
+	//3. Create directory for patient/doctor if it does not already exist
+	var fileDir = ""
+	createFileDestination(&fileDir, user)
+	err = os.Mkdir(fileDir, 0777)
+	if err != nil {
+		if(err.Error() != "mkdir " + fileDir + ": file exists") { //skip the case where directory already exists
+			fmt.Printf("%v \n",err.Error())
+			http.Error(rw, "Error creating user directory", http.StatusInternalServerError);
+			return;
+		}
+	}
+	//4. Save file in directory
+	fileUrl := fileDir + "/" + header.Filename
+	var osFile, osErr = os.Create(fileUrl)
 	defer osFile.Close()
 	if osErr != nil {
-		fmt.Printf("There was a problem writing the file to " + directory + "\n")
+		fmt.Printf("There was a problem writing the file to " + fileUrl + "\n")
 		panic(err)
 		sendBoolResponse(rw,err)
 		return
 	}
 	osFile.Write(buf.Bytes())
 	buf.Reset()
-
-	// TODO: fill document model
-	document.Url = name[0]
-	// TODO: store document as a record in database
-	// data.SaveDocument(&document)
-
+	//5. create document model
+	var document model.Document
+	document.Url = fileUrl
+	//6. insert document url in database
+	err = data.InsertPatientDocument(document, *user.Patient)
+	if err != nil {
+		fmt.Printf("%v \n", err)
+		sendBoolResponse(rw,err)
+		return
+	}
 	sendBoolResponse(rw,err)
 }
 
@@ -162,7 +189,10 @@ type Session struct{ //temperary session wrapper to store user id. Needs to be d
 	patient_id string
 }
 
-func createFileDestination(fileName string) (destination string) { //we need to finalize file structure
-	session := &Session{patient_id: "patientId"}
-	return session.patient_id + "/" + fileName
+func createFileDestination(fileDir *string, user model.User) {
+	if user.Patient != nil { //create patient directory
+		*fileDir = configuration.DirectoryForUploadedDocs + "patient-" + strconv.Itoa(user.Patient.Id)
+	} else { //create doctor directory
+		*fileDir = configuration.DirectoryForUploadedDocs + "doctor-" + strconv.Itoa(user.Doctor.Id)
+	}
 }

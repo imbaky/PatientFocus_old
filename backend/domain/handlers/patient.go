@@ -8,6 +8,7 @@ import (
 	"github.com/imbaky/PatientFocus/backend/domain/models"
 )
 
+// CreatePatient registers a patient and returns his information
 func CreatePatient(c *gin.Context) {
 	var patient models.Patient
 	user := models.PFUser{Uid: c.GetInt("uid")}

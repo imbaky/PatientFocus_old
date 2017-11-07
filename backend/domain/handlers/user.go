@@ -1,3 +1,7 @@
+/*
+	Package handlers holds all the handlers that are used by the main router
+*/
+
 package handlers
 
 import (
@@ -9,6 +13,7 @@ import (
 	"github.com/imbaky/PatientFocus/backend/domain/models"
 )
 
+// CreateUser registers a user, adds him to the database and returns his information
 func CreateUser(c *gin.Context) {
 	var newUser models.PFUser
 
@@ -34,6 +39,7 @@ func CreateUser(c *gin.Context) {
 		"last_name":  newUser.LastName})
 }
 
+// GetUser returns the users details and information
 func GetUser(c *gin.Context) {
 	var user models.PFUser
 	user.Uid, _ = strconv.Atoi(c.Param("uid"))
@@ -59,7 +65,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	err = data.AuthenticateUser(&user)
+	err = data.ReadUser(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusInternalServerError, "error": "Bad username or password "})

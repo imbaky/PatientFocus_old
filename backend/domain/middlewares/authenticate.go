@@ -9,6 +9,8 @@ import (
 	"github.com/imbaky/PatientFocus/backend/data"
 )
 
+// Authenticate checks the Authorization header "Bearer" for the session token and
+// extract ehe uid from it and adds it to the context for later use in the application.
 func Authenticate(c *gin.Context) {
 	tkn := strings.Replace(c.GetHeader("Authorization"), "Bearer ", "", -1)
 	uid, err := data.GetIdFromSession(tkn)

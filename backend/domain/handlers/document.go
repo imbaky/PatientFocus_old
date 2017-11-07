@@ -9,17 +9,21 @@ import (
 	"github.com/imbaky/PatientFocus/backend/domain/models"
 )
 
-// form expected from frontend for document share
+// DocSharePayload is the expected struct when
+//requesting to share documents with a doctor
 type DocSharePayload struct {
 	Email     string `json:"email"`
 	Mesage    string `json:"message"`
 	Documents []int  `json:"documents"`
 }
 
+// JsonUrls is the struct of urls that are to returned to the client
 type JsonUrls struct {
 	Urls []string `json:"urls"`
 }
 
+// UploadDocument saves the document in the configuration.DirectoryForUploadDocs
+//directory and associates it to the patient
 func UploadDocument(c *gin.Context) {
 	var document models.Document
 	var user models.PFUser
@@ -36,7 +40,7 @@ func UploadDocument(c *gin.Context) {
 			gin.H{"status": http.StatusBadRequest, "error": "Could not get file"})
 		return
 	}
-	
+
 	document.Url = configuration.DirectoryForUploadedDocs + file.Filename
 	err = c.SaveUploadedFile(file, document.Url)
 	if err != nil {
@@ -44,7 +48,7 @@ func UploadDocument(c *gin.Context) {
 			gin.H{"status": http.StatusBadRequest, "error": "Could not save the file"})
 		return
 	}
-	
+
 	err = data.CreateDocument(&document)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
@@ -70,12 +74,14 @@ func UploadDocument(c *gin.Context) {
 		gin.H{
 			"id":            document.Did,
 			"url":           document.Url,
-			"desc":          document.Desc,
+			"desc":          document.Description,
 			"date_created":  document.DateCreated,
 			"date_modified": document.DateModified,
 		})
 }
 
+// ShareDocument is used to connect the document to the
+//doctor that must already be connected to the patient
 func ShareDocument(c *gin.Context) {
 	var docSharePayload DocSharePayload
 	var user models.PFUser
@@ -125,6 +131,8 @@ func ShareDocument(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK})
 }
 
+// GetSharedDocuments returns the documents that have
+//been shared between the patient and the doctor
 func GetSharedDocuments(c *gin.Context) {
 	var patient models.PFUser
 	var doctor models.PFUser

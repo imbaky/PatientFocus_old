@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/imbaky/PatientFocus/backend/configuration"
@@ -22,61 +24,68 @@ type JsonUrls struct {
 	Urls []string `json:"urls"`
 }
 
-// UploadDocument saves the document in the configuration.DirectoryForUploadDocs
-//directory and associates it to the patient
-func UploadDocument(c *gin.Context) {
-	var document models.Document
-	var user models.PFUser
-	err := c.BindJSON(&document)
-	if err != nil {
-		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not bind json"})
-		return
-	}
+func GetDocument(c *gin.Context) {
+	var patient models.Patient
+	pid, _ := strconv.Atoi(c.Param("id"))
+	patient.Ptid = pid
 
-	file, err := c.FormFile("file")
+	documents, err := data.ReadPatientDocuments(&patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not get file"})
-		return
-	}
-
-	document.Url = configuration.DirectoryForUploadedDocs + file.Filename
-	err = c.SaveUploadedFile(file, document.Url)
-	if err != nil {
-		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not save the file"})
-		return
-	}
-
-	err = data.CreateDocument(&document)
-	if err != nil {
-		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not save document in db"})
-		return
-	}
-	user.Uid = c.GetInt("uid")
-	err = data.ReadUser(&user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not save document in db"})
-		return
-	}
-
-	err = data.LinkDocumentPatient(&document, &user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not save document in db"})
+			gin.H{"error": "Could not read patient"})
 		return
 	}
 
 	c.JSON(http.StatusOK,
 		gin.H{
-			"id":            document.Did,
-			"url":           document.Url,
-			"desc":          document.Description,
-			"date_created":  document.DateCreated,
-			"date_modified": document.DateModified,
+			"documents": &documents,
+		})
+
+}
+
+// UploadDocument saves the document in the configuration.DirectoryForUploadDocs
+//directory and associates it to the patient
+func UploadDocument(c *gin.Context) {
+	var document models.Document
+	var patient models.Patient
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"error": "Could not get file"})
+		return
+	}
+
+	pid := c.Param("number")
+	fmt.Printf("pid is %v\n", pid)
+	intPid, _ := strconv.Atoi(pid)
+	patient.Ptid = intPid
+	document.Url = configuration.DirectoryForUploadedDocs + file.Filename
+	document.Patient = &patient
+	err = c.SaveUploadedFile(file, document.Url)
+	if err != nil {
+		fmt.Printf("could not save the file %v\n", err)
+		c.JSON(http.StatusBadRequest,
+			gin.H{"error": "Could not save the file"})
+		return
+	}
+
+	role, _ := c.Get("role")
+	if role == "doctor" {
+		doctor := models.Doctor{Did: c.GetInt("role_id")}
+		document.Doctors = []*models.Doctor{&doctor}
+	}
+
+	err = data.CreateDocument(&document)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"error": "Could not save document in db"})
+		return
+	}
+
+	c.JSON(http.StatusOK,
+		gin.H{
+			"document": &document,
 		})
 }
 
@@ -92,7 +101,7 @@ func ShareDocument(c *gin.Context) {
 	err := c.BindJSON(&docSharePayload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not bind json"})
+			gin.H{"error": "Could not bind json"})
 		return
 	}
 
@@ -100,21 +109,21 @@ func ShareDocument(c *gin.Context) {
 	err = data.ReadUser(&doctor)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not get doctor by email"})
+			gin.H{"error": "Could not get doctor by email"})
 		return
 	}
 
 	err = data.ReadUser(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not get user by email"})
+			gin.H{"error": "Could not get user by email"})
 		return
 	}
 
 	err = data.PatientDoctorLinked(&doctor, &user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Doctor and patient are not connected"})
+			gin.H{"error": "Doctor and patient are not connected"})
 		return
 	}
 
@@ -125,10 +134,10 @@ func ShareDocument(c *gin.Context) {
 	err = data.LinkDoctorDocument(&doctor, documents)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not give doctor access to document"})
+			gin.H{"error": "Could not give doctor access to document"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK})
+	c.JSON(http.StatusOK, gin.H{})
 }
 
 // GetSharedDocuments returns the documents that have
@@ -141,21 +150,21 @@ func GetSharedDocuments(c *gin.Context) {
 	err := data.ReadUser(&doctor)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not find doctor "})
+			gin.H{"error": "Could not find doctor "})
 		return
 	}
 
 	err = data.ReadUser(&patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not find patient "})
+			gin.H{"error": "Could not find patient "})
 		return
 	}
 
 	documents, err := data.GetSharedDocuments(&doctor, &patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not find shared documents "})
+			gin.H{"error": "Could not find shared documents "})
 		return
 	}
 

@@ -13,8 +13,18 @@ import (
 
 // CreateDocument creates a document record in the database
 func CreateDocument(document *models.Document) error {
-	_, err := ormObject.Insert(&document)
+	_, err := ormObject.Insert(document)
+	// return err
+	// fmt.Printf("patient is now %v\n", document.Patient)
+	// m2m := orm.NewOrm().QueryM2M(document.Patient, "Documents")
+	// _, err = m2m.Add(document)
+	// fmt.Printf("error adding document %v\n", err)
+
+	// fmt.Printf("could not put document in patients %v\n", err)
 	return err
+	// m2m = ormObject.QueryM2M(&document.Doctors, "Documents")
+	// _, err = m2m.Add(document)
+	// return err
 }
 
 // GetDocumentsFromArray returns all the documents specified by the ids

@@ -11,6 +11,7 @@ type PFUser struct {
 	FirstName    string    `json:"first_name"`
 	LastName     string    `json:"last_name"`
 	Password     string    `json:"password"`
+	Role         string    `json:"role"`
 	Patient      *Patient  `orm:"rel(fk);null"`
 	Doctor       *Doctor   `orm:"rel(fk);null"`
 	DateCreated  time.Time `orm:"auto_now_add;type(datetime)"`

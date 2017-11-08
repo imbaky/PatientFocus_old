@@ -17,6 +17,10 @@ func ReadUser(user *models.PFUser) error {
 	return ormObject.Read(user, "email", "password")
 }
 
+// func UpdateUser(user *models.PFUser) error {
+	
+// }
+
 // AssociatePatient creates an association between the patient and the user structure
 func AssociatePatient(user *models.PFUser) error {
 	_, err := ormObject.Update(user, "patient_id")

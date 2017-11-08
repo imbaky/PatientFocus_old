@@ -2,8 +2,11 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 
+import { DocumentService } from '../../../shared/services/document/document.service';
 import { Label } from '../../../shared/services/label/label.service';
 import { LabelService } from '../../../shared/services/label/label.service';
+import { SelectedDocumentService } from '../../../shared/services/selected-document/selected-document.service';
+
 
 @Component({
   selector: 'labels',
@@ -19,9 +22,28 @@ export class LabelsComponent implements OnInit {
   labels$: Observable<Label[]>;
 
   constructor(
-    private labelService: LabelService
+    private labelService: LabelService,
+    private documentService: DocumentService,
+    private selectedDocumentService: SelectedDocumentService
   ) { }
 
+  get value(){
+    return this.search.value;
+  }
+
+  /**
+   * Adds selected label to document
+   * @param label - Label to add
+   */
+  addLabelToDocument(label: Label) {
+    if (this.selectedDocumentService.documents && label) {
+      this.documentService.addLabel(this.selectedDocumentService.documents, [label]).subscribe();
+    }
+  }
+
+  /**
+   * Create new label with name and color
+   */
   createLabel() {
     this.labelService.createLabel({ name: this.search.value, color: this.color.value })
       .subscribe((newLabel: Label) => {
@@ -29,16 +51,15 @@ export class LabelsComponent implements OnInit {
       });
   }
 
+  /**
+   * Toggles the native HTML5 color selector
+   */
   openColorPicker() {
     this.colorPicker.nativeElement.click();
   }
 
   ngOnInit() {
     this.labels$ = this.labelService.getAllLabels();
-  }
-
-  get value(){
-    return this.search.value;
   }
 
 }

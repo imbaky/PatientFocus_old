@@ -73,10 +73,7 @@ describe('Label Service', () => {
     store.set('labels', labels);
     spyOn(store, 'set');
 
-    service.createLabel(label)
-      .subscribe((result: any) => {
-        expect(store.set).toHaveBeenCalledWith('labels', newLabels);
-    });
+    service.createLabel(label).subscribe();
 
     const req = httpMock.expectOne({
       url: '/label',

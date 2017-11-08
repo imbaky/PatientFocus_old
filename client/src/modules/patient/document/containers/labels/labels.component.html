@@ -10,6 +10,6 @@
     </div>
     <document-label class="labels--item"
       *ngFor="let label of labels$ | async | filter:search.value:'name'"
-      [label]="label"></document-label>
+      [label]="label" (click)="addLabelToDocument(label)" ></document-label>
   </div>
 </div>

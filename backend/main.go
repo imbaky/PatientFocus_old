@@ -4,25 +4,21 @@ import (
 	"io"
 	"os"
 
+	"github.com/imbaky/PatientFocus/backend/data"
 	"github.com/imbaky/PatientFocus/backend/domain/middlewares"
 
-	"github.com/astaxie/beego/orm"
 	"github.com/gin-gonic/gin"
-	"github.com/imbaky/PatientFocus/backend/data"
 	"github.com/imbaky/PatientFocus/backend/domain/handlers"
 )
 
-var ORM orm.Ormer
-
 func init() {
-	data.ConnectToDb()
-	ORM = data.GetOrmObject()
 	// Open and intilialize log file to be written to.
 	f, _ := os.Create("logfile.log")
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 }
 
 func main() {
+	data.Init()
 	// Creates a gin router with default middleware:
 	router := gin.New()
 

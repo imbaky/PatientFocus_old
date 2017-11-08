@@ -13,6 +13,7 @@ type Patient struct {
 	DateOfBirth time.Time   `orm:"type(date);column(dob)" json:"dob"`
 	Smoke       bool        `orm:"type(bool) default(false)" json:"smoke"`
 	Documents   []*Document `orm:"rel(m2m)" json:"documents"`
+	Doctors     []*Doctor   `orm:"rel(m2m)" json:"doctors"`
 	// ProblemList string    `orm:"type(string)" json:"problem_list"`
 	//	MedsList    []string  `json:"meds_list"`
 	//	AllergyList []string  `json:"alergy_list"`

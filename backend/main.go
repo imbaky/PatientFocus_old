@@ -34,6 +34,7 @@ func main() {
 	router.Use(middlewares.Authenticate)
 	router.GET("/user/:uid", handlers.GetUser)
 	router.POST("/patient", handlers.CreatePatient)
+	router.POST("/doctor", handlers.CreateDoctor)
 	router.POST("/patientdocuments", handlers.GetSharedDocuments)
 	router.PUT("/document/:number", handlers.UploadDocument)
 	router.GET("/document/:id", handlers.GetDocument)

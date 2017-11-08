@@ -18,11 +18,3 @@ type Document struct {
 	DateCreated  time.Time `orm:"auto_now_add;type(datetime)"`
 	DateModified time.Time `orm:"auto_now;type(datetime)"`
 }
-
-// DocumentLabel is the struct used for the
-//pivot table to know how the document is labelled
-// type DocumentLabel struct {
-// 	Did      int       `orm:"pk;auto" json:"id"`
-// 	Document *Document `orm:"rel(fk)" json:"document_id"`
-// 	Label    *Label    `orm:"rel(fk)" json:"label_id"`
-// }

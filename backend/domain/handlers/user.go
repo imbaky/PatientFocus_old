@@ -47,8 +47,7 @@ func GetUser(c *gin.Context) {
 			gin.H{"error": "Failed to find user"})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"users": &user})
+	c.JSON(http.StatusOK, gin.H{"user": &user})
 }
 
 //Login endpoint authenticates and returns a token

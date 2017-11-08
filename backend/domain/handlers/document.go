@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -29,7 +28,7 @@ func GetDocument(c *gin.Context) {
 	pid, _ := strconv.Atoi(c.Param("id"))
 	patient.Ptid = pid
 
-	documents, err := data.ReadPatientDocuments(&patient)
+	err := data.ReadPatientDocuments(&patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Could not read patient"})
@@ -38,7 +37,7 @@ func GetDocument(c *gin.Context) {
 
 	c.JSON(http.StatusOK,
 		gin.H{
-			"documents": &documents,
+			"documents": &patient.Documents,
 		})
 
 }
@@ -57,14 +56,13 @@ func UploadDocument(c *gin.Context) {
 	}
 
 	pid := c.Param("number")
-	fmt.Printf("pid is %v\n", pid)
 	intPid, _ := strconv.Atoi(pid)
 	patient.Ptid = intPid
 	document.Url = configuration.DirectoryForUploadedDocs + file.Filename
 	document.Patient = &patient
 	err = c.SaveUploadedFile(file, document.Url)
+
 	if err != nil {
-		fmt.Printf("could not save the file %v\n", err)
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Could not save the file"})
 		return
@@ -93,19 +91,25 @@ func UploadDocument(c *gin.Context) {
 //doctor that must already be connected to the patient
 func ShareDocument(c *gin.Context) {
 	var docSharePayload DocSharePayload
-	var user models.PFUser
+	var patient models.PFUser
 	var doctor models.PFUser
-	documents := make([]models.Document, len(docSharePayload.Documents))
-	user.Uid = c.GetInt("uid")
-
 	err := c.BindJSON(&docSharePayload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Could not bind json"})
 		return
 	}
+	documents := make([]models.Document, len(docSharePayload.Documents))
 
-	doctor.Email = docSharePayload.Email
+	role, _ := c.Get("role")
+	if role == "patient" {
+		patient.Uid = c.GetInt("user_id")
+		doctor.Email = docSharePayload.Email
+	} else if role == "doctor" {
+		doctor.Uid = c.GetInt("user_id")
+		patient.Email = docSharePayload.Email
+	}
+
 	err = data.ReadUser(&doctor)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
@@ -113,14 +117,20 @@ func ShareDocument(c *gin.Context) {
 		return
 	}
 
-	err = data.ReadUser(&user)
+	err = data.ReadUser(&patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Could not get user by email"})
 		return
 	}
 
-	err = data.PatientDoctorLinked(&doctor, &user)
+	err = data.LinkPatientDoctor(&doctor, &patient)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"error": "Cannot connect doctor and patient"})
+		return
+	}
+	err = data.PatientDoctorLinked(&doctor, &patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Doctor and patient are not connected"})
@@ -128,7 +138,7 @@ func ShareDocument(c *gin.Context) {
 	}
 
 	for i, did := range docSharePayload.Documents {
-		documents[i].Did = did
+		documents[i] = models.Document{Did: did}
 	}
 
 	err = data.LinkDoctorDocument(&doctor, documents)
@@ -143,18 +153,25 @@ func ShareDocument(c *gin.Context) {
 // GetSharedDocuments returns the documents that have
 //been shared between the patient and the doctor
 func GetSharedDocuments(c *gin.Context) {
-	var patient models.PFUser
+	var patient models.Patient
 	var doctor models.PFUser
-	doctor.Uid = c.GetInt("uid")
+	doctor.Uid = c.GetInt("user_id")
 
-	err := data.ReadUser(&doctor)
+	err := c.BindJSON(&patient)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"error": "Could not bind json "})
+		return
+	}
+
+	err = data.ReadUser(&doctor)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Could not find doctor "})
 		return
 	}
 
-	err = data.ReadUser(&patient)
+	err = data.ReadPatient(&patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Could not find patient "})

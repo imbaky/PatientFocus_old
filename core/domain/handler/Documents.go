@@ -14,7 +14,6 @@ import (
 	"github.com/imbaky/PatientFocus/core/data"
 	"encoding/json"
 	"archive/zip"
-	"path/filepath"
 )
 
 
@@ -88,6 +87,8 @@ type DocSharePayload struct {
 	Mesage  	string    `json:"message"`
 	Documents   []int  `json:"documents"`
 }
+
+const zipFileName = "share.zip"
 
 // Patient shares docuement with doctor
 func ShareDocument(rw http.ResponseWriter, req *http.Request) {
@@ -168,29 +169,30 @@ func GetSharedDocuments(rw http.ResponseWriter, req *http.Request) {
 	var urls = []string{}
 	err = data.GetSharedDocuments(&userDoctor, &userPatient, &urls)
 	if err != nil {
-		fmt.Printf("%v", err)
-		sendBoolResponse(rw, err)
+		fmt.Printf("%v \n", err)
+		http.Error(rw, "Documents not found", http.StatusNotFound);
 		return
 	}
-	var zipPath string = configuration.DirectoryForUploadedDocs + strconv.Itoa(userPatient.Doctor.Id) + "/" + "share.zip"
-	os.Mkdir(configuration.DirectoryForUploadedDocs + strconv.Itoa(userPatient.Doctor.Id), 0777)
-	zipFile, err := os.Create(zipPath)
+	var zipDirectory = configuration.DirectoryForUploadedDocs + "doctor-" + strconv.Itoa(userDoctor.Doctor.Id )+
+		"/" + "patient" + strconv.Itoa(userPatient.Patient.Id)
+	os.MkdirAll(zipDirectory, 0777)
+	var zipFiePath = zipDirectory + "/" + zipFileName
+	zipFile, err := os.Create(zipFiePath)
 	defer zipFile.Close()
 	if err != nil {
-		fmt.Printf("%v", err)
-		sendBoolResponse(rw, err)
+		fmt.Printf("%v \n", err)
+		http.Error(rw, "Zip file could not be created", http.StatusInternalServerError);
 		return
 	}
 	// Create a new zip archive.
 	zipWriter := zip.NewWriter(zipFile)
 	createZip(zipWriter, urls)
-	_, zipFileName := filepath.Split(zipPath)
 	var contentDisposition string = "attachment; filename=" + "'" + zipFileName + "'"
-
 	rw.Header().Set("Content-Type", "application/zip")
 	rw.Header().Set("Content-Disposition", contentDisposition)
-	http.ServeFile(rw, req, zipPath)
-	os.RemoveAll(configuration.DirectoryForUploadedDocs + strconv.Itoa(ids.PatientId))
+	http.ServeFile(rw, req, zipFiePath)
+	os.RemoveAll(zipDirectory)
+	os.Remove(configuration.DirectoryForUploadedDocs + "doctor-" + strconv.Itoa(userDoctor.Doctor.Id ))
 }
 
 func createZip(zipWriter *zip.Writer, urls []string) {
@@ -198,28 +200,33 @@ func createZip(zipWriter *zip.Writer, urls []string) {
 	for _, url := range urls {
 		file, err := os.Open(url)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("%v \n", err) //file not found
+			continue;
 		}
 		defer file.Close()
 		// Get the file information
 		info, err := file.Stat()
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("%v \n", err)
+			continue;
 		}
 
 		header, err := zip.FileInfoHeader(info)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("%v \n", err)
+			continue;
 		}
 		header.Method = zip.Deflate
 
 		writer, err := zipWriter.CreateHeader(header)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("%v \n", err)
+			continue;
 		}
 		_, err = io.Copy(writer, file)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("%v \n", err) //file not found
+			continue;
 		}
 	}
 }

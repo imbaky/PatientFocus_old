@@ -45,3 +45,13 @@
 .document-item--size {
   width: 15%;
 }
+
+.document-item--labels {
+  display: inline-flex;
+}
+
+.document-item--labels > document-label {
+  line-height: 1rem;
+  font-weight: normal;
+  width: 4rem;
+}

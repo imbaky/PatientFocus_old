@@ -9,21 +9,36 @@ import (
 
     "github.com/gin-gonic/gin"
     "github.com/imbaky/PatientFocus/backend/domain/handlers"
+    "github.com/imbaky/PatientFocus/backend/domain/models"
     "github.com/imbaky/PatientFocus/backend/data"
 
 )
 
 func init() {
     data.ConnectToDb()
+    // pre-populate database
+    ormObject := data.GetOrmObject()
+    var newUser = models.PFUser{
+        Email: "test@me.com",
+        FirstName: "Test",
+        LastName: "User",
+        Password: "foobar",
+    }
+    ormObject.Insert(&newUser)
+    
+    // TODO: do a tear down?
+    // In travis it is automatically done
+}
+func testMiddleware(c *gin.Context) {
+    // set default user to 1
+    c.Set("uid", 1)
 }
 
 func TestGetUser(t *testing.T) {
     gin.SetMode(gin.TestMode)
-    // this is what I expect
-    /*handler := func(c *gin.Context) {
-        c.String(http.StatusOk, "bar")
-    }*/
+
     router := gin.Default()
+    router.Use(testMiddleware)
     router.GET("/user/:uid", handlers.GetUser)
     url := fmt.Sprintf("/user/%d", 1)
     req, err := http.NewRequest("GET", url, nil)

@@ -48,5 +48,5 @@ matrix:
         - go get -d
 
       script:
-        - go test -v
+        - go test -v ./backend/...
 

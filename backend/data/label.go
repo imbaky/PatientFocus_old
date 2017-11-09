@@ -1,6 +1,8 @@
 package data
 
-import "github.com/imbaky/PatientFocus/backend/domain/models"
+import (
+	"github.com/imbaky/PatientFocus/backend/domain/models"
+)
 
 // CreateLabel creates a record in the datbase
 func CreateLabel(label *models.Label) (err error) {
@@ -9,6 +11,7 @@ func CreateLabel(label *models.Label) (err error) {
 }
 
 // Retrieve label from the database
-func GetLabel(label *models.Label) error {
-	return ormObject.Read(label)
+func GetLabels(uid int, labels *[]models.Label) error {
+	_, err := ormObject.QueryTable("label").Filter("Uid", uid).RelatedSel().All(labels)
+	return err
 }

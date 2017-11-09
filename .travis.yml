@@ -6,7 +6,7 @@ before_script:
 env:
   global:
     - CLIENT_DIR=client
-    - SERVER_DIR=core
+    - SERVER_DIR=backend
 matrix:
   include:
     - language: node_js
@@ -48,5 +48,5 @@ matrix:
         - go get -d
 
       script:
-        - go test -v
+        - go test -v ./...
 

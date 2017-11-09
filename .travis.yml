@@ -6,7 +6,7 @@ before_script:
 env:
   global:
     - CLIENT_DIR=client
-    - SERVER_DIR=core
+    - SERVER_DIR=backend
 matrix:
   include:
     - language: node_js

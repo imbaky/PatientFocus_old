@@ -1,3 +1,8 @@
+services:
+  - postgresql
+before_script:
+  - psql -c "CREATE USER pf WITH PASSWORD 'patientfocus';" -U postgres
+  - psql -c 'CREATE DATABASE patientfocus;' -U postgres
 env:
   global:
     - CLIENT_DIR=client

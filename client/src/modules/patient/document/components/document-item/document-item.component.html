@@ -5,9 +5,9 @@
       {{ document.name }}
     </div>
     <div class="document-item--labels">
-        <document-label class="badge"
-        *ngFor="let label of document.labels"
-        [label]="label"></document-label>
+        <document-label class="document-item--label"
+          *ngFor="let label of document.labels"
+          [label]="label"></document-label>
     </div>
   </div>
 

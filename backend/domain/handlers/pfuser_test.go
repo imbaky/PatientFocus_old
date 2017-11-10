@@ -76,3 +76,29 @@ func TestValidLogin(t *testing.T) {
 	assert.Equal(t, resp.Code, 200)
 }
 
+func TestNonExistentLogin(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	user := models.PFUser{
+		Email:    "unknown@me.com",
+		Password: "foobar",
+	}
+	data, err := json.Marshal(user)
+	if (err != nil) {
+		fmt.Println(err)
+	}
+	router := gin.Default()
+	router.POST("/auth/login", handlers.Login)
+	url := fmt.Sprintf("/auth/login")
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp := httptest.NewRecorder()
+	router.ServeHTTP(resp, req)
+	fmt.Println(resp)
+	assert.Equal(t, resp.Code, 500)
+}
+
+
+

@@ -36,9 +36,11 @@ export class LabelsComponent implements OnInit {
    * @param label - Label to add
    */
   addLabelToDocument(label: Label) {
-    if (this.selectedDocumentService.documents && label) {
-      this.documentService.addLabel(this.selectedDocumentService.documents, [label]).subscribe();
-    }
+    const documents = this.selectedDocumentService.documents;
+    this.documentService.addLabel(documents, [label])
+      .subscribe(() => {
+        documents.forEach((document) => document.labels.push(label));
+      });
   }
 
   /**

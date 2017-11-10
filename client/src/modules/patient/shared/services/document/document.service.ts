@@ -251,7 +251,7 @@ export class DocumentService {
       return label.id;
     });
 
-    return this.http.put(`document/${id}/labels/`, {
+    return this.http.put(`${environment.host_server}/document/${id}`, {
       labels: labelIds
     });
   }

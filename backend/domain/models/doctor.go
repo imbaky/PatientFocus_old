@@ -15,11 +15,3 @@ type Doctor struct {
 	DateCreated    time.Time   `orm:"auto_now_add;type(datetime)"`
 	DateModified   time.Time   `orm:"auto_now;type(datetime)"`
 }
-
-// DoctorDocument is the pivot table struct that lets us know
-//which doctor is associated with which documents
-// type DoctorDocument struct {
-// 	DDid     int       `orm:"pk;auto;column(ddid)" json:"id"`
-// 	Doctor   *Doctor   `orm:"rel(fk)" json:"doctor_id"`
-// 	Document *Document `orm:"rel(fk)" json:"document_id"`
-// }

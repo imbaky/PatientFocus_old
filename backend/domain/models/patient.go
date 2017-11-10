@@ -26,13 +26,6 @@ func (u *Patient) TableName() string {
 	return "patient"
 }
 
-// PatientDocument holds the relationship between a patient and a document
-// type PatientDocument struct {
-// 	PDid     int       `orm:"pk;auto;column(pdid)" json:"id"`
-// 	Patient  *Patient  `orm:"rel(fk)" json:"patient_id"`
-// 	Document *Document `orm:"rel(fk)" json:"document_id"`
-// }
-
 // PatientDoctor holds a patient doctor relationship
 type PatientDoctor struct {
 	PDoid   int      `orm:"pk;auto;column(pdoid)" json:"id"`

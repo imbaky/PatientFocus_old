@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/imbaky/PatientFocus/backend/domain/handlers"
+	 "github.com/gin-contrib/cors"
 )
 
 func init() {
@@ -25,6 +26,7 @@ func main() {
 	// logger and recovery (crash-free) middleware
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+	router.Use(cors.Default())
 
 	// Routes captured and handled
 	router.POST("/auth/login", handlers.Login)
@@ -39,5 +41,5 @@ func main() {
 	router.PUT("/document/:number", handlers.UploadDocument)
 	router.GET("/document/:id", handlers.GetDocument)
 	router.POST("/document/share", handlers.ShareDocument)
-	router.Run(":9000")
+	router.Run(":1337")
 }

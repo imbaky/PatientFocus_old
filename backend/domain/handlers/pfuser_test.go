@@ -12,13 +12,21 @@ import (
     "github.com/imbaky/PatientFocus/backend/domain/models"
     "github.com/imbaky/PatientFocus/backend/data"
 
+	"github.com/gin-gonic/gin/json"
+	"bytes"
 )
+
+var router *gin.Engine
+var newUser models.PFUser
 
 func init() {
     data.ConnectToDb()
-    // pre-populate database
+	gin.SetMode(gin.TestMode)
+	router = gin.Default()
+
+	// pre-populate database
     ormObject := data.GetOrmObject()
-    var newUser = models.PFUser{
+	newUser = models.PFUser{
         Email: "test@me.com",
         FirstName: "Test",
         LastName: "User",
@@ -35,9 +43,7 @@ func testMiddleware(c *gin.Context) {
 }
 
 func TestGetUser(t *testing.T) {
-    gin.SetMode(gin.TestMode)
 
-    router := gin.Default()
     router.Use(testMiddleware)
     router.GET("/user/:uid", handlers.GetUser)
     url := fmt.Sprintf("/user/%d", 1)
@@ -51,3 +57,22 @@ func TestGetUser(t *testing.T) {
     fmt.Println(resp)
     assert.Equal(t, resp.Code, 200)
 }
+
+func TestValidLogin(t *testing.T) {
+	data, err := json.Marshal(newUser)
+	if (err != nil) {
+		fmt.Println(err)
+	}
+	router.POST("/auth/login", handlers.Login)
+	url := fmt.Sprintf("/auth/login")
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp := httptest.NewRecorder()
+	router.ServeHTTP(resp, req)
+	fmt.Println(resp)
+	assert.Equal(t, resp.Code, 200)
+}
+

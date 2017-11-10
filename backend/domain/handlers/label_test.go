@@ -13,11 +13,6 @@ import (
 	
 )
 
-// func init() {
-// 	data.ConnectToDb()
-// 	// TODO: prepopulate database
-// }
-
 func TestCreateLabel(t *testing.T) {
 	
 	gin.SetMode(gin.TestMode)

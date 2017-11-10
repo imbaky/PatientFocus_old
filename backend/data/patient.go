@@ -18,13 +18,6 @@ func ReadPatient(patient *models.Patient) error {
 	return err
 }
 
-// LinkDocumentPatient creates a link in the database between the patient and the document
-// func LinkDocumentPatient(document *models.Document, patient *models.PFUser) error {
-// documentPatientLink := &models.PatientDocument{Patient: patient.Patient, Document: document}
-// _, err := ormObject.Insert(documentPatientLink)
-// 	return nil
-// }
-
 func ReadPatientDocuments(patient *models.Patient) error {
 	_, err := ormObject.QueryTable("document").Filter("patient", patient.Ptid).RelatedSel().All(&patient.Documents)
 	return err

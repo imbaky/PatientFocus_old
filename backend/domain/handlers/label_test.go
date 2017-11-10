@@ -9,20 +9,14 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/imbaky/PatientFocus/backend/data"
 	"github.com/imbaky/PatientFocus/backend/domain/handlers"
 	
 )
 
-func init() {
-	data.ConnectToDb()
-	// TODO: prepopulate database
-}
-
-func testMiddleware(c *gin.Context) {
-	// set default user to 1
-	c.Set("uid", 1)
-}
+// func init() {
+// 	data.ConnectToDb()
+// 	// TODO: prepopulate database
+// }
 
 func TestCreateLabel(t *testing.T) {
 	

@@ -1,7 +1,12 @@
+services:
+  - postgresql
+before_script:
+  - psql -c "CREATE USER pf WITH PASSWORD 'patientfocus';" -U postgres
+  - psql -c 'CREATE DATABASE patientfocus;' -U postgres
 env:
   global:
     - CLIENT_DIR=client
-    - SERVER_DIR=core
+    - SERVER_DIR=backend
 matrix:
   include:
     - language: node_js
@@ -43,5 +48,5 @@ matrix:
         - go get -d
 
       script:
-        - go test -v
+        - go test -v ./...
 

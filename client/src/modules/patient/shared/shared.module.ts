@@ -10,6 +10,7 @@ import { PatientService } from './services/patient/patient.service';
 import { PatientResolver } from './resolvers/patient/patient.resolver';
 import { LabelService } from './services/label/label.service';
 import { SelectedPatientService } from './services/selected-patient/selected-patient.service';
+import { ShareDocumentService } from './services/share-document/share-document.service';
 
 // guards
 import { PatientGuard } from './guards/patient/patient.guard';
@@ -34,6 +35,7 @@ export class SharedModule {
         DocumentService,
         SelectedDocumentService,
         SelectedPatientService,
+        ShareDocumentService
       ]
     };
   }

@@ -37,9 +37,7 @@ func ConnectToDb() {
 		new(models.Patient),
 		new(models.Doctor),
 		new(models.Document),
-		// new(models.DoctorDocument),
 		new(models.Label),
-		// new(models.DocumentLabel),
 	)
 	orm.RunSyncdb("default", false, true)
 	ormObject = orm.NewOrm()

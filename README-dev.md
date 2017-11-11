@@ -5,6 +5,9 @@ Modify docker-compose-dev.yml in this directory
 ```
 volumes:
     - <your local db path>:/var/lib/postgresql/data
+backend:
+  environment:
+    POSTGRES_HOST: <ip address of your server>
 ```
 Modify client/nginx/default.conf
 ```
@@ -19,5 +22,5 @@ The makefile will allow you to build the project from here.
 ### Usage
 make - with no arguments will build frontend and backend image
 make frontend  - just frontend
-make backend - just backend
+make server - just backend
 make dev - will start up all services defined in docker-compose-dev.yml

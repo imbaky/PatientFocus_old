@@ -8,7 +8,7 @@ const SELECTOR_CONTROL_ACCESSOR: ExistingProvider = {
 };
 
 export interface PillSelectorOption {
-  value: string;
+  value: string | boolean;
   label: string;
 }
 
@@ -38,7 +38,7 @@ export class PillSelectorComponent implements ControlValueAccessor {
   }
 
   writeValue(value) {
-    if (!value) {
+    if (typeof(value) !== "boolean" && !value) {
       throw new Error(`${PillSelectorComponent.name} requires a default option. None was provided.`);
     }
 

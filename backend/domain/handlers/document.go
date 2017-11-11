@@ -53,10 +53,8 @@ func UploadDocument(c *gin.Context) {
 			gin.H{"error": "Could not get file"})
 		return
 	}
-
-	pid := c.Param("number")
-	intPid, _ := strconv.Atoi(pid)
-	patient.Ptid = intPid
+	id := c.Request.MultipartForm.Value["patient"]
+	patient.Ptid, err = strconv.Atoi(id[0])
 	document.Url = configuration.DirectoryForUploadedDocs + file.Filename
 	document.Patient = &patient
 	err = c.SaveUploadedFile(file, document.Url)

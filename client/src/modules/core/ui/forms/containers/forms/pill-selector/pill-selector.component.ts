@@ -38,7 +38,7 @@ export class PillSelectorComponent implements ControlValueAccessor {
   }
 
   writeValue(value) {
-    if (typeof(value) !== "boolean" && !value) {
+    if (typeof(value) !== 'boolean' && !value) {
       throw new Error(`${PillSelectorComponent.name} requires a default option. None was provided.`);
     }
 

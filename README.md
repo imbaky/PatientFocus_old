@@ -4,13 +4,13 @@ SOEN490 project
 
 ## Documentation
 1. [Frontend documentation](./client/Readme.md)
-2. [Backend documentation](./core/Readme.md)
+2. [Backend documentation](./backend/Readme.md)
 
 ## File Structure
 
 1. Documents for course: `./CourseAdmin`
 2. Frontend: `./client`
-3. Backend: `./core`
+3. Backend: `./backend`
 
 ## Development Process
 
@@ -81,6 +81,9 @@ Modify docker-compose-dev.yml in this directory
 ```
 volumes:
     - <your local db path>:/var/lib/postgresql/data
+backend:
+  environment:
+    POSTGRES_HOST: <ip address of your server>    
 ```
 Modify client/nginx/default.conf
 ```
@@ -95,5 +98,5 @@ The makefile will allow you to build the project from here.
 ### Usage
 make - with no arguments will build frontend and backend image
 make frontend  - just frontend
-make backend - just backend
+make server - just backend
 make dev - will start up all services defined in docker-compose-dev.yml

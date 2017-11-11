@@ -13,7 +13,7 @@ import (
 
 // CreateDocument creates a document record in the database
 func CreateDocument(document *models.Document) error {
-	_, err := ormObject.Insert(&document)
+	_, err := ormObject.Insert(document)
 	return err
 }
 

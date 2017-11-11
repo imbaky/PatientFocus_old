@@ -9,20 +9,9 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/imbaky/PatientFocus/backend/data"
 	"github.com/imbaky/PatientFocus/backend/domain/handlers"
 	
 )
-
-func init() {
-	data.ConnectToDb()
-	// TODO: prepopulate database
-}
-
-func testMiddleware(c *gin.Context) {
-	// set default user to 1
-	c.Set("uid", 1)
-}
 
 func TestCreateLabel(t *testing.T) {
 	
@@ -42,5 +31,24 @@ func TestCreateLabel(t *testing.T) {
     resp := httptest.NewRecorder()
     router.ServeHTTP(resp, req)
     fmt.Println(resp)
+    assert.Equal(t, resp.Code, 200)
+}
+
+func TestGetLabels(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
+	router.Use(testMiddleware)
+
+    router.GET("/label", handlers.GetLabels)
+	
+    req, err := http.NewRequest("GET", "/label", nil)
+	req.Header.Set("Content-Type", "application/json")
+	
+    if err != nil {
+        fmt.Println(err)
+    }
+    resp := httptest.NewRecorder()
+    router.ServeHTTP(resp, req)
+	fmt.Println(resp)
     assert.Equal(t, resp.Code, 200)
 }

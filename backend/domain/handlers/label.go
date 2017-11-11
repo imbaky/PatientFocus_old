@@ -19,7 +19,7 @@ func CreateLabel(c *gin.Context) {
 		return
 	}
 	// attach user to this label
-	newLabel.Uid = &models.PFUser{Uid:c.GetInt("uid")}
+	newLabel.Uid = &models.PFUser{Uid:c.GetInt("user_id")}
 	err = data.ReadUser(newLabel.Uid)
 	if err != nil {
 		// should not happen but this means user not found
@@ -47,7 +47,7 @@ func CreateLabel(c *gin.Context) {
 // Retrieve label owned by this user
 func GetLabels(c *gin.Context) {
 	var labels []models.Label
-	var uid = c.GetInt("uid")
+	var uid = c.GetInt("user_id")
 	err := data.GetLabels(uid, &labels)
 	if err != nil {
 		c.JSON(http.StatusNotFound,

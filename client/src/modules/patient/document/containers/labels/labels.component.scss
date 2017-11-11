@@ -23,8 +23,11 @@ $side-padding: 1rem;
   padding: 1rem $side-padding;
 }
 
-.labels--item + .labels--item {
-  margin-top: .25rem;
+.labels--item  {
+  cursor: pointer;
+  & + .labels--item {
+    margin-top: .25rem;
+  }
 }
 
 .document-labels--action {

@@ -21,17 +21,22 @@ var (
 	dataSourceName = fmt.Sprintf("postgres://%s:%s@db/patientfocus?sslmode=disable", username, password)
 )
 
+// Init sets up everything needed for the db
+func Init() {
+	ConnectToDb()
+	GetOrmObject()
+}
+
 // ConnectToDb - Initializes the ORM and Connection to the postgres DB
 func ConnectToDb() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
 	dbInfo := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", username, password, dbName, host)
 	orm.RegisterDataBase("default", driverName, dbInfo)
 	orm.RegisterModel(
-		new(models.PFUser), 
-		new(models.Patient), 
-		new(models.Doctor), 
+		new(models.PFUser),
+		new(models.Patient),
+		new(models.Doctor),
 		new(models.Document),
-		new(models.DoctorDocument),
 		new(models.Label),
 	)
 	orm.RunSyncdb("default", false, true)

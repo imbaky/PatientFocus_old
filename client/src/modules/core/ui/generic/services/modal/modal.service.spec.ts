@@ -2,11 +2,10 @@
 
 import { ModalService } from './modal.service';
 import { TestBed } from '@angular/core/testing';
-import { ModalComponent } from '../../../dashboard/components/modal-share/modal-share.component';
 
 describe('Service: ModalService', () => {
     let service: ModalService;
-    let modal: ModalComponent;
+    let modal: any;
     beforeEach(() => {
         const bed = TestBed.configureTestingModule({
             providers: [
@@ -17,12 +16,12 @@ describe('Service: ModalService', () => {
     });
 
     it('GIVEN that a modal is added THEN the array of modals should be incremented', () => {
-        modal = {} as ModalComponent;
+        modal = {} as any;
         service.add(modal);
         expect(service.getModals().length).toBe(1);
     });
     it('GIVEN that a modal is added and removed THEN the array of modals size will not be changed', () => {
-        modal = { id: 'Test modal' } as ModalComponent;
+        modal = { id: 'Test modal' } as any;
         service.add(modal);
         service.remove(modal.id);
         expect(service.getModals().length).toBe(0);

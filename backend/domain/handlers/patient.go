@@ -32,11 +32,12 @@ func CreatePatient(c *gin.Context) {
 			gin.H{"error": "Failed to associate the patient with the user"})
 		return
 	}
+	tkn, err := data.GetSession(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Could not create session token"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"status":        http.StatusOK,
-		"id":            user.Patient.Ptid,
-		"race":          user.Patient.Race,
-		"gender":        user.Patient.Gender,
-		"language":      user.Patient.Language,
-		"date_of_birth": user.Patient.DateOfBirth})
+		"token": tkn})
 }

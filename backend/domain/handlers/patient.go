@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/imbaky/PatientFocus/backend/data"
 	"github.com/imbaky/PatientFocus/backend/domain/models"
+	"strconv"
 )
 
 // CreatePatient registers a patient and returns his information
@@ -40,4 +41,26 @@ func CreatePatient(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"token": tkn})
+}
+
+func GetPatient (c *gin.Context){
+	var patient models.Patient
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
+		return
+	}
+	patient.Ptid = id
+	err = data.ReadPatient(&patient)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"patient":&patient,
+		})
 }

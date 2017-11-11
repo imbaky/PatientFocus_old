@@ -53,7 +53,7 @@ export class DashboardComponent {
   }
 
   /**
-   * Determines if a doctor is currently logged it.
+   * Determines if a doctor is currently logged in.
    * @returns {boolean}
    */
   get isDoctor(): boolean {

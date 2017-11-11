@@ -16,7 +16,7 @@ export type RoleType = 'patient' | 'doctor';
 
 export interface Role {
   id: number;
-  name: string;
+  name: RoleType;
 }
 
 export interface User {
@@ -100,12 +100,7 @@ export class AuthService {
    */
   loginUser(credentials: UserCredentials): Observable<string> {
     return this.http.post(`${environment.host_server}/auth/login`, credentials)
-      .do((res: any) => {
-        if (res.token) {
-          const token = res.token;
-          this.localStorage.set('token', token);
-        }
-      })
+      .do(this.setTokenFromResponse.bind(this))
       .catch((err) => Observable.throw(err));
   }
 
@@ -131,6 +126,29 @@ export class AuthService {
   registerUser(user: RegistrationUser): Observable<any> {
     return this.http.post(`${environment.host_server}/auth/register`, user)
       .catch((err) => Observable.throw(err));
+  }
+
+  /**
+   * Registers role.
+   * @param role
+   * @param data
+   * @returns {Observable<R|T>}
+   */
+  registerRole(role: RoleType, data: any): Observable<any> {
+    return this.http.post(`${environment.host_server}/${role}`, data)
+      .do(this.setTokenFromResponse.bind(this))
+      .catch((err) => Observable.throw(err));
+  }
+
+  /**
+   * Sets the token from response.
+   * @param response
+   */
+  private setTokenFromResponse(response: any) {
+    if (response.token) {
+      const token = response.token;
+      this.localStorage.set('token', token);
+    }
   }
 
 }

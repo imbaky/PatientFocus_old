@@ -29,7 +29,7 @@ func main() {
 	// Routes captured and handled
 	router.POST("/auth/login", handlers.Login)
 	router.POST("/user", handlers.CreateUser)
-
+	
 	// Routes that require a session token
 	router.Use(middlewares.Authenticate)
 	router.GET("/user/:uid", handlers.GetUser)
@@ -39,5 +39,8 @@ func main() {
 	router.PUT("/document/:number", handlers.UploadDocument)
 	router.GET("/document/:id", handlers.GetDocument)
 	router.POST("/document/share", handlers.ShareDocument)
+	router.POST("/label", handlers.CreateLabel)
+	router.GET("/label", handlers.GetLabels)
+	
 	router.Run(":9000")
 }

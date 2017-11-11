@@ -29,9 +29,10 @@ func init() {
     // TODO: do a tear down?
     // In travis it is automatically done
 }
+
 func testMiddleware(c *gin.Context) {
     // set default user to 1
-    c.Set("uid", 1)
+    c.Set("user_id", 1)
 }
 
 func TestGetUser(t *testing.T) {

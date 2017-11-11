@@ -27,6 +27,11 @@ services:
         image: backend
         ports:
             - "9000:9000"
+        environment:
+            POSTGRES_USER: pf
+            POSTGRES_PASSWORD: patientfocus
+            POSTGRES_DB: patientfocus
+            POSTGRES_HOST: 192.168.0.106
         depends_on:
             db:
                 condition: service_healthy

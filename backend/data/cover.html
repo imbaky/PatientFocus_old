@@ -1,0 +1,442 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/imbaky/PatientFocus/backend/data/db.go (100.0%)</option>
+				
+				<option value="file1">github.com/imbaky/PatientFocus/backend/data/doctor.go (76.5%)</option>
+				
+				<option value="file2">github.com/imbaky/PatientFocus/backend/data/document.go (100.0%)</option>
+				
+				<option value="file3">github.com/imbaky/PatientFocus/backend/data/patient.go (91.3%)</option>
+				
+				<option value="file4">github.com/imbaky/PatientFocus/backend/data/session.go (79.5%)</option>
+				
+				<option value="file5">github.com/imbaky/PatientFocus/backend/data/user.go (80.8%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package data
+
+import (
+        "fmt"
+        "os"
+
+        "github.com/astaxie/beego/orm"
+        _ "github.com/lib/pq" //PostgreSQL Driver
+
+        "github.com/imbaky/PatientFocus/backend/domain/models"
+)
+
+var ormObject orm.Ormer
+
+var (
+        username       = os.Getenv("POSTGRES_USER")
+        password       = os.Getenv("POSTGRES_PASSWORD")
+        dbName         = os.Getenv("POSTGRES_DB")
+        host           = os.Getenv("POSTGRES_HOST")
+        driverName     = "postgres"
+        dataSourceName = fmt.Sprintf("postgres://%s:%s@db/patientfocus?sslmode=disable", username, password)
+)
+
+// Init sets up everything needed for the db
+func Init() <span class="cov8" title="1">{
+        ConnectToDb()
+        GetOrmObject()
+}</span>
+
+// ConnectToDb - Initializes the ORM and Connection to the postgres DB
+func ConnectToDb() <span class="cov8" title="1">{
+        orm.RegisterDriver("postgres", orm.DRPostgres)
+        dbInfo := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", username, password, dbName, host)
+        orm.RegisterDataBase("default", driverName, dbInfo)
+        orm.RegisterModel(
+                new(models.PFUser),
+                new(models.Patient),
+                new(models.Doctor),
+                new(models.Document),
+                new(models.Label),
+        )
+        orm.RunSyncdb("default", false, true)
+        ormObject = orm.NewOrm()
+}</span>
+
+// GetOrmObject - Getter function for the ORM object with which we can query the database
+func GetOrmObject() orm.Ormer <span class="cov8" title="1">{
+        return ormObject
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package data
+
+import "github.com/imbaky/PatientFocus/backend/domain/models"
+
+// CreateDoctor creates a doctor record in the database
+func CreateDoctor(doctor *models.Doctor) (err error) <span class="cov8" title="1">{
+        _, err = ormObject.Insert(doctor)
+        return
+}</span>
+
+// GetSharedDocuments returns a slice or pointers to documents that are shared by the doctor and patient used as input
+func GetSharedDocuments(doctor *models.PFUser, patient *models.Patient) ([]*models.Document, error) <span class="cov8" title="1">{
+        documents := []*models.Document{}
+        err := ReadDoctorDocuments(doctor.Doctor)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">err = ReadPatientDocuments(patient)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">for _, ddoc := range doctor.Doctor.Documents </span><span class="cov8" title="1">{
+                for _, pdoc := range patient.Documents </span><span class="cov0" title="0">{
+                        if pdoc.Did == ddoc.Did </span><span class="cov0" title="0">{
+                                documents = append(documents, ddoc)
+                        }</span>
+                }
+        }
+        <span class="cov8" title="1">return documents, nil</span>
+}
+
+func ReadDoctorDocuments(doctor *models.Doctor) error <span class="cov8" title="1">{
+        err := ormObject.Read(doctor)
+        _, err = ormObject.LoadRelated(doctor, "Documents")
+        return err
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">/*
+Package data is used for all communication with the database.
+This is ensuring a seperation of concernes. We achieve this by passing pointers to the
+structures
+*/
+package data
+
+import "github.com/imbaky/PatientFocus/backend/domain/models"
+
+// CreateDocument creates a document record in the database
+func CreateDocument(document *models.Document) error <span class="cov8" title="1">{
+        _, err := ormObject.Insert(document)
+        return err
+}</span>
+
+// GetDocumentsFromArray returns all the documents specified by the ids
+// func GetDocumentsFromArray(docs []int, documents *[]models.Document) error {
+
+//         var dynamic string
+//         for i := 0; i &lt; len(docs); i++ {
+//                 dynamic += "?, "
+//         }
+//         dynamic = dynamic[:len(dynamic)-2]
+//         query := fmt.Sprintf("SELECT did, url, desc FROM document WHERE did IN (%s)", dynamic)
+//         num, err := ormObject.Raw(query, docs).QueryRows(*documents)
+//         if err != nil {
+//                 return fmt.Errorf("Could not get documents: %v", err)
+//         }
+//         if int(num) != len(docs) {
+//                 return fmt.Errorf("Could not find all documents")
+//         }
+//         return nil
+// }
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package data
+
+import (
+        "fmt"
+
+        "github.com/astaxie/beego/orm"
+        "github.com/imbaky/PatientFocus/backend/domain/models"
+)
+
+// CreatePatient creates a patient record in the database
+func CreatePatient(patient *models.Patient) (err error) <span class="cov8" title="1">{
+        _, err = ormObject.Insert(patient)
+        return
+}</span>
+
+func ReadPatient(patient *models.Patient) error <span class="cov8" title="1">{
+        err := ormObject.Read(patient)
+        return err
+}</span>
+
+func ReadPatientDocuments(patient *models.Patient) error <span class="cov8" title="1">{
+        _, err := ormObject.QueryTable("document").Filter("patient", patient.Ptid).RelatedSel().All(&amp;patient.Documents)
+        return err
+}</span>
+
+func LinkPatientDoctor(doctor, patient *models.PFUser) error <span class="cov8" title="1">{
+        m2m := orm.NewOrm().QueryM2M(doctor.Doctor, "Patients")
+        _, err := m2m.Add(patient.Patient)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">m2m = orm.NewOrm().QueryM2M(patient.Patient, "Doctors")
+        _, err = m2m.Add(doctor.Doctor)
+        return err</span>
+}
+
+// PatientDoctorLinked checks if the doctor and the patient are connected
+func PatientDoctorLinked(doctor, patient *models.PFUser) error <span class="cov8" title="1">{
+        m2m := orm.NewOrm().QueryM2M(doctor.Doctor, "Patients")
+        if m2m.Exist(patient.Patient) </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">return fmt.Errorf("Doctor and patient are not linked")</span>
+}
+
+// LinkDoctorDocument creates a link in the database between the doctor and the document
+func LinkDoctorDocument(doctor *models.PFUser, documents []models.Document) error <span class="cov8" title="1">{
+        for _, document := range documents </span><span class="cov8" title="1">{
+                m2m := orm.NewOrm().QueryM2M(&amp;document, "Doctors")
+                _, err := m2m.Add(doctor.Doctor)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package data
+
+import (
+        "fmt"
+        "strconv"
+        "time"
+
+        jwt "github.com/dgrijalva/jwt-go"
+        "github.com/imbaky/PatientFocus/backend/domain/models"
+)
+
+const (
+        S_KEY = "alrkkjfdvouihregtlkjhiuwer"
+)
+
+//GetSession creates a session token from the id of the passed user
+func GetSession(user *models.PFUser) (string, error) <span class="cov8" title="1">{
+        token := jwt.New(jwt.SigningMethodHS256)
+        id := strconv.Itoa(user.Uid)
+        claims := token.Claims.(jwt.MapClaims)
+        claims["user_id"] = id
+        claims["role"] = user.Role
+        claims["role_id"] = id
+        if user.Role == "patient" &amp;&amp; user.Patient != nil </span><span class="cov0" title="0">{
+                claims["role_id"] = strconv.Itoa(user.Patient.Ptid)
+        }</span>
+        <span class="cov8" title="1">if user.Role == "doctor" &amp;&amp; user.Doctor != nil </span><span class="cov0" title="0">{
+                claims["role_id"] = strconv.Itoa(user.Doctor.Did)
+        }</span>
+        <span class="cov8" title="1">claims["exp"] = time.Now().Add(time.Hour * 10000).Unix()
+        tokenString, err := token.SignedString([]byte(S_KEY))
+        return tokenString, err</span>
+}
+
+// CheckSession validates the session token
+func CheckSession(tokenString string) error <span class="cov8" title="1">{
+        token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) </span><span class="cov8" title="1">{
+                if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+                }</span>
+
+                <span class="cov8" title="1">return []byte(S_KEY), nil</span>
+        })
+        <span class="cov8" title="1">if err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("could not parse session token %v", err)
+        }</span>
+
+        <span class="cov8" title="1">_, ok := token.Claims.(jwt.MapClaims)
+        if !ok || !token.Valid </span><span class="cov0" title="0">{
+                return fmt.Errorf("session token not ok or invalid")
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+//GetIdFromSession gets the id from the session token
+func GetIdFromSession(tokenString string) (int, string, int, error) <span class="cov8" title="1">{
+        token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) </span><span class="cov8" title="1">{
+                if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+                }</span>
+
+                <span class="cov8" title="1">return []byte(S_KEY), nil</span>
+        })
+        <span class="cov8" title="1">if err != nil </span><span class="cov8" title="1">{
+                return 0, "", -1, fmt.Errorf("could not parse session token %v", err)
+        }</span>
+
+        <span class="cov8" title="1">claims, ok := token.Claims.(jwt.MapClaims)
+        if !ok || !token.Valid </span><span class="cov0" title="0">{
+                return 0, "", -1, fmt.Errorf("session token not ok or invalid")
+        }</span>
+
+        <span class="cov8" title="1">id := claims["user_id"].(string)
+        uid, err := strconv.Atoi(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, "", -1, fmt.Errorf("session token could not be converted")
+        }</span>
+
+        <span class="cov8" title="1">srid := claims["role_id"].(string)
+        rid, err := strconv.Atoi(srid)
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, "", -1, fmt.Errorf("session token could not be converted")
+        }</span>
+
+        <span class="cov8" title="1">role := claims["role"].(string)
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, "", -1, fmt.Errorf("session token could not be converted")
+        }</span>
+
+        <span class="cov8" title="1">return uid, role, rid, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package data
+
+import "github.com/imbaky/PatientFocus/backend/domain/models"
+
+// CreateUser creates a record in the datbase of a new user
+func CreateUser(user *models.PFUser) (err error) <span class="cov8" title="1">{
+        _, err = ormObject.Insert(user)
+        return
+}</span>
+
+// ReadUser reads the user from the database and populates the structed that is passed
+// If the username and password is populated it will do it that way otherwise it will get it using the uid
+func ReadUser(user *models.PFUser) error <span class="cov8" title="1">{
+        if user.Email == "" &amp;&amp; user.Password == "" </span><span class="cov8" title="1">{
+                err := ormObject.Read(user)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">if user.Patient != nil </span><span class="cov8" title="1">{
+                        err = ormObject.Read(user.Patient)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                        <span class="cov8" title="1">err = ReadPatientDocuments(user.Patient)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+
+                <span class="cov8" title="1">if user.Doctor != nil </span><span class="cov8" title="1">{
+                        err = ormObject.Read(user.Doctor)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                        <span class="cov8" title="1">err = ReadDoctorDocuments(user.Doctor)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+                <span class="cov8" title="1">return err</span>
+        }
+        <span class="cov8" title="1">return ormObject.Read(user, "email")</span>
+}
+
+// AssociatePatient creates an association between the patient and the user structure
+func AssociatePatient(user *models.PFUser) error <span class="cov8" title="1">{
+        _, err := ormObject.Update(user, "patient_id")
+        return err
+}</span>
+
+// AssociateDoctor creates an association between the doctor and the user structure
+func AssociateDoctor(user *models.PFUser) error <span class="cov8" title="1">{
+        _, err := ormObject.Update(user, "doctor_id")
+        return err
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

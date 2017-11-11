@@ -31,8 +31,14 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
+	tkn, err := data.GetSession(&newUser)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Could not create session token"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"user": &newUser,
+		"token": &tkn,
 	})
 }
 

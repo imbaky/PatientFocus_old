@@ -129,7 +129,7 @@ export class AuthService {
    * @returns {Observable<R|T>}
    */
   registerUser(user: RegistrationUser): Observable<any> {
-    return this.http.post(`${environment.host_server}/auth/register`, user)
+    return this.http.post(`${environment.host_server}/user`, user)
       .catch((err) => Observable.throw(err));
   }
 

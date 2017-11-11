@@ -1,10 +1,10 @@
 frontend:
 	$(MAKE) -C client build
 
-backend:
-	$(MAKE) -C core build
+backend1:
+	$(MAKE) -C backend build
 
-all: frontend backend
+all: frontend backend1
 
 dev:
 	docker-compose -f docker-compose-dev.yml down

@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  host_server: '/api',
+  host_server: '/backend',
   hmr: false
 };

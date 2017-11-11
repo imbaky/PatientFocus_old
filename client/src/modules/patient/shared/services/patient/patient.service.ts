@@ -46,7 +46,7 @@ export class PatientService {
       .do((patient: Patient) => {
         if (patient) {
           this.store.set('patient', patient);
-          this.patient =  patient;
+          this.patient = patient;
         }
       })
       .catch(err => Observable.throw(err));

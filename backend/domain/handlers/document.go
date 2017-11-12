@@ -55,6 +55,7 @@ func UploadDocument(c *gin.Context) {
 	}
 	id := c.Request.MultipartForm.Value["patient"]
 	patient.Ptid, err = strconv.Atoi(id[0])
+	document.FileName = file.Filename
 	document.Url = configuration.DirectoryForUploadedDocs + file.Filename
 	document.Patient = &patient
 	err = c.SaveUploadedFile(file, document.Url)

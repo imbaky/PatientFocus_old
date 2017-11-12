@@ -28,7 +28,7 @@ func main() {
 
 	// Routes captured and handled
 	router.POST("/auth/login", handlers.Login)
-	router.POST("/user", handlers.CreateUser)
+	router.POST("/auth/register", handlers.CreateUser)
 	
 	// Routes that require a session token
 	router.Use(middlewares.Authenticate)
@@ -44,5 +44,5 @@ func main() {
 	router.POST("/label", handlers.CreateLabel)
 	router.GET("/label", handlers.GetLabels)
 	
-	router.Run(":9000")
+	router.Run(":1337")
 }

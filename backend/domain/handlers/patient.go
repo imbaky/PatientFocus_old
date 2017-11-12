@@ -13,11 +13,16 @@ import (
 func CreatePatient(c *gin.Context) {
 	var patient models.Patient
 	user := models.PFUser{Uid: c.GetInt("user_id")}
-
 	err := c.BindJSON(&patient)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
+		return
+	}
+	err = data.ReadUser(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Failed to find user"})
 		return
 	}
 	err = data.CreatePatient(&patient)
@@ -26,11 +31,23 @@ func CreatePatient(c *gin.Context) {
 			gin.H{"error": "Failed to create the patient"})
 		return
 	}
+	err = data.ReadPatient(&patient)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Failed to read the patient"})
+		return
+	}
 	user.Patient = &patient
 	err = data.AssociatePatient(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"error": "Failed to associate the patient with the user"})
+		return
+	}
+	err = data.AssociatePatient(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Failed to get the patient with"})
 		return
 	}
 	tkn, err := data.GetSession(&user)

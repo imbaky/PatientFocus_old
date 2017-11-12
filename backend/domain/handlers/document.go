@@ -204,6 +204,14 @@ func LinkDocumentLabels(c *gin.Context) {
 	var document models.Document
 
 	err := c.BindJSON(&payload)
+	
+	// if labels are empty we do not do anything
+	if len(payload.Labels) == 0 {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"error": "Must include labels "})
+		return
+	}
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"error": "Could not bind json "})

@@ -54,6 +54,14 @@ export class DashboardComponent {
   }
 
   /**
+   * Determines if a doctor is currently logged in.
+   * @returns {boolean}
+   */
+  get isDoctor(): boolean {
+    return this.authService.hasRole('doctor');
+  }
+
+  /**
    * Returns the selected patient
    * @returns {Patient}
    */

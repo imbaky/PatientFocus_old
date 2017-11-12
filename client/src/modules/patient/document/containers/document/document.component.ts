@@ -55,7 +55,9 @@ export class DocumentComponent implements OnInit {
       upload.push(files.item(i));
     }
 
-    this.documentService.uploadFiles(upload, this.patient);
+    this.documentService.uploadFiles(upload, this.patient, () => {
+      this.documents$ = this.documentService.getDocuments(this.patient);
+    });
   }
 
   openFileBrowser() {

@@ -20,6 +20,8 @@ export interface UploadFile {
   file: File;
   request: Observable<any>;
   status: UploadStatus;
+  onSuccess?: Function;
+  onError?: Function;
 }
 
 /**
@@ -104,8 +106,8 @@ export class DocumentService {
    * @param documents - Array of files
    * @param patient - The patient
    */
-  uploadFiles(documents: Array<File>, patient: Patient) {
-    documents.forEach(document => this.uploadFile(document, patient));
+  uploadFiles(documents: Array<File>, patient: Patient, onSuccess?: Function, onError?: Function) {
+    documents.forEach(document => this.uploadFile(document, patient, onSuccess, onError));
   }
 
   /**
@@ -113,7 +115,7 @@ export class DocumentService {
    * @param document - the document file
    * @param patient - The patient
    */
-  uploadFile(document: File, patient: Patient) {
+  uploadFile(document: File, patient: Patient, onSuccess?: Function, onError?: Function) {
     const form = new FormData();
 
     form.append('file', document);
@@ -156,7 +158,13 @@ export class DocumentService {
 
     // Push for queue
     this.uploadState.queued
-      .push({ request: request$, file: document, status: UploadStatus.QUEUING });
+      .push({
+        request: request$,
+        file: document,
+        status: UploadStatus.QUEUING,
+        onSuccess: onSuccess,
+        onError: onSuccess
+      });
 
     this.triggerUpload();
   }
@@ -189,6 +197,16 @@ export class DocumentService {
       if (progress === UploadStatus.DONE || progress === UploadStatus.ERROR) {
 
         current.item.status = progress;
+
+        // trigger callbacks for errors and successes
+        if (UploadStatus.DONE && current.item.onSuccess) {
+          current.item.onSuccess();
+        }
+
+        if (UploadStatus.ERROR && current.item.onError) {
+          current.item.onError();
+        }
+
         this.uploadState.completed.push(current.item);
 
         // Reset the current state

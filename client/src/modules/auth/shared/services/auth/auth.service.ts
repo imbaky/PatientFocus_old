@@ -70,8 +70,8 @@ export class AuthService {
     const data = JSON.parse(atob(
       token.substr(start, token.lastIndexOf('.') - start)
     ));
-    data.user_id = parseInt(data.user_id);
-    data.role_id = parseInt(data.role_id);
+    data.user_id = parseInt(data.user_id, 10);
+    data.role_id = parseInt(data.role_id, 10);
     return data;
   }
 
@@ -81,7 +81,7 @@ export class AuthService {
    */
   getRole(): Role {
     return {
-      id: parseInt(this.payload.role_id),
+      id: parseInt(this.payload.role_id, 10),
       name: this.payload.role
     };
   }

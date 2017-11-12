@@ -32,6 +32,8 @@ services:
             POSTGRES_PASSWORD: patientfocus
             POSTGRES_DB: patientfocus
             POSTGRES_HOST: 192.168.0.106
+        volumes:
+            - ./files:/var/www/patientfocus
         depends_on:
             db:
                 condition: service_healthy

@@ -9,7 +9,7 @@
     "dev": "ng serve --proxy-config proxy.conf.json",
     "hmr": "ng serve --hmr --env=hmr",
     "build": "ng build --prod --aot",
-    "test": "ng test --environment unit",
+    "test": "ng test --environment unit --aot",
     "test:once": "ng test --watch=false --environment unit",
     "lint": "ng lint",
     "e2e": "ng e2e --environment prod",

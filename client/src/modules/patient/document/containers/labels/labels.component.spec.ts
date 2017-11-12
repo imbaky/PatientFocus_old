@@ -82,7 +82,7 @@ describe('Document Labels Container', () => {
       url: '/label',
       method: 'GET'
     });
-    req.flush(labels, okResponse);
+    req.flush({labels}, okResponse);
     httpMock.verify();
 
     fixture.detectChanges();
@@ -104,7 +104,7 @@ describe('Document Labels Container', () => {
       url: '/label',
       method: 'GET'
     });
-    req.flush(labels, okResponse);
+    req.flush({labels}, okResponse);
     httpMock.verify();
 
     fixture.detectChanges();
@@ -133,7 +133,7 @@ describe('Document Labels Container', () => {
       url: '/label',
       method: 'GET'
     });
-    req.flush(labels, okResponse);
+    req.flush({labels}, okResponse);
     httpMock.verify();
 
     fixture.detectChanges();
@@ -155,7 +155,7 @@ describe('Document Labels Container', () => {
       url: '/label',
       method: 'GET'
     });
-    req.flush(labels, okResponse);
+    req.flush({labels}, okResponse);
     httpMock.verify();
 
     fixture.detectChanges();

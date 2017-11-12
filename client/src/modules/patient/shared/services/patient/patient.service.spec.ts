@@ -75,7 +75,7 @@ describe('Document Service', () => {
     spyOn(store, 'set');
     service.getPatient(1)
       .subscribe((res: any) => {
-        expect(res.patient.race).toBe('Canadian');
+        expect(res.race).toBe('Canadian');
       });
 
     const req = httpMock.expectOne({

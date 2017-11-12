@@ -39,6 +39,7 @@ func main() {
 	router.PUT("/document/:number", handlers.UploadDocument)
 	router.GET("/document/:id", handlers.GetDocument)
 	router.POST("/document/share", handlers.ShareDocument)
+	router.POST("/document/labels", handlers.AssociateLabels)
 	router.POST("/label", handlers.CreateLabel)
 	router.GET("/label", handlers.GetLabels)
 	

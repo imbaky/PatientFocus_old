@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"github.com/imbaky/PatientFocus/backend/configuration"
 	"github.com/imbaky/PatientFocus/backend/data"
@@ -194,4 +193,35 @@ func GetSharedDocuments(c *gin.Context) {
 			"documents": urls,
 		},
 	)
+}
+
+type DocumentLabelPayload struct {
+	Document int `json:"documentid"`
+	Labels []int `json:"labels"`
+}
+
+func AssociateLabels(c *gin.Context) {
+	var payload DocumentLabelPayload
+	var document models.Document
+
+	err := c.BindJSON(&payload)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"error": "Could not bind json "})
+		return
+	}
+	document.Did = payload.Document
+	labels := make([]*models.Label,len(payload.Labels))
+	
+	for k,v := range payload.Labels {
+		labels[k]= &models.Label{Lid:v}
+	}
+	err = data.LinkDocumentLabels(&document, labels)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Could not link the labels "})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
+
 }

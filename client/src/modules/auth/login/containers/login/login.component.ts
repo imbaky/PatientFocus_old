@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../../shared/services/auth/auth.service';
 
+/**
+ * Login Component
+ */
 @Component({
   selector: 'login',
   styleUrls: ['./login.component.scss'],
@@ -11,12 +14,20 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 })
 export class LoginComponent {
 
+  /**
+   * Login form
+   * @type {FormGroup}
+   */
   form: FormGroup = this.fb.group({
     'email': ['', [Validators.required, Validators.email ]],
     'password': ['', Validators.required ],
     'remain_signed_in': [false]
   });
 
+  /**
+   * Error
+   * @type {any}
+   */
   errors = null;
 
   constructor(
@@ -25,6 +36,9 @@ export class LoginComponent {
     private router: Router
   ) { }
 
+  /**
+   * Logs in user if form is valid and response is ok
+   */
   onLogin() {
     if (this.form.valid) {
       this.authService.loginUser(this.form.value)
@@ -34,6 +48,13 @@ export class LoginComponent {
         }, (err) => {
 
         });
+    } else {
+      for (const control in this.form.controls) {
+        if (control) {
+          this.form.get(control).markAsTouched();
+          this.form.get(control).updateValueAndValidity();
+        }
+      }
     }
   }
 

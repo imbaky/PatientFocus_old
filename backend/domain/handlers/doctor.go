@@ -9,34 +9,28 @@ import (
 )
 
 // CreatePatient registers a patient and returns his information
-func CreatePatient(c *gin.Context) {
-	var patient models.Patient
+func CreateDoctor(c *gin.Context) {
+	var doctor models.Doctor
 	user := models.PFUser{Uid: c.GetInt("user_id")}
-
-	err := c.BindJSON(&patient)
+	err := c.BindJSON(&doctor)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
 		return
 	}
-	err = data.CreatePatient(&patient)
+	err = data.CreateDoctor(&doctor)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"error": "Failed to create the patient"})
 		return
 	}
-	user.Patient = &patient
-	err = data.AssociatePatient(&user)
+	user.Doctor = &doctor
+	err = data.AssociateDoctor(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"error": "Failed to associate the patient with the user"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"status":        http.StatusOK,
-		"id":            user.Patient.Ptid,
-		"race":          user.Patient.Race,
-		"gender":        user.Patient.Gender,
-		"language":      user.Patient.Language,
-		"date_of_birth": user.Patient.DateOfBirth})
+		"doctor": user.Doctor})
 }

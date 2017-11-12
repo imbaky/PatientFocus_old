@@ -3,45 +3,54 @@ package data
 import (
 	"fmt"
 
+	"github.com/astaxie/beego/orm"
 	"github.com/imbaky/PatientFocus/backend/domain/models"
 )
 
+// CreatePatient creates a patient record in the database
 func CreatePatient(patient *models.Patient) (err error) {
 	_, err = ormObject.Insert(patient)
 	return
 }
 
-func LinkDocumentPatient(document *models.Document, patient *models.PFUser) error {
-	documentPatientLink := &models.PatientDocument{Patient: patient.Patient, Document: document}
-	_, err := ormObject.Insert(documentPatientLink)
+func ReadPatient(patient *models.Patient) error {
+	err := ormObject.Read(patient)
 	return err
 }
 
-func PatientDoctorLinked(doctor, patient *models.PFUser) error {
-	patientDoctorLink := &models.PatientDoctor{
-		Patient: patient.Patient,
-		Doctor:  doctor.Doctor}
-	err := ormObject.Read(patientDoctorLink)
+func ReadPatientDocuments(patient *models.Patient) error {
+	_, err := ormObject.QueryTable("document").Filter("patient", patient.Ptid).RelatedSel().All(&patient.Documents)
 	return err
 }
 
-func LinkDoctorDocument(user *models.PFUser, documents []models.Document) error {
-	// build the values to insert
-	var dDocuments []models.DoctorDocument
-
-	for i := 0; i < len(documents); i++ {
-		dDocuments[i].Doctor = user.Doctor
-		dDocuments[i].Document = &documents[i]
-	}
-	// insert multi
-	nums, err := ormObject.InsertMulti(len(documents), dDocuments)
+func LinkPatientDoctor(doctor, patient *models.PFUser) error {
+	m2m := orm.NewOrm().QueryM2M(doctor.Doctor, "Patients")
+	_, err := m2m.Add(patient.Patient)
 	if err != nil {
-		return fmt.Errorf("Could not link doctor to document")
+		return err
 	}
-	if int(nums) != len(documents) {
-		return fmt.Errorf("Could not insert all documents")
-		// what do we do, remove what we did?
-	}
+	m2m = orm.NewOrm().QueryM2M(patient.Patient, "Doctors")
+	_, err = m2m.Add(doctor.Doctor)
+	return err
+}
 
+// PatientDoctorLinked checks if the doctor and the patient are connected
+func PatientDoctorLinked(doctor, patient *models.PFUser) error {
+	m2m := orm.NewOrm().QueryM2M(doctor.Doctor, "Patients")
+	if m2m.Exist(patient.Patient) {
+		return nil
+	}
+	return fmt.Errorf("Doctor and patient are not linked")
+}
+
+// LinkDoctorDocument creates a link in the database between the doctor and the document
+func LinkDoctorDocument(doctor *models.PFUser, documents []models.Document) error {
+	for _, document := range documents {
+		m2m := orm.NewOrm().QueryM2M(&document, "Doctors")
+		_, err := m2m.Add(doctor.Doctor)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

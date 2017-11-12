@@ -3,7 +3,7 @@
     <img class="header--logo-img" src="/assets/images/logo-avatar.svg" alt="">
   </div>
   <nav class="navbar navbar-light justify-content-between">
-    <span *ngIf="isDoctor">
+    <span *ngIf="canAccessPatients()">
       <span [px-popper]="patients" [px-popper-config]="{placement: 'bottom-start'}">
         {{ (selectedPatient)? selectedPatient.user.first_name : 'Select a Patient' }}
       </span>

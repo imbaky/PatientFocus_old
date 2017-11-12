@@ -1,1 +1,93 @@
-Hello User!
+
+<div class="user">
+  <div *ngIf="isNewUser(); else default">
+    <h1 class="mb-0">Welcome new user!</h1>
+    <p class="lead mb-3">Please take a moment to register.</p>
+    <form [formGroup]="form" (submit)="registerRole()">
+      <div *ngIf="isPatient(); else doctor">
+        <px-form-group
+          label="Race"
+          help="African American, Asian, Hispanic, Native Indian, White, etc...">
+          <px-short-string
+            type="text"
+            formControlName="race">
+          </px-short-string>
+          <px-validation-message
+            controlName="race"
+            [responseErrors]="errors"
+            onError="required">
+            Your race is required.
+          </px-validation-message>
+        </px-form-group>
+        <px-form-group
+          label="Date of Birth">
+          <px-short-string
+            type="date"
+            formControlName="date_of_birth">
+          </px-short-string>
+          <px-validation-message
+            controlName="date_of_birth"
+            [responseErrors]="errors"
+            onError="required">
+            Your date of birth is required.
+          </px-validation-message>
+        </px-form-group>
+        <px-form-group
+          label="Gender">
+          <px-pill-selector
+            [options]="genderOptions"
+            formControlName="gender">
+          </px-pill-selector>
+        </px-form-group>
+        <px-form-group
+          label="Language">
+          <px-pill-selector
+            [options]="languageOptions"
+            formControlName="language">
+          </px-pill-selector>
+        </px-form-group>
+        <px-form-group
+          label="Are you a smoker?">
+          <px-pill-selector
+            [options]="yesNoOptions"
+            formControlName="smoke">
+          </px-pill-selector>
+        </px-form-group>
+      </div>
+      <ng-template #doctor>
+        <px-form-group
+          label="Specialization">
+          <px-short-string
+            type="text"
+            formControlName="specialization">
+          </px-short-string>
+          <px-validation-message
+            controlName="specialization"
+            [responseErrors]="errors"
+            onError="required">
+            A specialization is required.
+          </px-validation-message>
+        </px-form-group>
+        <px-form-group
+          label="License Number">
+          <px-short-string
+            type="text"
+            formControlName="license">
+          </px-short-string>
+          <px-validation-message
+            controlName="license"
+            [responseErrors]="errors"
+            onError="required">
+            A license is required.
+          </px-validation-message>
+        </px-form-group>
+      </ng-template>
+      <button class="btn btn-primary" type="submit">Register as new {{ getRoleName().substring(0, 1).toUpperCase() + getRoleName().substring(1) }}</button>
+    </form>
+  </div>
+  <ng-template #default>
+    <div>
+      Hello User!
+    </div>
+  </ng-template>
+</div>

@@ -25,7 +25,8 @@ export class DashboardComponent {
   links: Array<DashboardNavLink> = [
     { icon: '/assets/images/icons/user.svg', label: 'user', url: '/' },
     { icon: '/assets/images/icons/document.svg', label: 'Documents', url: '/document', isVisible: () => {
-      return this.authService.hasRole('patient') || this.selectedPatientService.hasSelectedPatient();
+      return (this.authService.hasRole('patient') || this.selectedPatientService.hasSelectedPatient())
+        && this.authService.getRole().id !== -1;
     }}
   ];
 
@@ -66,6 +67,14 @@ export class DashboardComponent {
    */
   get selectedPatient(): Patient {
     return this.selectedPatientService.getSelectedPatient();
+  }
+
+  /**
+   * Determines if a user can access patients
+   * @returns {boolean}
+   */
+  canAccessPatients(): boolean {
+    return this.authService.hasRole('doctor') && this.authService.getRole().id !== -1;
   }
 
   /**

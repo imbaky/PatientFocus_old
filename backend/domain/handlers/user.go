@@ -1,3 +1,7 @@
+/*
+	Package handlers holds all the handlers that are used by the main router
+*/
+
 package handlers
 
 import (
@@ -9,31 +13,30 @@ import (
 	"github.com/imbaky/PatientFocus/backend/domain/models"
 )
 
+// CreateUser registers a user, adds him to the database and returns his information
 func CreateUser(c *gin.Context) {
 	var newUser models.PFUser
 
 	err := c.BindJSON(&newUser)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
+			gin.H{"error": "Could not read request"})
 		return
 	}
 
 	err = data.CreateUser(&newUser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"status": http.StatusInternalServerError, "error": "Failed to create the user"})
+			gin.H{"error": "Failed to create the user"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":     http.StatusOK,
-		"id":         newUser.Uid,
-		"email":      newUser.Email,
-		"first_name": newUser.FirstName,
-		"last_name":  newUser.LastName})
+		"user": &newUser,
+	})
 }
 
+// GetUser returns the users details and information
 func GetUser(c *gin.Context) {
 	var user models.PFUser
 	user.Uid, _ = strconv.Atoi(c.Param("uid"))
@@ -41,11 +44,10 @@ func GetUser(c *gin.Context) {
 	err := data.ReadUser(&user)
 	if err != nil {
 		c.JSON(http.StatusNotFound,
-			gin.H{"status": http.StatusNotFound, "error": "Failed to find user"})
+			gin.H{"error": "Failed to find user"})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "users": &user})
+	c.JSON(http.StatusOK, gin.H{"user": &user})
 }
 
 //Login endpoint authenticates and returns a token
@@ -55,21 +57,21 @@ func Login(c *gin.Context) {
 	err := c.BindJSON(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
+			gin.H{"error": "Could not read request"})
 		return
 	}
 
-	err = data.AuthenticateUser(&user)
+	err = data.ReadUser(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusInternalServerError, "error": "Bad username or password "})
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Bad username or password "})
 		return
 	}
 
 	tkn, err := data.GetSession(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusInternalServerError, "error": "Could not create session token"})
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Could not create session token"})
 		return
 	}
 

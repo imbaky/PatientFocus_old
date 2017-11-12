@@ -6,12 +6,14 @@ import (
 
 //The Patient struct holds all basic patient info
 type Patient struct {
-	Ptid        int       `orm:"pk;auto" json:"id"`
-	Race        string    `json:"race"`
-	Gender      Gender    `json:"gender"`
-	Language    Language  `json:"language"`
-	DateOfBirth time.Time `orm:"type(date);column(dob)" json:"dob"`
-	Smoke       bool      `orm:"type(bool) default(false)" json:"smoke"`
+	Ptid        int         `orm:"pk;auto" json:"id"`
+	Race        string      `json:"race"`
+	Gender      Gender      `json:"gender"`
+	Language    Language    `json:"language"`
+	DateOfBirth time.Time   `orm:"type(date);column(dob)" json:"dob"`
+	Smoke       bool        `orm:"type(bool)" json:"smoke"`
+	Documents   []*Document `orm:"rel(m2m)" json:"documents"`
+	Doctors     []*Doctor   `orm:"rel(m2m)" json:"doctors"`
 	// ProblemList string    `orm:"type(string)" json:"problem_list"`
 	//	MedsList    []string  `json:"meds_list"`
 	//	AllergyList []string  `json:"alergy_list"`
@@ -19,12 +21,12 @@ type Patient struct {
 	DateModified time.Time `orm:"auto_now;type(datetime)"`
 }
 
-type PatientDocument struct {
-	PDid     int       `orm:"pk;auto;column(pdid)" json:"id"`
-	Patient  *Patient  `orm:"rel(fk)" json:"patient_id"`
-	Document *Document `orm:"rel(fk)" json:"document_id"`
+// TableName specifies how table name is to be called in the database
+func (u *Patient) TableName() string {
+	return "patient"
 }
 
+// PatientDoctor holds a patient doctor relationship
 type PatientDoctor struct {
 	PDoid   int      `orm:"pk;auto;column(pdoid)" json:"id"`
 	Patient *Patient `orm:"rel(fk)" json:"patient_id"`

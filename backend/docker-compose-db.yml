@@ -9,6 +9,6 @@ services:
             POSTGRES_PASSWORD: patientfocus
             POSTGRES_DB: patientfocus
         volumes:
-            - ./postgres:/var/lib/postgresql/data
+            - ../postgres:/var/lib/postgresql/data
         ports:
             - "5432:5432"

@@ -2,17 +2,18 @@ package handlers
 
 import (
 	"net/http"
-	"encoding/json"
 	"fmt"
+	"log"
 	"bytes"
 	"strings"
 	"io"
 	"os"
 	"strconv"
-	"github.com/imbaky/PatientFocus/core/data"
 	"github.com/imbaky/PatientFocus/core/domain/model"
 	"github.com/imbaky/PatientFocus/core/configuration"
-	"log"
+	"github.com/imbaky/PatientFocus/core/data"
+	"encoding/json"
+	"archive/zip"
 )
 
 
@@ -87,6 +88,8 @@ type DocSharePayload struct {
 	Documents   []int  `json:"documents"`
 }
 
+const zipFileName = "share.zip"
+
 // Patient shares docuement with doctor
 func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	// initialization
@@ -119,7 +122,6 @@ func ShareDocument(rw http.ResponseWriter, req *http.Request) {
 	var documents []model.Document
 	err = data.GetDocumentsFromArray(documentsArray, &documents)
 	if err != nil {
-		// TODO: log real error
 		rw.WriteHeader(http.StatusInternalServerError)
 		rw.Write([]byte("Error retrieving documents from database"))
 		return
@@ -167,23 +169,68 @@ func GetSharedDocuments(rw http.ResponseWriter, req *http.Request) {
 	var urls = []string{}
 	err = data.GetSharedDocuments(&userDoctor, &userPatient, &urls)
 	if err != nil {
-		fmt.Printf("%v", err)
-		sendBoolResponse(rw, err)
+		fmt.Printf("%v \n", err)
+		http.Error(rw, "Documents not found", http.StatusNotFound);
 		return
 	}
-	type urlJsonWrapper struct {
-		Urls []string
-	}
-	urlsJson := urlJsonWrapper{}
-	urlsJson.Urls = urls
-	js, err := json.Marshal(urlsJson)
+	var zipDirectory = configuration.DirectoryForUploadedDocs + "doctor-" + strconv.Itoa(userDoctor.Doctor.Id )+
+		"/" + "patient" + strconv.Itoa(userPatient.Patient.Id)
+	os.MkdirAll(zipDirectory, 0777)
+	var zipFiePath = zipDirectory + "/" + zipFileName
+	zipFile, err := os.Create(zipFiePath)
+	defer zipFile.Close()
 	if err != nil {
-		fmt.Printf("%v", err)
-		sendBoolResponse(rw, err)
+		fmt.Printf("%v \n", err)
+		http.Error(rw, "Zip file could not be created", http.StatusInternalServerError);
+		return
 	}
-	rw.Header().Set("Content-Type", "application/json")
-	rw.Write(js)
+	// Create a new zip archive.
+	zipWriter := zip.NewWriter(zipFile)
+	createZip(zipWriter, urls)
+	var contentDisposition string = "attachment; filename=" + "'" + zipFileName + "'"
+	rw.Header().Set("Content-Type", "application/zip")
+	rw.Header().Set("Content-Disposition", contentDisposition)
+	http.ServeFile(rw, req, zipFiePath)
+	os.RemoveAll(zipDirectory)
+	os.Remove(configuration.DirectoryForUploadedDocs + "doctor-" + strconv.Itoa(userDoctor.Doctor.Id ))
 }
+
+func createZip(zipWriter *zip.Writer, urls []string) {
+	defer zipWriter.Close()
+	for _, url := range urls {
+		file, err := os.Open(url)
+		if err != nil {
+			fmt.Printf("%v \n", err) //file not found
+			continue;
+		}
+		defer file.Close()
+		// Get the file information
+		info, err := file.Stat()
+		if err != nil {
+			fmt.Printf("%v \n", err)
+			continue;
+		}
+
+		header, err := zip.FileInfoHeader(info)
+		if err != nil {
+			fmt.Printf("%v \n", err)
+			continue;
+		}
+		header.Method = zip.Deflate
+
+		writer, err := zipWriter.CreateHeader(header)
+		if err != nil {
+			fmt.Printf("%v \n", err)
+			continue;
+		}
+		_, err = io.Copy(writer, file)
+		if err != nil {
+			fmt.Printf("%v \n", err) //file not found
+			continue;
+		}
+	}
+}
+
 
 type Session struct{ //temperary session wrapper to store user id. Needs to be deleted later once sessions are implemented
 	patient_id string

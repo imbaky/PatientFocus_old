@@ -23,6 +23,8 @@ import { PatientResolver } from '../shared/resolvers/patient/patient.resolver';
 
 // guard
 import { PatientGuard } from '../shared/guards/patient/patient.guard';
+import { UIFromsModule } from '../../core/ui/forms/ui-forms.module';
+import { DocumentSendFormComponent } from './containers/document-sendform/document-send-form.component';
 
 const ROUTES: Routes = [
   { path: '', component: DocumentComponent, resolve: {
@@ -39,6 +41,7 @@ const ROUTES: Routes = [
     DocumentItemComponent,
     DocumentSidebarComponent,
     DocumentLabelComponent,
+    DocumentSendFormComponent,
     LabelsComponent,
   ],
   imports: [
@@ -48,6 +51,8 @@ const ROUTES: Routes = [
     UIGeneric,
     PipeModule,
     ReactiveFormsModule,
+    UIFromsModule,
+    ReactiveFormsModule
   ]
 })
 export class DocumentModule { }

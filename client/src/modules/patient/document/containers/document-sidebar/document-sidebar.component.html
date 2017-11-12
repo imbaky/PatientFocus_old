@@ -1,5 +1,5 @@
 <div class="document-sidebar">
-  <ng-container *ngIf="documents.length === 1; else select">
+  <ng-container *ngIf="documents.length >= 1; else select">
     <div class="document-sidebar--header">
       <div class="document-sidebar--filename">{{ documents[0].name }}</div>
       <img class="document-sidebar--share" src="/assets/images/icons/share.svg" alt="Share">
@@ -24,6 +24,7 @@
       </ng-template>
     </div>
     <document-label *ngFor="let label of documents[0].labels" [label]="label" class="document-sidebar--label"></document-label>
+    <document-sendform></document-sendform>
   </ng-container>
   <ng-template #select>
     <div class="text-center mt-5">

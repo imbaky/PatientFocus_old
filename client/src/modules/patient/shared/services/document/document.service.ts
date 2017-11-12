@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/pluck';
 
 import { Label } from '../label/label.service';
 import { Patient } from '../patient/patient.service';
@@ -253,7 +254,8 @@ export class DocumentService {
    * @returns {Observable<R|T>}
    */
   getDocuments(patient: Patient): Observable<Documents> {
-    return this.http.get(`${environment.host_server}/document?patient=${patient.id}`)
+    return this.http.get(`${environment.host_server}/document/${patient.id}`)
+      .pluck('documents')
       .catch((err) => Observable.throw(err));
   }
 

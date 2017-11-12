@@ -37,6 +37,7 @@ export class LabelService {
    */
   getAllLabels(): Observable<any> {
     return this.http.get(`${environment.host_server}/label`)
+      .pluck('labels')
       .do((labels: Label[]) => {
         this.store.set('labels', labels);
       })

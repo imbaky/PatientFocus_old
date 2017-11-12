@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/pluck';
 
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../auth/shared/services/auth/auth.service';
@@ -43,6 +44,7 @@ export class PatientService {
    */
   getPatient(id: number): Observable<Patient> {
     return this.http.get(`${environment.host_server}/patient/${id}`)
+      .pluck('patient')
       .do((patient: Patient) => {
         if (patient) {
           this.store.set('patient', patient);

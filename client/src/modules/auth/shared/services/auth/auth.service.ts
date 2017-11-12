@@ -70,6 +70,8 @@ export class AuthService {
     const data = JSON.parse(atob(
       token.substr(start, token.lastIndexOf('.') - start)
     ));
+    data.user_id = parseInt(data.user_id);
+    data.role_id = parseInt(data.role_id);
     return data;
   }
 
@@ -79,7 +81,7 @@ export class AuthService {
    */
   getRole(): Role {
     return {
-      id: this.payload.role_id,
+      id: parseInt(this.payload.role_id),
       name: this.payload.role
     };
   }
@@ -111,7 +113,8 @@ export class AuthService {
    */
   fetchCurrentUser(): void {
     if (this.token) {
-      this.http.get(`${environment.host_server}/auth/user`)
+      this.http.get(`${environment.host_server}/user/${this.payload.user_id}`)
+        .pluck('user')
         .subscribe((user: User) => {
           this.store.set('user', user);
         }, (err) => { });
@@ -124,6 +127,7 @@ export class AuthService {
    * @returns {Observable<R|T>}
    */
   registerUser(user: RegistrationUser): Observable<any> {
+    delete user.accepted_terms;
     return this.http.post(`${environment.host_server}/auth/register`, user)
       .catch((err) => Observable.throw(err));
   }

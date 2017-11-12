@@ -200,7 +200,7 @@ type DocumentLabelPayload struct {
 	Labels []int `json:"labels"`
 }
 
-func AssociateLabels(c *gin.Context) {
+func LinkDocumentLabels(c *gin.Context) {
 	var payload DocumentLabelPayload
 	var document models.Document
 

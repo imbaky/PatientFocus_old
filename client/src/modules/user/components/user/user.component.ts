@@ -3,6 +3,8 @@ import { AuthService, RoleType } from '../../../auth/shared/services/auth/auth.s
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PillSelectorOption } from '../../../core/ui/forms/containers/forms/pill-selector/pill-selector.component';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'user',
   styleUrls: ['./user.component.scss'],
@@ -18,8 +20,8 @@ export class UserComponent implements OnInit {
   ];
 
   languageOptions: Array<PillSelectorOption> = [
-    { label: 'English', value: 'en' },
-    { label: 'French', value: 'fr' }
+    { label: 'English', value: 'english' },
+    { label: 'French', value: 'french' }
   ];
 
   yesNoOptions: Array<PillSelectorOption> = [
@@ -40,7 +42,7 @@ export class UserComponent implements OnInit {
       this.form = this.fb.group({
         race: ['', Validators.required],
         gender: ['female', Validators.required],
-        language: ['en', Validators.required],
+        language: ['english', Validators.required],
         date_of_birth: ['', Validators.required],
         smoke: [false, Validators.required]
       });
@@ -77,7 +79,7 @@ export class UserComponent implements OnInit {
 
       // TODO: mapping of frontend to backend.
       if (this.isPatient()) {
-        data.dob = data.date_of_birth;
+        data.dob = moment(data.date_of_birth, 'YYYY-MM-DD').format();
         delete data.date_of_birth;
       }
 

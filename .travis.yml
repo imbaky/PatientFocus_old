@@ -46,6 +46,7 @@ matrix:
       before_install:
         - cd $SERVER_DIR
         - go get -d
+        - go get github.com/stretchr/testify/assert
 
       script:
         - go test -v ./...

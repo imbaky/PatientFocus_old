@@ -232,7 +232,7 @@ describe('Document Service', () => {
         expect(res.status).toBe(true);
       });
 
-    const req = httpMock.expectOne(`/document/${id}`);
+    const req = httpMock.expectOne(`/document/labels`);
     req.flush({ status: true }, okResponse);
     httpMock.verify();
   }));

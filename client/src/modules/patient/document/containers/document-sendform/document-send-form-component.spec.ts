@@ -11,6 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SelectedDocumentService } from '../../../shared/services/selected-document/selected-document.service';
 import { DebugElement } from '@angular/core';
+import { ValidationMessageComponent } from '../../../../core/ui/forms/components/validation-message/validation-message.component';
 
 
 class MockShareDocumentService {
@@ -40,7 +41,8 @@ describe('Document Send Form Component', () => {
       declarations: [
         FormGroupComponent,
         ShortStringComponent,
-        DocumentSendFormComponent
+        DocumentSendFormComponent,
+        ValidationMessageComponent
       ],
       imports: [
         HttpClientTestingModule,
@@ -57,8 +59,7 @@ describe('Document Send Form Component', () => {
     service = el.injector.get(ShareDocumentService);
   });
 
-  it('GIVEN a valid form THEN it should share the documents.', () => {
-
+  it('GIVEN a valid email format THEN it should share the documents.', () => {
     spyOn(service, 'shareDocument').and.callThrough();
     component.form.patchValue({
       email: 'tsavadocs@tusslantis.ca',
@@ -69,5 +70,15 @@ describe('Document Send Form Component', () => {
     expect(service.shareDocument).toHaveBeenCalled();
   });
 
+  it('GIVEN an invalid email format THEN it should not share the documents.', () => {
+    spyOn(service, 'shareDocument').and.callThrough();
+    component.form.patchValue({
+      email: 'emperorofthegalaxyisnotreal',
+      message: ''
+    });
+
+    component.onSubmit();
+    expect(service.shareDocument).toHaveBeenCalledTimes(0);
+  });
 
 });

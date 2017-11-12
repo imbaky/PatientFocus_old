@@ -33,7 +33,12 @@ export class DocumentSendFormComponent {
   onSubmit(): void {
     if (this.form.valid) {
       this.shareDocumentService.shareDocument(this.form.value.email, this.form.value.message, this.documents)
-        .subscribe();
+        .subscribe(() => {
+          },
+          err => {
+            // Error response when Email address does not exist or not valid
+
+          });
     } else {
       this.form.get('email').markAsTouched();
       this.form.get('email').updateValueAndValidity();

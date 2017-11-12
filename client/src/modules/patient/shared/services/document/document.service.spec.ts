@@ -260,7 +260,7 @@ describe('Document Service', () => {
         expect(documents.length).toBe(1);
       });
 
-    const req = httpMock.expectOne(`/document?patient=1`);
+    const req = httpMock.expectOne(`/document/1`);
     req.flush(documents, okResponse);
 
     httpMock.verify();

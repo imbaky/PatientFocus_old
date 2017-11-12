@@ -26,6 +26,12 @@ const currentUser: User = {
   roles: ['patient']
 };
 
+const payload = btoa(JSON.stringify({
+  role: 'patient',
+  role_id: 1,
+  user_id: 8
+}));
+
 describe('Auth Service', () => {
   let service: AuthService;
   let http: HttpClient;
@@ -90,7 +96,7 @@ describe('Auth Service', () => {
 
   it('should get a token when signing in a user', inject([HttpTestingController], (httpMock: HttpTestingController) => {
     // Setup
-    const token = 'p4ti3nt';
+    const token = 'header.' + payload + '.signature';
     spyOn(localStorage, 'set');
 
     // Act & Assert
@@ -106,14 +112,14 @@ describe('Auth Service', () => {
 
   it('should save user\'s information when fetching current user', inject([HttpTestingController], (httpMock: HttpTestingController) => {
     // Setup
-    const token = 'p4ti3nt';
+    const token = 'header.' + payload + '.signature';
     localStorage.set('token', token);
     spyOn(store, 'set');
 
     // Act & Assert
     service.fetchCurrentUser();
-    const req = httpMock.expectOne('/auth/user');
-    req.flush(currentUser, okResponse);
+    const req = httpMock.expectOne('/user/' + 8);
+    req.flush({user: currentUser}, okResponse);
 
     expect(req.request.headers.get('Authorization')).toBe(`Bearer ${token}`);
     expect(store.set).toHaveBeenCalledWith('user', currentUser);
@@ -123,14 +129,14 @@ describe('Auth Service', () => {
   it('interceptor should redirect the user to the login page if user has expired token.',
     inject([HttpTestingController], (httpMock: HttpTestingController) => {
     // Setup
-    const token = 'p4ti3nt expired';
+    const token = 'header.' + payload + '.signature';
     localStorage.set('token', token);
     spyOn(store, 'set');
 
     // Act & Assert
     service.fetchCurrentUser();
 
-    const req = httpMock.expectOne('/auth/user');
+    const req = httpMock.expectOne('/user/' + 8);
     req.flush({ status: false }, { status: 401, statusText: 'UNAUTHORIZED' }); // we get a 401 backend response for invalid token
 
     expect(store.set).not.toHaveBeenCalled();
@@ -138,28 +144,16 @@ describe('Auth Service', () => {
   }));
 
   it('GIVEN a token THEN it should decode the payload AND storage it locally', () => {
-    const payload = btoa(JSON.stringify({
-      role: 'patient',
-      role_id: 1,
-      user_id: 1
-    }));
-
     localStorage.set('token', 'header.' + payload + '.signature');
 
     expect(service.payload).toEqual({
       role: 'patient',
       role_id: 1,
-      user_id: 1
+      user_id: 8
     });
   });
 
   it('GIVEN a token with a role THEN it should return the role', () => {
-    const payload = btoa(JSON.stringify({
-      role: 'patient',
-      role_id: 1,
-      user_id: 8
-    }));
-
     localStorage.set('token', 'header.' + payload + '.signature');
 
     expect(service.getRole()).toEqual({
@@ -169,12 +163,6 @@ describe('Auth Service', () => {
   });
 
   it('GIVEN a token with a patient role THEN the current user is currently that role', () => {
-    const payload = btoa(JSON.stringify({
-      role: 'patient',
-      role_id: 1,
-      user_id: 8
-    }));
-
     localStorage.set('token', 'header.' + payload + '.signature');
 
     expect(service.hasRole('patient')).toBe(true);

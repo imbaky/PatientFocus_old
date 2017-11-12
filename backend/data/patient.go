@@ -15,6 +15,10 @@ func CreatePatient(patient *models.Patient) (err error) {
 
 func ReadPatient(patient *models.Patient) error {
 	err := ormObject.Read(patient)
+	if err != nil {
+		return err
+	}
+	err = ReadPatientDocuments(patient)
 	return err
 }
 

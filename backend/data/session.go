@@ -20,7 +20,7 @@ func GetSession(user *models.PFUser) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["user_id"] = id
 	claims["role"] = user.Role
-	claims["role_id"] = id
+	claims["role_id"] = "-1"
 	if user.Role == "patient" && user.Patient != nil {
 		claims["role_id"] = strconv.Itoa(user.Patient.Ptid)
 	}

@@ -1,0 +1,74 @@
+{
+  "patients" : [
+    {
+      "id": 1,
+      "pfuser": 1,
+      "race": "Canadian",
+      "gender": "male",
+      "language": "en_US",
+      "smoke": false
+    }
+  ],
+  "documents": [
+    {
+      "id": 1,
+      "patient_id": 1,
+      "name": "document.pdf",
+      "url": "http://google.ca",
+      "description": "Something is a great description",
+      "labels": []
+    },
+    {
+      "id": 2,
+      "patient_id": 1,
+      "name": "test-result.jpg",
+      "url": "http://google.ca",
+      "description": "Something is a great description",
+      "labels": []
+    },
+    {
+      "id": 3,
+      "patient_id": 1,
+      "name": "patient.pdf",
+      "url": "http://google.ca",
+      "description": "Something is a great description",
+      "labels": []
+    },
+    {
+      "id": 4,
+      "patient_id": 1,
+      "name": "great.jpg",
+      "url": "http://google.ca",
+      "description": "Something is a great description",
+      "labels": [
+        {
+          "id": 21,
+          "name": "label21",
+          "color": "greenyellow"
+        },
+        {
+          "id": 22,
+          "name": "label22",
+          "color": "red"
+        }
+      ]
+    }
+  ],
+  "labels": [
+    {
+      "id": 21,
+      "name": "label21",
+      "color": "greenyellow"
+    },
+    {
+      "id": 22,
+      "name": "label22",
+      "color": "red"
+    },
+    {
+      "id": 23,
+      "name": "label21",
+      "color": "blue"
+    }
+  ]
+}

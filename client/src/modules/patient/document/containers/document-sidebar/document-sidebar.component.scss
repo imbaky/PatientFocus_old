@@ -1,0 +1,41 @@
+@import "../../../../../variables";
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.document-sidebar {
+  padding: 2.5rem 1.25rem;
+}
+
+.document-sidebar--filename {
+  font-size: 1.25rem;
+}
+
+.document-sidebar--light-header {
+  font-size: .875rem;
+  font-weight: 300;
+}
+
+.document-sidebar--sub-header {
+  border-bottom: 1px solid $px-grey;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.document-sidebar--share {
+  max-width: 1.75rem;
+  max-height: 1.75rem;
+}
+
+.document-sidebar--header,
+.document-sidebar--sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.document-sidebar--label + .document-sidebar--label  {
+  margin-top: .25rem;
+}

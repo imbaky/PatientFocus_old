@@ -1,0 +1,15 @@
+<div class="upload-item">
+  <div class="upload-item--indicator">
+
+  </div>
+  <div class="upload-item--header">
+    <span class="upload-item--file-name">{{ item.file.name }}</span> - <span class="upload-item--title-progress">{{ getStateTitle() }}</span>
+  </div>
+  <div class="upload--item--actions" *ngIf="item.status !== UploadStatus.DONE">
+    <ng-container [ngSwitch]="item.status">
+      <ng-container *ngSwitchCase="UploadStatus.ERROR">
+        <button (click)="retryItem()">Retry</button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

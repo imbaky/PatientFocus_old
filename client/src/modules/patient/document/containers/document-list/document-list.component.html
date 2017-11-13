@@ -1,0 +1,11 @@
+<div class="document-list">
+  <div class="document-list--header">
+    <div class="document-list--header-name">Name</div>
+    <div class="document-list--header-update">Last Updated</div>
+    <div class="document-list--header-size">Size</div>
+  </div>
+  <div class="document-list--body">
+    <document-item class="document-list--item" (click)="select($event, document)" *ngFor="let document of documents"
+      [document]="document"></document-item>
+  </div>
+</div>

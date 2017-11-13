@@ -1,0 +1,59 @@
+@import "../../../../../variables";
+
+:host {
+  display: block;
+}
+
+.document-item {
+  display: flex;
+  padding-left: 1.875rem;
+  padding-right: 1.875rem;
+  height: 3.5rem;
+  background-color: $px-white;
+  align-items: center;
+  position: relative;
+}
+
+.document-item__active {
+  background-color: transparentize($primary-color, .95);
+}
+
+.document-item__active::before {
+  content: " ";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-right: 2px solid $primary-color;
+}
+
+.document-item--update,
+.document-item--size {
+  font-size: .875rem;
+  color: $px-grey-1;
+  font-weight: 300;
+}
+
+.document-item--header {
+  width: 50%;
+}
+
+.document-item--update {
+  width: 35%;
+}
+
+.document-item--size {
+  width: 15%;
+}
+
+.document-item--labels {
+  display: flex;
+}
+
+
+.document-item--label {
+  font-size: .75rem;
+  + .document-item--label {
+    margin-left: 1rem;
+  }
+}

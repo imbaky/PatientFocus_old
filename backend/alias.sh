@@ -1,0 +1,4 @@
+export POSTGRES_USER=pf
+export POSTGRES_PASSWORD=patientfocus
+export POSTGRES_DB=patientfocus
+export POSTGRES_HOST=localhost

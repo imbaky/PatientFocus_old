@@ -1,0 +1,51 @@
+@import "../../../../../variables";
+
+$side-padding: 1rem;
+
+.labels {
+  background-color: $px-white;
+  box-shadow: 0 3px 12px rgba(27,31,35,0.15);
+  min-width: 12rem;
+}
+
+.labels--input-wrap {
+  background-color: $px-grey-2;
+  padding: .25rem $side-padding;
+}
+
+.labels--form-control {
+  background-color: transparent;
+  border: none;
+  color: $px-black;
+}
+
+.labels--list {
+  padding: 1rem $side-padding;
+}
+
+.labels--item  {
+  cursor: pointer;
+  & + .labels--item {
+    margin-top: .25rem;
+  }
+}
+
+.document-labels--action {
+  display: flex;
+}
+
+.document-labels--action-colorPicker {
+  display:none;
+}
+
+.document-labels--action-color {
+  display: grid;
+  width: 60%;
+  margin: auto 0;
+  height: 1.5rem;
+}
+
+.document-labels--action-btn {
+  width: 40%;
+  cursor: pointer;
+}

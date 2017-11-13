@@ -1,0 +1,87 @@
+<div class="register">
+  <div class="register--header">
+    <h3 class="register--header-title">Register Now</h3>
+    <p class="register--header-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a porta diam. Nullam pretium sapien.</p>
+  </div>
+  <form [formGroup]="form"
+    (ngSubmit)="onRegister()">
+    <px-form-group
+      label="Email">
+      <px-short-string
+        type="email"
+        formControlName="email">
+      </px-short-string>
+      <px-validation-message
+        controlName="email"
+        [responseErrors]="errors"
+        onError="required">
+        An email address is required.
+      </px-validation-message>
+      <px-validation-message
+        controlName="email"
+        [responseErrors]="errors"
+        onError="email">
+        Please enter a valid email address.
+      </px-validation-message>
+    </px-form-group>
+    <px-form-group
+      label="First Name">
+      <px-short-string
+        type="text"
+        formControlName="first_name">
+      </px-short-string>
+      <px-validation-message
+        controlName="first_name"
+        [responseErrors]="errors"
+        onError="required">
+        A first name is required.
+      </px-validation-message>
+    </px-form-group>
+    <px-form-group
+      label="Last Name">
+      <px-short-string
+        type="text"
+        formControlName="last_name">
+      </px-short-string>
+      <px-validation-message
+        controlName="last_name"
+        [responseErrors]="errors"
+        onError="required">
+        A last name is required.
+      </px-validation-message>
+    </px-form-group>
+    <px-form-group
+      label="Password"
+      help="Include at least a digit &amp; capital letter">
+      <px-short-string
+        type="password"
+        formControlName="password">
+      </px-short-string>
+      <px-validation-message
+        controlName="password"
+        [responseErrors]="errors"
+        onError="required">
+        A password is required.
+      </px-validation-message>
+    </px-form-group>
+    <px-form-group
+      label="Register As">
+      <px-pill-selector
+        [options]="roleOptions"
+        formControlName="role">
+        Register As
+      </px-pill-selector>
+    </px-form-group>
+    <px-form-group>
+      <px-checkbox formControlName="accepted_terms">
+        I have read the <a href="">terms and services</a>.
+      </px-checkbox>
+    </px-form-group>
+    <button class="btn btn-primary btn-block" type="submit">
+      SIGN UP
+    </button>
+  </form>
+  <div class="register--redirect">
+    <a routerLink="/auth/login">I already have an account.</a>
+  </div>
+</div>

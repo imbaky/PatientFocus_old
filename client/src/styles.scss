@@ -1,0 +1,21 @@
+$border-radius: 0;
+$blue: #3968d6;
+/**
+  *  Bootstrap overrides
+ */
+@import '~bootstrap/scss/bootstrap';
+
+
+body {
+  font-family: 'Lato', $font-family-sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Ubuntu', $font-family-sans-serif;
+}
+
+.form-check-label.is-invalid {
+  color: #dc3545;
+  & * { color:inherit }
+}

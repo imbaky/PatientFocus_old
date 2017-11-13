@@ -1,0 +1,27 @@
+<div class="document">
+  <div class="document--browser">
+    <div class="document--browser-header">
+      <div>
+
+      </div>
+      <div class="document--browser-utility">
+        <input #fileInput class="input-upload" type="file" multiple (change)="onUpload($event)">
+        <button class="btn btn-primary" (click)="openFileBrowser()">
+          Upload
+        </button>
+      </div>
+    </div>
+    <div>
+      <ng-container *ngIf="documents$ | async as documents; else documentsLoading">
+        <document-list [documents]="documents"></document-list>
+      </ng-container>
+      <ng-template #documentsLoading>
+        Loading Documents
+      </ng-template>
+    </div>
+  </div>
+  <div class="document--sidebar">
+    <document-sidebar></document-sidebar>
+  </div>
+</div>
+

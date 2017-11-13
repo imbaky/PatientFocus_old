@@ -1,0 +1,35 @@
+@import "../../../../../variables";
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.document {
+  display: flex;
+  height: 100%;
+}
+
+.document--browser {
+  flex-grow: 1;
+  max-width: 55rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.document--browser-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.input-upload {
+  display: none;
+}
+
+.document--sidebar {
+  width: 18rem;
+  background-color: $px-white;
+}

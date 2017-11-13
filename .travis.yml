@@ -1,0 +1,53 @@
+services:
+  - postgresql
+before_script:
+  - psql -c "CREATE USER pf WITH PASSWORD 'patientfocus';" -U postgres
+  - psql -c 'CREATE DATABASE patientfocus;' -U postgres
+env:
+  global:
+    - CLIENT_DIR=client
+    - SERVER_DIR=backend
+matrix:
+  include:
+    - language: node_js
+      sudo: required
+      dist: trusty
+
+      node_js:
+        - 7
+
+      addons:
+        apt:
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-stable
+
+      before_install:
+        - export CHROME_BIN=chromium-browser
+        - export DISPLAY=:99.0
+        - sh -e /etc/init.d/xvfb start
+
+      script: cd $CLIENT_DIR && npm install && npm run ci
+
+    - language: go
+
+      go:
+        - 1.x
+        - 1.7
+        - 1.8
+        - 1.9
+
+      cache:
+        directories:
+          - $GOPATH/src
+          - $GOPATH/pkg
+
+      before_install:
+        - cd $SERVER_DIR
+        - go get -d
+        - go get github.com/stretchr/testify/assert
+
+      script:
+        - go test -v ./...
+

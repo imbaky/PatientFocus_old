@@ -1,0 +1,15 @@
+<div class="labels">
+  <div class="input-group labels--input-wrap">
+    <input type="text" class="form-control labels--form-control" placeholder="Search..." [formControl]="search">
+  </div>
+  <div class="labels--list">
+    <div class="labels--action">
+      <document-label class="labels--action-color" [label]="{ name: search.value, color: color.value }" (click)="openColorPicker()"></document-label>
+      <input #colorPicker class="labels--action-colorPicker" type="color" [formControl]="color">
+      <button class="btn labels--action-btn" (click)="createLabel()"> Create </button>
+    </div>
+    <document-label class="labels--item"
+      *ngFor="let label of labels$ | async | filter:search.value:'name'"
+      [label]="label" (click)="addLabelToDocument(label)" ></document-label>
+  </div>
+</div>

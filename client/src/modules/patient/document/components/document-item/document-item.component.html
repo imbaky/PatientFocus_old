@@ -1,0 +1,21 @@
+<div class="document-item"
+  [ngClass]="{ 'document-item__active': isSelected }">
+  <div class="document-item--header">
+    <div class="document-item--name">
+      {{ document.filename }}
+    </div>
+    <div class="document-item--labels">
+        <document-label class="document-item--label"
+          *ngFor="let label of document.labels"
+          [label]="label"></document-label>
+    </div>
+  </div>
+
+  <div class="document-item--update">
+    {{ document.DateModified }}
+  </div>
+  <div class="document-item--size">
+    {{ document.Size }}
+  </div>
+</div>
+

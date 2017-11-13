@@ -18,10 +18,16 @@ func CreateDoctor(c *gin.Context) {
 			gin.H{"status": http.StatusBadRequest, "error": "Could not read request"})
 		return
 	}
+	err = data.ReadUser(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Failed to find user"})
+		return
+	}
 	err = data.CreateDoctor(&doctor)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"error": "Failed to create the patient"})
+			gin.H{"error": "Failed to create the doctor"})
 		return
 	}
 	user.Doctor = &doctor
@@ -31,6 +37,12 @@ func CreateDoctor(c *gin.Context) {
 			gin.H{"error": "Failed to associate the patient with the user"})
 		return
 	}
+	tkn, err := data.GetSession(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Could not create session token"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"doctor": user.Doctor})
+		"token": tkn})
 }

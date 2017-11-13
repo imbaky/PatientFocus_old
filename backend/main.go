@@ -36,6 +36,7 @@ func main() {
 	router.GET("/patient/:id",handlers.GetPatient)
 	router.POST("/patient", handlers.CreatePatient)
 	router.POST("/doctor", handlers.CreateDoctor)
+	router.GET("/doctor/patients", handlers.GetDoctorPatients)
 	router.POST("/patientdocuments", handlers.GetSharedDocuments)
 	router.POST("/document/upload", handlers.UploadDocument)
 	router.GET("/document/:id", handlers.GetDocument)
@@ -44,5 +45,5 @@ func main() {
 	router.POST("/label", handlers.CreateLabel)
 	router.GET("/label", handlers.GetLabels)
 	
-	router.Run(":1337")
+	router.Run(":9000")
 }

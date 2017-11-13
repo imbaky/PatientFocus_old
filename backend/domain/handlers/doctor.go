@@ -46,3 +46,17 @@ func CreateDoctor(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"token": tkn})
 }
+
+// Get all patients that have added the doctor
+func GetDoctorPatients(c *gin.Context) {
+	var patients []models.Patient
+	err := data.GetPatients(&patients)
+	if err != nil {
+		c.JSON(http.StatusNotFound,
+			gin.H{"error": "No patients found "})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "patients": &patients})
+
+}

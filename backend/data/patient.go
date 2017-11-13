@@ -19,11 +19,24 @@ func ReadPatient(patient *models.Patient) error {
 		return err
 	}
 	err = ReadPatientDocuments(patient)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func ReadPatientDocuments(patient *models.Patient) error {
 	_, err := ormObject.QueryTable("document").Filter("patient", patient.Ptid).RelatedSel().All(&patient.Documents)
+	if err != nil {
+		return err
+	}
+	for x := range patient.Documents {
+		err = ReadDocumentLabels(patient.Documents[x])
+		if err != nil {
+			return err
+		}
+	}
 	return err
 }
 

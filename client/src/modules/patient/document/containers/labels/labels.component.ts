@@ -40,7 +40,7 @@ export class LabelsComponent implements OnInit {
     this.documentService.addLabel(documents, [label])
       .subscribe(() => {
         documents.forEach((document) => {
-          if(document.labels) {
+          if (document.labels) {
             document.labels.push(label);
           } else {
             document.labels = [label];

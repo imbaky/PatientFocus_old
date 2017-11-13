@@ -26,6 +26,12 @@ func ReadPatient(patient *models.Patient) error {
 	return err
 }
 
+// Return all patients
+func GetPatients(patients *[]models.Patient) error {
+	_, err := ormObject.QueryTable("patient").All(patients)
+	return err
+}
+
 func ReadPatientDocuments(patient *models.Patient) error {
 	_, err := ormObject.QueryTable("document").Filter("patient", patient.Ptid).RelatedSel().All(&patient.Documents)
 	if err != nil {

@@ -75,7 +75,7 @@ func TestLinkPatientDoctor(t *testing.T) {
 	}
 	pat := &models.Patient{3, "Caucasian", "male", "french", time.Now(), false, nil, nil, time.Now(), time.Now()}
 	upat := &models.PFUser{Patient: pat}
-	doc := &models.Doctor{1, nil, "heart", 1, nil, time.Now(), time.Now()}
+	doc := &models.Doctor{1, nil, "heart", "123", nil, time.Now(), time.Now()}
 	udoc := &models.PFUser{Doctor: doc}
 	tests := []struct {
 		name    string
@@ -100,9 +100,9 @@ func TestPatientDoctorLinked(t *testing.T) {
 	}
 	pat := &models.Patient{3, "Caucasian", "male", "french", time.Now(), false, nil, nil, time.Now(), time.Now()}
 	upat := &models.PFUser{Patient: pat}
-	doc := &models.Doctor{1, nil, "heart", 1, nil, time.Now(), time.Now()}
+	doc := &models.Doctor{1, nil, "heart", "123", nil, time.Now(), time.Now()}
 	udoc := &models.PFUser{Doctor: doc}
-	docF := &models.Doctor{10, nil, "heart", 1, nil, time.Now(), time.Now()}
+	docF := &models.Doctor{10, nil, "heart", "123", nil, time.Now(), time.Now()}
 	udocF := &models.PFUser{Doctor: docF}
 	tests := []struct {
 		name    string
@@ -126,7 +126,7 @@ func TestLinkDoctorDocument(t *testing.T) {
 		doctor    *models.PFUser
 		documents []models.Document
 	}
-	doc := &models.Doctor{1, nil, "heart", 1, nil, time.Now(), time.Now()}
+	doc := &models.Doctor{1, nil, "heart", "123", nil, time.Now(), time.Now()}
 	udoc := &models.PFUser{Doctor: doc}
 	docu := []models.Document{models.Document{Did: 1}}
 	tests := []struct {

@@ -15,7 +15,7 @@ import (
 func TestCreateDoctor(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	doctor := models.Doctor{77, nil, "brain", 234, nil, time.Now(), time.Now()}
+	doctor := models.Doctor{77, nil, "brain", "234", nil, time.Now(), time.Now()}
 	recorderPass := httptest.NewRecorder()
 	recorderFail := httptest.NewRecorder()
 	recorderBad := httptest.NewRecorder()

@@ -16,8 +16,8 @@ func TestCreateDoctor(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"pass", args{&models.Doctor{1, nil, "heart", 1, nil, time.Now(), time.Now()}}, false},
-		{"fail", args{&models.Doctor{1, nil, "heart", 1, nil, time.Now(), time.Now()}}, true},
+		{"pass", args{&models.Doctor{1, nil, "heart", "123", nil, time.Now(), time.Now()}}, false},
+		{"fail", args{&models.Doctor{1, nil, "heart", "123", nil, time.Now(), time.Now()}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -37,7 +37,7 @@ func TestReadDoctorDocuments(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"pass", args{&models.Doctor{1, nil, "heart", 1, nil, time.Now(), time.Now()}}, false},
+		{"pass", args{&models.Doctor{1, nil, "heart", "123", nil, time.Now(), time.Now()}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
